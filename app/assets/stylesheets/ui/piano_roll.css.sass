@@ -1,0 +1,50 @@
+@import "../variables"
+
+$view-controls-size: 20px
+
+.ui.piano-roll
+  display: flex
+  flex-flow: column nowrap
+  flex-grow: 1
+  align-items: stretch
+
+  .body
+    flex-grow: 1
+    background-color: #fff
+    overflow-y: scroll
+    overflow-x: hidden
+    position: relative
+
+    .keys
+      position: absolute
+      top: 0
+      left: 0
+
+    .grid
+      position: absolute
+      left: 30px
+      right: 0
+      top: 0
+      overflow-x: scroll
+      overflow-y: visible
+
+    svg
+      margin: 0
+      display: block
+      top: 0
+      left: 0
+
+      line
+        stroke: #ccc
+        stroke-width: 1px
+
+      rect.black
+        fill: #ccc
+      rect.white
+        fill: #fff
+
+        
+  .view-controls
+    height: $view-controls-size
+    background-color: $ctrl-bg-color
+    flex-shrink: 0

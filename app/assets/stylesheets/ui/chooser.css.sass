@@ -1,0 +1,24 @@
+@import "../variables"
+
+$width: 45px
+
+.ui.chooser
+  display: flext
+  flex-flow: column nowrap
+  justify-content: center
+  margin: 0 $margin
+
+  .value
+    border: solid $line-width $line-color
+    margin: $margin/2 0
+    width: $width
+    padding: 0
+    text-align: center
+    cursor: pointer
+    color: $light-text-color
+    background-color: $ctrl-bg-color
+
+    &.selected
+      border-color: $c4
+      color: $c4
+      background-color: $ctrl-color

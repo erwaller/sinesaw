@@ -1,0 +1,37 @@
+@import "../variables"
+
+$width: 30px
+
+.ui.slider
+  display: flex
+  flex-flow: column nowrap
+  flex-grow: 1
+  height: 100%
+
+  > .control
+    width: $width
+    flex-grow: 1
+    margin: $width/6 auto
+    position: relative
+
+  .track
+    position: absolute
+    width: $width/4 - 2*$line-width
+    left: $width*3/8
+    margin: -$width/6 0
+    padding: $width/6 - $line-width 0
+    height: 100%
+    box-sizing: content-box
+    border: solid $line-width $line-color
+    cursor: pointer
+    background-color: $ctrl-bg-color
+
+  .handle
+    position: absolute
+    width: $width
+    height: $width/3
+    margin-top: -$width/6
+    left: 0
+    border: solid $line-width $c1
+    background: $ctrl-color
+    cursor: pointer

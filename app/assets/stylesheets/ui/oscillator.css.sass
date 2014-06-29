@@ -1,0 +1,19 @@
+@import "../variables"
+
+.ui.oscillator,
+.ui.filter
+  display: flex
+  flex-flow: row nowrap
+  flex-grow: 1
+  align-items: center
+  justify-content: flex-end
+  margin-left: 0
+
+  > label
+    margin: 0 0 0 $margin
+    padding: 0 0 0 $margin - $line-width
+    border-top: none
+    border-left: solid $line-width $line-color
+    width: 34px
+    text-align: left
+

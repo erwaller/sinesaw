@@ -1,0 +1,78 @@
+@import "variables"
+
+*
+  margin: 0
+  padding: 0
+  box-sizing: border-box
+
+body
+  font: $font
+  background: $bg-color
+  color: $text-color
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  overflow: scroll
+  -webkit-user-select: none
+
+::-webkit-scrollbar
+  display: none
+
+label
+  color: $text-color
+  display: block
+  text-align: center
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
+  margin: $margin 0 0
+  padding: $margin - $line-width 0 0
+  border-top: solid $line-color $line-width
+  flex-grow: 0
+  flex-shrink: 0 
+
+.ui
+  margin: $margin
+  flex-grow: 0
+
+.app,
+.row,
+.column
+  display: flex
+  justify-content: space-around
+  flex-grow: 1
+  position: relative
+
+.app
+  flex-flow: column nowrap
+  padding: $margin
+  width: 100%
+  height: 100%
+  min-width: 600px
+
+.row,
+.column
+  align-items: stretch
+  justify-content: space-around
+  flex-basis: 100%
+
+.row
+  flex-flow: row nowrap
+
+.column
+  flex-flow: column nowrap
+
+
+
+.row.instrument
+  flex-basis: 50%
+  .column.channel
+    flex-grow: 0
+    flex-shrink: 0
+    flex-basis: 30px + 2*$margin
+  .column.oscillators
+    flex-grow: 0
+    flex-shrink: 0
+    flex-basis: auto 

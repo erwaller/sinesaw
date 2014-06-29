@@ -1,0 +1,38 @@
+@import "../variables"
+
+.ui.envelope
+  display: flex
+  flex-flow: column nowrap
+  flex-grow: 1
+  height: 100%
+
+  > .control
+    border: solid $line-width $line-color
+    cursor: pointer
+    background-color: $ctrl-bg-color
+    flex-grow: 1
+
+  .knobs
+    display: flex
+    flex-shrink: 0
+    flex-flow: row wrap
+    justify-content: space-around
+    align-items: center
+
+    .knob
+      display: flex
+      flex-flow: row nowrap
+      align-items: center
+
+      > .control
+        display: block
+
+      > label
+        margin: 0 0 0 $margin
+        padding: 0 0 0 $margin - $line-width
+        border-top: none
+        border-left: solid $line-width $line-color
+
+  > label
+    margin: 0
+
