@@ -3,19 +3,24 @@
 document.addEventListener 'DOMContentLoaded', ->
   React.renderComponent(
     `<div className="app">
-      <div className="row ">
+      <div className="row playback">
+        <PlaybackControl/>
+      </div>
+      <div className="row piano-roll">
         <PianoRoll/>
       </div>
       <div className="row instrument">
         <div className="column channel">
-          <Slider label="Level"/>
-          <Knob label="Pan"/>
+          <Channel/>
         </div>
         <div className="column">
           <Envelope label="Volume Env"/>
         </div>
         <div className="column">
           <Envelope label="Filter Env"/>
+        </div>
+        <div className="column">
+          <Envelope label="Pitch Env"/>
         </div>
         <div className="column oscillators">
           <Filter label="Filter"/>
@@ -25,3 +30,6 @@ document.addEventListener 'DOMContentLoaded', ->
       </div>
     </div>`
   , document.body)
+
+setTimeout ->
+  document.body.classList.add 'loaded'

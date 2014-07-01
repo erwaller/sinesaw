@@ -8,15 +8,15 @@ $width: 45px
   justify-content: center
   margin: 0 $margin
 
-  .value
+  .option
     border: solid $line-width $line-color
     margin: $margin/2 0
     width: $width
     padding: 0
     text-align: center
-    cursor: pointer
     color: $light-text-color
     background-color: $ctrl-bg-color
+    -webkit-transition: background-color $animation-speed
 
     &.selected
       border-color: $c4

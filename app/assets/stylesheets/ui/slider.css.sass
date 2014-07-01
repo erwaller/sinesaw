@@ -1,6 +1,6 @@
 @import "../variables"
 
-$width: 30px
+$width: 24px
 
 .ui.slider
   display: flex
@@ -23,7 +23,6 @@ $width: 30px
     height: 100%
     box-sizing: content-box
     border: solid $line-width $line-color
-    cursor: pointer
     background-color: $ctrl-bg-color
 
   .handle
@@ -33,5 +32,10 @@ $width: 30px
     margin-top: -$width/6
     left: 0
     border: solid $line-width $c1
-    background: $ctrl-color
-    cursor: pointer
+    background-color: $ctrl-color
+    -webkit-transition: background-color $animation-speed
+
+  &.active
+    .handle
+      background-color: lighten($c1, 25%)
+

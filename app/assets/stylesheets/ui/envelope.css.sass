@@ -8,9 +8,23 @@
 
   > .control
     border: solid $line-width $line-color
-    cursor: pointer
     background-color: $ctrl-bg-color
     flex-grow: 1
+
+  svg
+    stroke-width: $line-width
+
+    line
+      stroke: $line-color
+    path
+      stroke: $med-line-color
+      stroke-linecap: round
+      stroke-linejoin: round
+      stroke-width: $line-width * 2
+      fill: none
+    circle
+      stroke: $c3
+      fill: $ctrl-color
 
   .knobs
     display: flex
@@ -18,6 +32,12 @@
     flex-flow: row wrap
     justify-content: space-around
     align-items: center
+
+    .group
+      display: flex
+      flex-flow: row nowrap
+      flex-grow: 1
+      justify-content: space-around
 
     .knob
       display: flex
@@ -35,4 +55,3 @@
 
   > label
     margin: 0
-

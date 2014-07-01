@@ -1,17 +1,18 @@
 ###* @jsx React.DOM ###
 
-@Knob = React.createClass
+@ScaleHandle = React.createClass
 
-  range: 100
+  range: 300
 
   mixins: [Draggable]
 
-  getDefaultProps: ->
-    value: 0.5
+  getInitialState: ->
+    active: false
 
   onDragStart: ->
-    @initalValue = @props.value
-    @getDOMNode().classList.add 'active'
+    # normalize value
+    @initalValue = (@props.value - @props.min) / (@props.max - @props.min)
+    @state.active = true
 
   onDrag: (delta) ->
     upRange = Math.min @range, (@dragStartPosition.y - window.scrollY)
@@ -22,18 +23,18 @@
     else
       value = Math.min 1, @initalValue + (1 - @initalValue) * delta.y / upRange
 
+    # denormalize value
+    value = 1 * @props.min + value * (@props.max - @props.min)
     @props.onChange value
 
   onDragEnd: ->
     @initalValue = null
-    @getDOMNode().classList.remove 'active'
+    @state.active = false
 
   render: ->
-    style ='-webkit-transform': "rotate(#{(@props.value - 0.5) * 300}deg)"
+    className = 'ui scale-handle'
+    className += ' active' if @state.active
 
-    `<div className="ui knob">
-      <div className="control">
-        <div className="handle" style={style} onMouseDown={this.draggableOnMouseDown}/>
-      </div>
-      <label>{this.props.label}</label>
+    `<div className={className} onMouseDown={this.draggableOnMouseDown}>
+      {this.props.children}
     </div>`

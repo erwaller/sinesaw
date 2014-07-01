@@ -2,15 +2,15 @@
 
 @Chooser = React.createClass
 
-  getInitialState: ->
-    selected: 0
+  onClickValue: (e) ->
+    @props.onChange e.target.dataset.value
 
   render: ->
-    values = @props.values.map (v, i) =>
-      className = 'value'
-      className += ' selected' if i == @state.selected
-      `<div className={className}>{v}</div>`
+    options = for v, i in @props.options
+      className = 'option'
+      className += ' selected' if v == @props.value
+      `<div key={i} className={className} onClick={this.onClickValue} data-value={v}>{v}</div>`
 
     `<div className="ui chooser">
-      {values}
+      {options}
     </div>`

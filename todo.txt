@@ -1,0 +1,3 @@
+- add scaling to piano roll
+- build envelope svg
+- make knob distance scale to fit in distance to top or bottom of window (to avoid issue where a knob near the edge cannot be turned all the way up / down in the first drag)

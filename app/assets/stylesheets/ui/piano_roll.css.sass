@@ -1,12 +1,15 @@
 @import "../variables"
 
-$view-controls-size: 20px
+$grid-shade-color: lighten($bg-color, 3%)
+$grid-line-color: $bg-color
+$strong-grid-line-color: darken($bg-color, 6%)
 
 .ui.piano-roll
   display: flex
   flex-flow: column nowrap
   flex-grow: 1
   align-items: stretch
+  margin: 0
 
   .body
     flex-grow: 1
@@ -14,37 +17,109 @@ $view-controls-size: 20px
     overflow-y: scroll
     overflow-x: hidden
     position: relative
+    z-index: 1
+    box-sizing: border-box
+    border: solid $line-width $dark-line-color
+    border-bottom: none
 
     .keys
       position: absolute
       top: 0
       left: 0
+      border-right: solid $dark-line-color $line-width
+      background-color: $bg-color
+
+      rect
+        fill: $med-line-color
+        stroke-width: 0
+
+      line
+        stroke: $med-line-color
+        stroke-width: $line-width
+
+      text
+        text-anchor: end
+        fill: $text-color
+        dominant-baseline: central
 
     .grid
       position: absolute
-      left: 30px
+      left: 40px
       right: 0
       top: 0
       overflow-x: scroll
       overflow-y: visible
+
+      line
+        stroke: $grid-line-color
+        stroke-width: $line-width
+
+        &.strong
+          stroke: $strong-grid-line-color
+
+      rect.shade
+        fill: $grid-shade-color
 
     svg
       margin: 0
       display: block
       top: 0
       left: 0
+      overflow: hidden
 
-      line
-        stroke: #ccc
-        stroke-width: 1px
-
-      rect.black
-        fill: #ccc
-      rect.white
-        fill: #fff
-
-        
   .view-controls
-    height: $view-controls-size
     background-color: $ctrl-bg-color
+    border-top: solid $line-width $dark-line-color
     flex-shrink: 0
+    position: relative
+    z-index: 2
+    display: flex
+    flex-flow: row nowrap
+    justify-content: flex-end
+    align-items: center
+    padding: 0 $margin
+
+    .scale-handle
+      padding: 0 $margin/2
+      height: 13px
+      background: $line-color
+      color: $light-text-color
+      margin: $margin/2 $margin
+      text-align: center
+      font: $heavy-font
+
+      &:active
+        background-color: darken($line-color, 5%)
+
+      .icon
+        line-height: 13px
+        width: 13px
+        height: 13px
+        display: inline-block
+        font-size: 13px
+        cursor: ns-resize
+
+    .setting
+      display: flex
+      flex-flow: row nowrap
+      align-items: center
+      margin: $margin/2 $margin
+
+      label
+        margin: 0 $margin 0 0
+        padding: 0 $margin - $line-width 0 0
+        border-top: none
+        border-right: solid $line-width $line-color
+        color: $light-text-color
+      
+      select
+        -webkit-appearance: none
+        outline: none
+        background: #fff
+        border-radius: 0
+        border: 0
+        padding: 0 $margin/2
+        min-width: 30px
+        text-align: -webkit-center
+        font: $heavy-font
+        color: $text-color
