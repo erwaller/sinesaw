@@ -4,7 +4,7 @@ EnvelopeHandle = React.createClass
 
 @Envelope = React.createClass
 
-  mixins: [SizeMeasurable, Updatable]
+  mixins: [SizeMeasurable, Updatable, Draggable]
 
   getInitialState: ->
     a: 0.5

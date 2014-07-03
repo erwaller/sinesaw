@@ -2,9 +2,18 @@
 <html>
 <head>
   <title>Sinesaw</title>
+  <%= csrf_meta_tags %>
   <%= stylesheet_link_tag "application", media: "all" %>
   <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Roboto:400,700:latin']
+      },
+      active: App.start
+    });
+  </script>
 </head>
 <body>
 

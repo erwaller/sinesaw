@@ -7,9 +7,7 @@
   justify-content: space-between
   background-color: $ctrl-bg-color
   border-bottom: none
-
-  .group
-    margin: 0 $margin
+  position: relative
 
   .icon
     display: inline-block
@@ -17,7 +15,7 @@
     line-height: 20px
     width: 20px
     height: 20px
-    padding: 5px
+    padding: 5px $margin
     color: $dark-line-color
     box-sizing: content-box
     -webkit-transition: color $animation-speed, background-color $animation-speed
@@ -30,11 +28,20 @@
     &:active
       color: $c3
 
+    &.icon-air
+      padding: 5px 2*$margin
+
   .logo
+    position: absolute
+    top: 0
+    left: 50%
+    width: 100px
+    margin-left: -50px
     display: inline-block
     height: 20px
     font: $heavy-font
     font-size: 20px
     line-height: 20px
-    padding: 5px
+    padding: 5px 0
     color: $light-text-color
+    text-align: center

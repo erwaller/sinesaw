@@ -14,7 +14,7 @@
     minYScale: 2
     maxYScale: 12
     keyWidth: 40
-    lineWidth: 1
+    lineWidth: 2
     loopSize: 8
     quantization: 4
 
