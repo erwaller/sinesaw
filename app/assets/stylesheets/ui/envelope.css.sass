@@ -22,9 +22,13 @@
       stroke-linejoin: round
       stroke-width: $line-width * 2
       fill: none
+    
     circle
       stroke: $c3
       fill: $ctrl-color
+
+      &.active
+        fill: lighten($c3, 15%)
 
   .knobs
     display: flex
@@ -52,6 +56,7 @@
         padding: 0 0 0 $margin - $line-width
         border-top: none
         border-left: solid $line-width $line-color
+        width: 45px
 
   > label
     margin: 0

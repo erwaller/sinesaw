@@ -4,9 +4,12 @@
   
   mixins: [SizeMeasurable, Draggable]
 
+  getInitialState: ->
+    active: false
+
   onDragStart: ->
     @initalValue = @props.value
-    @getDOMNode().classList.add 'active'
+    @setState active: true
 
   onDrag: (delta) ->
     value = @initalValue - delta.y / @state.height
@@ -15,12 +18,15 @@
 
   onDragEnd: ->
     @initalValue = null
-    @getDOMNode().classList.remove 'active'
+    @setState active: false
 
   render: ->
     style = top: "#{100*@props.value}%"
-  
-    `<div className="ui slider">
+
+    className = 'ui slider'
+    className += ' active' if @state.active
+
+    `<div className={className}>
       <div className="control" ref="container">
         <div className="track"/>
         <div className="handle" style={style} onMouseDown={this.draggableOnMouseDown}/>

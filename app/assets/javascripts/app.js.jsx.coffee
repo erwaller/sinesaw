@@ -20,9 +20,6 @@ window.App =
           <div className="column">
             <Envelope label="Filter Env"/>
           </div>
-          <div className="column">
-            <Envelope label="Pitch Env"/>
-          </div>
           <div className="column oscillators">
             <Filter label="Filter"/>
             <Oscillator label="Osc 1"/>

@@ -6,12 +6,15 @@
 
   mixins: [Draggable]
 
+  getInitialState: ->
+    active: false
+
   getDefaultProps: ->
     value: 0.5
 
   onDragStart: ->
     @initalValue = @props.value
-    @getDOMNode().classList.add 'active'
+    @setState active: true
 
   onDrag: (delta) ->
     upRange = Math.min @range, (@dragStartPosition.y - window.scrollY)
@@ -26,12 +29,15 @@
 
   onDragEnd: ->
     @initalValue = null
-    @getDOMNode().classList.remove 'active'
+    @setState active: false
 
   render: ->
-    style ='-webkit-transform': "rotate(#{(@props.value - 0.5) * 300}deg)"
+    style = '-webkit-transform': "rotate(#{(@props.value - 0.5) * 300}deg)"
+    
+    className = 'ui knob'
+    className += ' active' if @state.active
 
-    `<div className="ui knob">
+    `<div className={className}>
       <div className="control">
         <div className="handle" style={style} onMouseDown={this.draggableOnMouseDown}/>
       </div>

@@ -10,8 +10,8 @@
     xScale: 1
     yScale: 3
     minXScale: 1
-    maxXScale: 8
-    minYScale: 2
+    maxXScale: 2
+    minYScale: 1
     maxYScale: 12
     keyWidth: 40
     lineWidth: 2
