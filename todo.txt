@@ -1,3 +1,12 @@
-- add notes
+- make notes draggable
+- make basic audio
+- wire up play / pause, 
+- make note size adjustable
+- refactor piano roll scrolling to use elements only for what is shown on screen, store scroll offset as an intergral # of notes / beats
+- add keyboard controls to piano roll
+- read up on immutable state / undos / om
+- build Sequence and Note models? Song model
 
 https://www.npmjs.org/package/webaudio
+https://www.npmjs.org/package/amplitude-viewer
+https://www.npmjs.org/package/frequency-viewer

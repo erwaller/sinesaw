@@ -10,6 +10,8 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require ./mixins
+//= require ./react.min.js
+//= require_tree ./models
+//= require_tree ./ui/mixins
 //= require_tree ./ui
 //= require ./app

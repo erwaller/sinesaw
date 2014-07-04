@@ -12,7 +12,7 @@
     @setState active: true
 
   onDrag: (delta) ->
-    value = @initalValue - delta.y / @state.height
+    value = @initalValue + delta.y / @state.height
     value = Math.max(0, Math.min(value, 1))
     @props.onChange value
 
@@ -21,7 +21,7 @@
     @setState active: false
 
   render: ->
-    style = top: "#{100*@props.value}%"
+    style = top: "#{100*(1 - @props.value)}%"
 
     className = 'ui slider'
     className += ' active' if @state.active

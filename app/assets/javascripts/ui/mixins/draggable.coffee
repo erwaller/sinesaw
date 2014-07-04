@@ -1,36 +1,3 @@
-@SizeMeasurable =
-
-  getInitialState: ->
-    height: 0
-    width: 0
-
-  updateDimensions: (e) ->
-    el = @refs.container.getDOMNode()
-
-    @setState
-      width: el.clientWidth
-      height: el.clientHeight
-
-  componentDidMount: ->
-    @updateDimensions()
-    window.addEventListener 'resize', @updateDimensions
-
-  componentWillUnmount: ->
-    window.removeEventListener 'resize', @updateDimensions
-
-
-@Updatable =
-  
-  update: (prop) ->
-    (value) =>
-      obj = {}
-      obj[prop] = value
-      @setState obj
-
-  updateTo: (values) ->
-    => @setState values
-
-
 @Draggable =
 
   draggableOnMouseDown: (e) ->

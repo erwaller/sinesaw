@@ -1,6 +1,6 @@
 @import "../variables"
 
-$grid-shade-color: lighten($bg-color, 3%)
+$grid-shade-color: lighten($bg-color, 5%)
 $grid-line-color: $bg-color
 $strong-grid-line-color: darken($bg-color, 6%)
 
@@ -59,12 +59,23 @@ $strong-grid-line-color: darken($bg-color, 6%)
       rect.shade
         fill: $grid-shade-color
 
+      rect.note
+        fill: $c1
+        stroke: darken($c1, 20%)
+        stroke-width: $line-width
+
+        &.selected,
+        &.active
+          fill: darken($c1, 30%)
+          stroke: darken($c1, 40%)
+
+
     svg
       margin: 0
       display: block
       top: 0
       left: 0
-      overflow: hidden
+      overflow: visible
 
   .view-controls
     background-color: $ctrl-bg-color

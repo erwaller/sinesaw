@@ -2,24 +2,36 @@
 
 @PianoRoll = React.createClass
   
-  mixins: [SizeMeasurable, Updatable]
+  mixins: [SizeMeasurable, Updatable, Draggable]
 
   keyPattern: [true, false, true, false, true, true, false, true, false, true, false, true]
 
   getInitialState: ->
     xScale: 1
-    yScale: 3
+    yScale: 5
     minXScale: 1
     maxXScale: 2
     minYScale: 1
     maxYScale: 12
     keyWidth: 40
-    lineWidth: 2
-    loopSize: 8
-    quantization: 4
+    lineWidth: 1
+    loopSize: 4
+    quantization: 8
+    notes: [
+      {key: 60, start: 0, length: 1/4}
+      {key: 62, start: 1/2, length: 1/4}
+      {key: 63, start: 1, length: 1/2}
+      {key: 65, start: 2, length: 1}
+      {key: 67, start: 3, length: 1}
+    ]
+    selectedNotes: []
 
   componentDidMount: ->
-    @previousScrollY = @refs.container.getDOMNode().scrollTop
+    window.el = @refs.container.getDOMNode()
+
+    el.scrollTop = (el.scrollHeight - el.clientHeight) / 2
+
+    @previousScrollY = el.scrollTop
     @previousScrollX = @refs.grid.getDOMNode().scrollLeft
     @scrollDeltaY = 0
     @scrollDeltaX = 0
@@ -82,7 +94,7 @@
     els
 
   buildGrid: ->
-    width = @state.width * @state.xScale - @state.keyWidth
+    width = (@state.width - @state.keyWidth) * @state.xScale
     height = @state.height * @state.yScale
     squareHeight = height / 128
     cols = @state.loopSize * @state.quantization
@@ -120,6 +132,33 @@
         x = i * squareWidth
         els.push `<line key={'vs'+i} x1={x} y1={0} x2={x} y2={height} className='strong'/>`
 
+    # notes
+    for note, i in @state.notes
+      x = width / @state.loopSize * note.start 
+      y = height * (127 - note.key) / 128
+      w = width / @state.loopSize * note.length 
+      
+      className = 'note'
+      className += ' selected' if i in @state.selectedNotes
+      className += ' active' if @state.dragTarget == i
+      
+      els.push(
+        `<rect
+          className={className}
+          key={'n' + i}
+          x={x}
+          y={y}
+          rx={this.state.lineWidth}
+          ry={this.state.lineWidth}
+          width={w}
+          height={squareHeight}
+          data-id={i}
+          onMouseDown={this.onMouseDownNote}
+          onClick={this.onClickNote}
+          onDoubleClick={this.onDoubleClickNote}
+        />`
+      )
+
     els
 
   updateLoopSize: (e) ->
@@ -128,11 +167,97 @@
   updateQuantization: (e) ->
     @setState quantization: e.target.value
 
+  getRelativePosition: ({x,y}) ->
+    top = @refs.container.getDOMNode().getBoundingClientRect().top
+    parent = @refs.grid.getDOMNode()
+    left = parent.getBoundingClientRect().left
+    height = @state.height * @state.yScale
+    width = (@state.width - @state.keyWidth) * @state.xScale
+
+    key = Math.round (height - el.scrollTop - (y - top)) / height * 127
+    start = Math.floor(((x - left) + parent.scrollLeft) / width * @state.loopSize * @state.quantization) / @state.quantization
+
+    {key, start}
+
+  onClickKeys: (e) ->
+
+  # deselect any selected notes,
+  # start drag selection
+  onMouseDownGrid: ->
+    @setState selectedNotes: []
+
+  # end drag selection
+  onMouseUpGrid: ->
+
+  # add a new note
+  onDoubleClickGrid: (e) ->
+    {key, start} = @getRelativePosition x: e.clientX, y: e.clientY
+
+    note = {key, start, length: 1 / @state.quantization}
+
+    notes = @state.notes.slice 0
+    notes.push note
+    @setState {notes, selectedNotes: [@state.notes.length]}
+
+  # select the clicked note
+  onMouseDownNote: (e) ->
+    e.stopPropagation()
+
+    id = parseInt e.target.dataset.id
+
+    if e.shiftKey
+      selectedNotes = @state.selectedNotes.slice 0
+      if id in @state.selectedNotes
+        selectedNotes.splice selectedNotes.indexOf(id), 1
+      else
+        selectedNotes.push id
+    else
+      unless id in @state.selectedNotes
+        selectedNotes = [id]
+      else
+        selectedNotes = @state.selectedNotes
+
+    @setState {selectedNotes, dragTarget: id}
+
+    # handle drag start
+    @draggableOnMouseDown e
+    @originalValue = {}
+    for i in selectedNotes
+      @originalValue[i] = @state.notes[i]
+
+  # remove the double clicked note
+  onDoubleClickNote: (e) ->
+    e.stopPropagation()
+
+    notes = @state.notes.slice 0
+    notes.splice e.target.dataset.id, 1
+    @setState {notes}
+
+  onDrag: (delta) ->
+    height = @state.height * @state.yScale
+    width = (@state.width - @state.keyWidth) * @state.xScale
+
+    keyDelta = Math.round delta.y / height * 127
+    startDelta = Math.round(-delta.x / width * @state.loopSize * @state.quantization) / @state.quantization
+
+    notes = @state.notes.slice(0)
+
+    for i, note of @originalValue
+      notes[parseInt i] =
+        key: note.key + keyDelta
+        start: note.start + startDelta
+        length: note.length
+
+    @setState {notes}
+
+  onDragEnd: ->
+    @setState dragTarget: null
+    @originalValue = null
+
   render: ->
     if @state.width > 0
       keys = @buildKeys()
       grid = @buildGrid()
-      notes = []
 
     `<div className="ui piano-roll">
       <div className="body" ref='container' onScroll={this.snapYScrolling}>
@@ -140,23 +265,26 @@
           <svg
             width={this.state.keyWidth - this.state.lineWidth}
             height={this.state.height * this.state.yScale}
+            onClick={this.onClickKeys}
           >
             {keys}
           </svg>
         </div>
         <div className='grid' ref='grid' onScroll={this.snapXScrolling}>
           <svg
-            width={Math.max(0, this.state.width * this.state.xScale - this.state.keyWidth)}
+            width={Math.max(0, (this.state.width - this.state.keyWidth) * this.state.xScale)}
             height={this.state.height * this.state.yScale}
+            onMouseDown={this.onMouseDownGrid}
+            onMouseUp={this.onMouseUpGrid}
+            onDoubleClick={this.onDoubleClickGrid}
           >
             {grid}
-            {notes}
           </svg>
         </div>
       </div>
       <div className="view-controls">
         <div className="setting">
-          <label>Grid</label>
+          <label>Grid {this.state.selectedNotes}</label>
           <select value={this.state.quantization} onChange={this.updateQuantization}>
             <option value="1">1</option>
             <option value="2">1/2</option>
