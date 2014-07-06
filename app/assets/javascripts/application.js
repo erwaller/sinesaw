@@ -10,8 +10,10 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require ./react.min.js
+//= require ./react.min
+//= require ./models/model
 //= require_tree ./models
 //= require_tree ./ui/mixins
 //= require_tree ./ui
+//= require ./webaudio
 //= require ./app

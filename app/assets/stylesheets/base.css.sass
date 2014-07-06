@@ -19,7 +19,7 @@ body
   bottom: 0
   left: 0
   right: 0
-  overflow: scroll
+  overflow: hidden
   -webkit-user-select: none
 
 label
@@ -76,16 +76,6 @@ label
 .row.piano-roll
 
 .row.instrument
-  flex-basis: 28%
+  flex-basis: 32%
   flex-shrink: 0
-  padding: $margin
   border-top: solid $line-width $line-color
-  .column.channel
-    flex-grow: 0
-    flex-shrink: 0
-    flex-basis: 30px + 2*$margin
-  .column.oscillators
-    flex-grow: 0
-    flex-shrink: 0
-    flex-basis: auto 
-    justify-content: center

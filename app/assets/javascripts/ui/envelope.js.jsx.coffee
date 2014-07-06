@@ -4,13 +4,10 @@ EnvelopeHandle = React.createClass
 
 @Envelope = React.createClass
 
-  mixins: [SizeMeasurable, Updatable, Draggable]
+  mixins: [SizeMeasurable, Draggable]
 
   getInitialState: ->
-    a: 0.5
-    d: 0.5
-    s: 0.5
-    r: 0.5
+    dragTarget: null
 
   getDefaultProps: ->
     dotRadius: 5
@@ -22,25 +19,26 @@ EnvelopeHandle = React.createClass
     m = @props.margin + @props.dotRadius
     w = @state.width - 2 * m
     h = @state.height - 2 * m
+    env = @props.env
 
     p1 =
       x: 0
       y: h
     
     p2 =
-      x: w / 3 * @state.a
+      x: w / 3 * env.a
       y: 0
     
     p3 =
-      x: p2.x + w / 3 * @state.d
-      y: h * (1 - @state.s)
+      x: p2.x + w / 3 * env.d
+      y: h * (1 - env.s)
     
     p4 =
       x: w * 2 / 3
-      y: h * (1 - @state.s)
+      y: h * (1 - env.s)
     
     p5 =
-      x: w * (2 + @state.r) / 3
+      x: w * (2 + env.r) / 3
       y: h
 
     for p in [p1, p2, p3, p4, p5]
@@ -69,17 +67,17 @@ EnvelopeHandle = React.createClass
     lines.concat dots
 
   onMouseDownAttack: (e) ->
-    @initialValue = @state.a
+    @initialValue = @props.env.a
     @setState dragTarget: 'attack'
     @draggableOnMouseDown e
 
   onMouseDownDecay: (e) ->
-    @initialValue = {d: @state.d, s: @state.s}
+    @initialValue = {d: @props.env.d, s: @props.env.s}
     @setState dragTarget: 'decay'
     @draggableOnMouseDown e
 
   onMouseDownRelease: (e) ->
-    @initialValue = @state.r
+    @initialValue = @props.env.r
     @setState dragTarget: 'release'
     @draggableOnMouseDown e
 
@@ -102,11 +100,18 @@ EnvelopeHandle = React.createClass
     for k, v of changes
       changes[k] = Math.max 0, Math.min 1, v
 
-    @setState changes
+    @props.onChange changes
 
   onDragEnd: ->
     @initialValue = null
     @setState dragTarget: null
+
+  update: (attr) ->
+    (value) =>
+      env = {}
+      for k, v of @props.env
+        env[k] = if k == attr then value else v
+      @props.onChange env
 
   render: ->
     lines = @buildLines() if @state.width > 0
@@ -119,12 +124,12 @@ EnvelopeHandle = React.createClass
       </div>
       <div className='knobs'>
         <div className='group'>
-          <Knob label='Attack' value={this.state.a} onChange={this.update('a')}/>
-          <Knob label='Decay' value={this.state.d} onChange={this.update('d')}/>
+          <Knob label='Attack' value={this.props.env.a} onChange={this.update('a')}/>
+          <Knob label='Decay' value={this.props.env.d} onChange={this.update('d')}/>
         </div>
         <div className='group'>
-          <Knob label='Sustain' value={this.state.s} onChange={this.update('s')}/>
-          <Knob label='Release' value={this.state.r} onChange={this.update('r')}/>
+          <Knob label='Sustain' value={this.props.env.s} onChange={this.update('s')}/>
+          <Knob label='Release' value={this.props.env.r} onChange={this.update('r')}/>
         </div>
       </div>
       <label>{this.props.label}</label>

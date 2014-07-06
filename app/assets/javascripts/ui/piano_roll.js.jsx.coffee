@@ -2,7 +2,7 @@
 
 @PianoRoll = React.createClass
   
-  mixins: [SizeMeasurable, Updatable, Draggable]
+  mixins: [SizeMeasurable, Updatable, Modelable('song'), Modelable('sequence'), Draggable]
 
   keyPattern: [true, false, true, false, true, true, false, true, false, true, false, true]
 
@@ -14,21 +14,12 @@
     minYScale: 1
     maxYScale: 12
     keyWidth: 40
-    lineWidth: 1
-    loopSize: 4
-    quantization: 8
-    notes: [
-      {key: 60, start: 0, length: 1/4}
-      {key: 62, start: 1/2, length: 1/4}
-      {key: 63, start: 1, length: 1/2}
-      {key: 65, start: 2, length: 1}
-      {key: 67, start: 3, length: 1}
-    ]
+    lineWidth: 2
+    quantization: 4
     selectedNotes: []
 
   componentDidMount: ->
-    window.el = @refs.container.getDOMNode()
-
+    el = @refs.container.getDOMNode()
     el.scrollTop = (el.scrollHeight - el.clientHeight) / 2
 
     @previousScrollY = el.scrollTop
@@ -132,27 +123,32 @@
         x = i * squareWidth
         els.push `<line key={'vs'+i} x1={x} y1={0} x2={x} y2={height} className='strong'/>`
 
+    # playback marker
+    x = Math.floor(@state.position % @state.loopSize * @state.quantization) * squareWidth
+    els.push `<line x1={x} y1={0} x2={x} y2={height} className='playback'/>`
+
     # notes
-    for note, i in @state.notes
-      x = width / @state.loopSize * note.start 
-      y = height * (127 - note.key) / 128
-      w = width / @state.loopSize * note.length 
-      
+    for id, note of @state.notes
+      x = width / @state.loopSize * note.start + @state.lineWidth / 2
+      y = height * (127 - note.key) / 128 + @state.lineWidth / 2
+      w = width / @state.loopSize * note.length - @state.lineWidth
+      h = squareHeight - @state.lineWidth
+
       className = 'note'
-      className += ' selected' if i in @state.selectedNotes
-      className += ' active' if @state.dragTarget == i
-      
+      className += ' selected' if note.id in @state.selectedNotes
+      className += ' active' if @state.dragTarget == note.id
+
       els.push(
         `<rect
           className={className}
-          key={'n' + i}
+          key={'n' + id}
           x={x}
           y={y}
+          width={w}
+          height={h}
           rx={this.state.lineWidth}
           ry={this.state.lineWidth}
-          width={w}
-          height={squareHeight}
-          data-id={i}
+          data-id={id}
           onMouseDown={this.onMouseDownNote}
           onClick={this.onClickNote}
           onDoubleClick={this.onDoubleClickNote}
@@ -162,20 +158,21 @@
     els
 
   updateLoopSize: (e) ->
-    @setState loopSize: e.target.value
+    @props.sequence.set loopSize: e.target.value
 
   updateQuantization: (e) ->
     @setState quantization: e.target.value
 
   getRelativePosition: ({x,y}) ->
-    top = @refs.container.getDOMNode().getBoundingClientRect().top
-    parent = @refs.grid.getDOMNode()
-    left = parent.getBoundingClientRect().left
+    container = @refs.container.getDOMNode()
+    top = container.getBoundingClientRect().top
+    grid = @refs.grid.getDOMNode()
+    left = grid.getBoundingClientRect().left
     height = @state.height * @state.yScale
     width = (@state.width - @state.keyWidth) * @state.xScale
 
-    key = Math.round (height - el.scrollTop - (y - top)) / height * 127
-    start = Math.floor(((x - left) + parent.scrollLeft) / width * @state.loopSize * @state.quantization) / @state.quantization
+    key = Math.round (height - container.scrollTop - (y - top)) / height * 127
+    start = Math.floor(((x - left) + grid.scrollLeft) / width * @state.loopSize * @state.quantization) / @state.quantization
 
     {key, start}
 
@@ -192,12 +189,8 @@
   # add a new note
   onDoubleClickGrid: (e) ->
     {key, start} = @getRelativePosition x: e.clientX, y: e.clientY
-
     note = {key, start, length: 1 / @state.quantization}
-
-    notes = @state.notes.slice 0
-    notes.push note
-    @setState {notes, selectedNotes: [@state.notes.length]}
+    @props.sequence.addNote note
 
   # select the clicked note
   onMouseDownNote: (e) ->
@@ -228,10 +221,7 @@
   # remove the double clicked note
   onDoubleClickNote: (e) ->
     e.stopPropagation()
-
-    notes = @state.notes.slice 0
-    notes.splice e.target.dataset.id, 1
-    @setState {notes}
+    @props.sequence.removeNote e.target.dataset.id
 
   onDrag: (delta) ->
     height = @state.height * @state.yScale
@@ -240,15 +230,14 @@
     keyDelta = Math.round delta.y / height * 127
     startDelta = Math.round(-delta.x / width * @state.loopSize * @state.quantization) / @state.quantization
 
-    notes = @state.notes.slice(0)
+    notes = {}
 
     for i, note of @originalValue
-      notes[parseInt i] =
+      notes[i] =
         key: note.key + keyDelta
         start: note.start + startDelta
-        length: note.length
 
-    @setState {notes}
+    @props.sequence.updateNotes notes
 
   onDragEnd: ->
     @setState dragTarget: null

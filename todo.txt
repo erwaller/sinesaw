@@ -1,9 +1,10 @@
-- make notes draggable
 - make basic audio
-- wire up play / pause, 
-- make note size adjustable
+- keep midi clock separate from time
 - refactor piano roll scrolling to use elements only for what is shown on screen, store scroll offset as an intergral # of notes / beats
-- add keyboard controls to piano roll
+- handle scroll while dragging notes
+- drag to select all notes in rectangle
+- make note size adjustable
+- add keyboard controls to piano roll (option to copy instead of drag, arrows to move selected, etc..)
 - read up on immutable state / undos / om
 - build Sequence and Note models? Song model
 

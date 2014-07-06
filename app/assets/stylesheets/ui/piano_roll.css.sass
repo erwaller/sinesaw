@@ -56,6 +56,10 @@ $strong-grid-line-color: darken($bg-color, 6%)
         &.strong
           stroke: $strong-grid-line-color
 
+        &.playback
+          stroke: $strong-grid-line-color
+          stroke-width: 2 * $line-width
+
       rect.shade
         fill: $grid-shade-color
 
@@ -75,7 +79,7 @@ $strong-grid-line-color: darken($bg-color, 6%)
       display: block
       top: 0
       left: 0
-      overflow: visible
+      overflow: hidden
 
   .view-controls
     background-color: $ctrl-bg-color
