@@ -44,6 +44,12 @@ class @AnalogSynthesizer extends Model
       volumeEnv[k] = Math.max minEnvValue, (attrs[k] or v)
     @set {volumeEnv}
 
+  setFilterEnv: (attrs) =>
+    filterEnv = {}
+    for k, v of @state.filterEnv
+      filterEnv[k] = Math.max minEnvValue, (attrs[k] or v)
+    @set {filterEnv}
+
   frequency: (key) ->
     tune * Math.pow 2, (key - 69) / 12
 
