@@ -100,7 +100,10 @@ EnvelopeHandle = React.createClass
     for k, v of changes
       changes[k] = Math.max 0, Math.min 1, v
 
-    @props.onChange changes
+    env = {}
+    for k, v of @props.env
+      env[k] = changes[k] or v
+    @props.onChange env
 
   onDragEnd: ->
     @initialValue = null

@@ -2,19 +2,18 @@
 
 @Filter = React.createClass
 
-  mixins: [Updatable]
-
-  getInitialState: ->
-    type: 'LP'
-    freq: 1
-    res: 0
-    env: 0.5
+  update: (attr) ->
+    (value) =>
+      filter = {}
+      for k, v of @props.filter
+        filter[k] = if k == attr then value else v
+      @props.onChange filter
 
   render: ->
     `<div className="ui filter">
-      <Chooser options={['LP','BP','HP']} value={this.state.type} onChange={this.update('type')}/>
-      <Knob label="Freq" value={this.state.freq} onChange={this.update('freq')}/>
-      <Knob label="Res" value={this.state.res} onChange={this.update('res')}/>    
-      <Knob label="Env" value={this.state.env} onChange={this.update('env')}/>
+      <Chooser options={['LP','HP','none']} value={this.props.filter.type} onChange={this.update('type')}/>
+      <Knob label="Freq" value={this.props.filter.freq} onChange={this.update('freq')}/>
+      <Knob label="Res" value={this.props.filter.res} onChange={this.update('res')}/>    
+      <Knob label="Env" value={this.props.filter.env} onChange={this.update('env')}/>
       <label>{this.props.label}</label>
     </div>`

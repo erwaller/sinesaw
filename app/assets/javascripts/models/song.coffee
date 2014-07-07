@@ -8,6 +8,9 @@ class @Song extends Model
     recording: false
     position: 0
 
+  clip = (sample) ->
+    Math.min(2, sample + 1) - 1
+
   constructor: ->
     super
     @tracks = []
@@ -17,7 +20,7 @@ class @Song extends Model
   out: (time, i) =>
     @tick time, i if i % clockRatio is 0
 
-    @tracks.reduce((sample, t) ->
+    clip @tracks.reduce((sample, t) ->
       sample + t.out time
     , 0)
 

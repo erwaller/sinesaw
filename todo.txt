@@ -1,13 +1,10 @@
-- make basic audio
-- keep midi clock separate from time
+- add filters
 - refactor piano roll scrolling to use elements only for what is shown on screen, store scroll offset as an intergral # of notes / beats
 - handle scroll while dragging notes
 - drag to select all notes in rectangle
 - make note size adjustable
+- multi tracks
 - add keyboard controls to piano roll (option to copy instead of drag, arrows to move selected, etc..)
-- read up on immutable state / undos / om
-- build Sequence and Note models? Song model
-
-https://www.npmjs.org/package/webaudio
-https://www.npmjs.org/package/amplitude-viewer
-https://www.npmjs.org/package/frequency-viewer
+- include amp / freq viewers?
+  - https://www.npmjs.org/package/amplitude-viewer
+  - https://www.npmjs.org/package/frequency-viewer

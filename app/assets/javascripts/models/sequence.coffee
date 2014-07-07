@@ -3,7 +3,7 @@ class @Sequence extends Model
   noteId = 0
 
   defaults:
-    loopSize: 4
+    loopSize: 8
     notes: {}
 
   constructor: ->
