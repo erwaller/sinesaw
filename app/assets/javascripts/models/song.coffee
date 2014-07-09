@@ -49,5 +49,5 @@ class @Song extends Model
   stop: =>
     @audio.stop()
     @audio.reset()
-    track.reset for track in @tracks
+    track.reset() for track in @tracks
     @set playing: false, recording: false, position: 0

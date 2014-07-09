@@ -1,11 +1,11 @@
 class @RingBuffer
   
-  constructor: (@length, Type = Float32Array) ->
+  constructor: (@length, @Type = Float32Array) ->
     @array = new Type @length
     @pos = 0
 
   reset: ->
-    @array = new Type @length
+    @array = new @Type @length
     this
 
   push: (el) ->

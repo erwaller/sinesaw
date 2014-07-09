@@ -15,6 +15,9 @@ class @DrumkitSynthesizer extends Model
       noise: 0.01
       pitch: 0
       bend: 0.4
+      fm: 0
+      fmDecay: 0
+      hp: 0
     drum1:
       name: 'Snare'
       level: 0.5
@@ -23,6 +26,9 @@ class @DrumkitSynthesizer extends Model
       noise: 0.8
       pitch: 0.1
       bend: 0.5
+      fm: 0
+      fmDecay: 0
+      hp: 0
     drum2:
       name: 'HH1'
       level: 0.2
@@ -31,6 +37,9 @@ class @DrumkitSynthesizer extends Model
       noise: 1
       pitch: 0.5
       bend: 0.5
+      fm: 0
+      fmDecay: 0
+      hp: 0
     drum3:
       name: 'HH2'
       level: 0.2
@@ -39,6 +48,9 @@ class @DrumkitSynthesizer extends Model
       noise: 1
       pitch: 0.5
       bend: 0.5
+      fm: 0
+      fmDecay: 0
+      hp: 0
     drum4:
       name: 'Perc'
       level: 0.3
@@ -47,6 +59,9 @@ class @DrumkitSynthesizer extends Model
       noise: 0.05
       pitch: 0.1
       bend: 0.45
+      fm: 0
+      fmDecay: 0
+      hp: 0
 
   mapping: [
     'drum0'
