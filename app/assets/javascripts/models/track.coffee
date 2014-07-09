@@ -1,19 +1,34 @@
-class @Track
+class @Track extends Model
 
-  constructor: ->
-    @instrument = new AnalogSynthesizer
+  meterDecay = 0.0005
+
+  defaults:
+    name: 'Track'
+    meterLevel: 0
+
+  constructor: (state, @instrument) ->
+    super
     @sequence = new Sequence
     @effects = []
+    @meterLevel = 0
 
   out: (time) ->
-    @effects.reduce((sample, e) ->
+    sample = @effects.reduce((sample, e) ->
       e.out time, sample
     , @instrument.out time)
 
-  tick: (time, beat, bps) ->
+    if sample > @meterLevel
+      @meterLevel = sample
+    else if @meterLevel > 0
+      @meterLevel -= meterDecay
+
+    sample
+
+  tick: (time, i, beat, bps) ->
     notesOn = @sequence.notesOn beat
-    @instrument.tick time, beat, bps, notesOn
+    @instrument.tick time, i, beat, bps, notesOn
     @effects.forEach (e) -> e.tick time, beat, bps
+    @set {@meterLevel}
 
   reset: ->
     @instrument.reset()

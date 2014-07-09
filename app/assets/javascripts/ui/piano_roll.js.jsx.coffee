@@ -8,7 +8,7 @@
 
   getInitialState: ->
     xScale: 1
-    yScale: 5
+    yScale: 3
     minXScale: 1
     maxXScale: 2
     minYScale: 1

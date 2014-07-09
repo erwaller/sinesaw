@@ -1,19 +1,30 @@
 class @RingBuffer
   
-  constructor: (@length) ->
-    @array = new Float32Array @length
+  constructor: (@length, Type = Float32Array) ->
+    @array = new Type @length
     @pos = 0
+
+  reset: ->
+    @array = new Type @length
+    this
 
   push: (el) ->
     @array[@pos] = el
     @pos += 1
     @pos = 0 if @pos == @length
+    this
 
   forEach: (fn) ->
-    fn @array[i] for i in [@pos...@length]
-    fn @array[i] for i in [0...@pos]
+    `var i, len;
+    for (i = this.pos, len = this.length; i < len; i++) {
+      fn(this.array[i], i);
+    }
+    for (i = 0, len = this.pos; i < len; i++) {
+      fn(this.array[i], i);
+    }`
+    this
 
   reduce: (fn, memo = 0) ->
-    @forEach (el) ->
-      memo = fn memo, el
+    @forEach (el, i) ->
+      memo = fn memo, el, i
     memo

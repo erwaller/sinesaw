@@ -127,12 +127,12 @@ EnvelopeHandle = React.createClass
       </div>
       <div className='knobs'>
         <div className='group'>
-          <Knob label='Attack' value={this.props.env.a} onChange={this.update('a')}/>
-          <Knob label='Decay' value={this.props.env.d} onChange={this.update('d')}/>
+          <Knob label='A' value={this.props.env.a} onChange={this.update('a')}/>
+          <Knob label='D' value={this.props.env.d} onChange={this.update('d')}/>
         </div>
         <div className='group'>
-          <Knob label='Sustain' value={this.props.env.s} onChange={this.update('s')}/>
-          <Knob label='Release' value={this.props.env.r} onChange={this.update('r')}/>
+          <Knob label='S' value={this.props.env.s} onChange={this.update('s')}/>
+          <Knob label='R' value={this.props.env.r} onChange={this.update('r')}/>
         </div>
       </div>
       <label>{this.props.label}</label>

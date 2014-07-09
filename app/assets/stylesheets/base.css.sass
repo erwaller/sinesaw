@@ -69,13 +69,23 @@ label
   flex-flow: column nowrap
 
 .row.playback
-  flex-basis: 30px
+  flex-basis: 30px + $line-width
   flex-shrink: 0
   flex-grow: 0
+  border-bottom: solid $line-width $dark-line-color
 
-.row.piano-roll
+.column.sidebar
+  flex-basis: auto
+  flex-shrink: 0
+  flex-grow: 0
+  border-right: solid $line-width $dark-line-color
+
+.row.sequence
+  height: 100%
 
 .row.instrument
-  flex-basis: 32%
+  flex-basis: 263px
   flex-shrink: 0
-  border-top: solid $line-width $line-color
+  flex-grow: 0
+  justify-content: flex-start
+  border-top: solid $line-width $dark-line-color

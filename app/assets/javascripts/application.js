@@ -1,6 +1,8 @@
-//= require ./react.min
+//= require ./sequences
+//= require ./react
 //= require ./models/model
 //= require_tree ./util
+//= require_tree ./dsp
 //= require_tree ./models
 //= require_tree ./ui/mixins
 //= require_tree ./ui

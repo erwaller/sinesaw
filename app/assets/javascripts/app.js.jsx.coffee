@@ -1,41 +1,57 @@
 ###* @jsx React.DOM ###
 
-window.App =
-  start:  ->
-    @song = new Song
-    @track = new Track
-    @song.tracks.push @track
+@App = React.createClass
 
-    # ode to joy
-    @track.sequence.addNote note for note in [
-      {key: 45, start: 0/2, length: 1/2}
-      {key: 57, start: 1/2, length: 1/2}
-      {key: 45, start: 2/2, length: 1/2}
-      {key: 57, start: 3/2, length: 1/2}
-      {key: 45, start: 4/2, length: 1/2}
-      {key: 57, start: 5/2, length: 1/2}
-      {key: 45, start: 6/2, length: 1/2}
-      {key: 57, start: 7/2, length: 1/2}
-      {key: 47, start: 8/2, length: 1/2}
-      {key: 59, start: 9/2, length: 1/2}
-      {key: 64, start: 10/2, length: 1/2}
-      {key: 59, start: 11/2, length: 1/2}
-      {key: 48, start: 12/2, length: 1/2}
-      {key: 60, start: 13/2, length: 1/2}
-      {key: 67, start: 14/2, length: 1/2}
-      {key: 60, start: 15/2, length: 1/2}
+  mixins: [Updatable]
+
+  getInitialState: ->
+    song = new Song
+
+    song.tracks = [
+      new Track {name: 'Drum Kit'}, new DrumkitSynthesizer
+      new Track {name: 'Analog'}, new AnalogSynthesizer
+      new Track {name: 'Analog'}, new AnalogSynthesizer
     ]
 
-    React.renderComponent(
-      `<div className="app">
-        <div className="row playback">
-          <PlaybackControl song={this.song}/>
+    song.tracks[0].sequence.addNote note for note in sequences.test
+    song.tracks[0].sequence.state.loopSize = 4
+    # song.tracks[1].sequence.addNote note for note in sequences.bass
+    # song.tracks[1].sequence.state.loopSize = 4
+
+    selectedTrack = 0
+
+    # song.play()
+
+    {song, selectedTrack}
+
+  render: ->
+    song = @state.song
+    track = @state.song.tracks[@state.selectedTrack]
+
+    if track.instrument instanceof AnalogSynthesizer
+      instrument = `<Analog instrument={track.instrument}/>`
+    else if track.instrument instanceof DrumkitSynthesizer
+      instrument = `<Drumkit instrument={track.instrument}/>`
+
+    `<div className="app">
+      <div className="row playback">
+        <PlaybackControl song={song}/>
+      </div>
+      <div className="row main">
+        <div className="column sidebar">
+          <TrackSelection
+            tracks={song.tracks}
+            selectedTrack={this.state.selectedTrack}
+            selectTrack={this.update('selectedTrack')}
+          />
         </div>
-        <div className="row piano-roll">
-          <PianoRoll sequence={this.track.sequence} song={this.song}/>
+        <div className="column main">
+          <div className="row sequence">
+            <PianoRoll sequence={track.sequence} song={song}/>
+          </div>
+          <div className="row instrument">
+            {instrument}
+          </div>
         </div>
-        <div className="row instrument">
-          <Analog instrument={this.track.instrument}/>
-        </div>
-      </div>`
-    , document.body)
+      </div>
+    </div>`

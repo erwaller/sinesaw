@@ -11,7 +11,9 @@
       google: {
         families: ['Roboto:400:latin']
       },
-      active: App.start
+      active: function() {
+        React.renderComponent(App(), document.body)
+      }
     });
   </script>
 </head>

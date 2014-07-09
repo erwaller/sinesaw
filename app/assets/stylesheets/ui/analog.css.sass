@@ -4,12 +4,16 @@
   display: flex
   flew-flow: row nowrap
   width: 100%
+  margin: $margin
+  min-width: 640px
+  max-width: 800px
 
   .column.channel
     flex-grow: 0
     flex-shrink: 0
     flex-basis: 30px + 2*$margin
-  .column.oscillators
+  .column.oscillators,
+  .column.filter
     flex-grow: 0
     flex-shrink: 0
     flex-basis: auto 

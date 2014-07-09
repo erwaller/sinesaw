@@ -8,3 +8,10 @@
 
   componentWillUnmount: ->
     @props[name].removeComponent this
+
+  componentWillReceiveProps: (nextProps) ->
+    if nextProps != @props
+      @props[name].removeComponent this
+      nextProps[name].addComponent this
+
+    @setState nextProps[name].state

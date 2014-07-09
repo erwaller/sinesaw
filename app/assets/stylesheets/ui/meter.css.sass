@@ -1,0 +1,23 @@
+@import "../variables"
+
+$size: 5px
+
+.ui.meter
+  display: flex
+  flex-flow: column-reverse nowrap
+  flex-basis: $size
+  justify-content: space-between
+  margin: 0 0 0 $margin
+  align-self: stretch
+
+  div
+    width: $size
+    height: $size
+    border-radius: $size / 2
+    background-color: $med-line-color
+    -webkit-transition: background-color 0.3s
+
+    &.on
+      -webkit-transition: 0
+      background-color: $c3
+

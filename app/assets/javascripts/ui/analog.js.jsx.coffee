@@ -12,6 +12,11 @@
           value={this.state.level}
           onChange={this.props.instrument.createSetterFor('level')}
         />
+        <Knob
+          label="Pan"
+          value={this.state.pan}
+          onChange={this.props.instrument.createSetterFor('pan')}
+        />
       </div>
       <div className="column">
         <Envelope

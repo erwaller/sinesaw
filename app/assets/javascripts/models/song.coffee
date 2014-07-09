@@ -1,6 +1,6 @@
 class @Song extends Model
 
-  clockRatio = 100
+  clockRatio = 460
 
   defaults:
     bpm: 120
@@ -24,7 +24,7 @@ class @Song extends Model
       sample + t.out time
     , 0)
 
-  tick: (time) ->
+  tick: (time, i) ->
     bps = @state.bpm / 60
     beat = time * bps
 
@@ -33,7 +33,7 @@ class @Song extends Model
     if b > @state.position 
       @set(position: b)
 
-    track.tick time, beat, bps for track in @tracks 
+    track.tick time, i, beat, bps for track in @tracks 
 
   play: =>
     @set playing: true

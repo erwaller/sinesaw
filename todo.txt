@@ -1,10 +1,11 @@
-- add filters
 - refactor piano roll scrolling to use elements only for what is shown on screen, store scroll offset as an intergral # of notes / beats
 - handle scroll while dragging notes
 - drag to select all notes in rectangle
 - make note size adjustable
-- multi tracks
+- add hp filter
+- add bandpass filter
+- create drum roll sequencer (shows names of drums in place of piano on left, non scalable, one row for each drum)
 - add keyboard controls to piano roll (option to copy instead of drag, arrows to move selected, etc..)
-- include amp / freq viewers?
+- meters on tracks in track selection view
   - https://www.npmjs.org/package/amplitude-viewer
   - https://www.npmjs.org/package/frequency-viewer

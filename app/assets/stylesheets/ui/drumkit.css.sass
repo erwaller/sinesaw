@@ -1,0 +1,29 @@
+@import "../variables"
+
+.ui.drumkit
+  display: flex
+  flew-flow: row wrap
+  width: 100%
+  margin: $margin
+  min-width: 640px
+  max-width: 800px
+
+  .column.channel
+    flex-grow: 0
+    flex-shrink: 0
+    flex-basis: 30px + 2*$margin
+
+  .drum
+    display: flex
+    flex-flow: column nowrap
+    margin: 0 $margin
+
+    .column
+      flex-flow: column wrap
+      align-items: flex-start
+      justify-content: space-around
+      flex-shrink: 1
+
+    > label
+      border-top: solid $line-width $line-color
+      margin: 0 0 $margin
