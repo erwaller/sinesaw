@@ -14,10 +14,10 @@ class @DrumkitSynthesizer extends Model
       decay: 0.3
       noise: 0.001
       pitch: 0
-      bend: 0.2
+      bend: 1
       fm: 1
-      fmDecay: 0.15
-      fmFreq: 0.48
+      fmDecay: 0.27
+      fmFreq: 0
     drum1:
       name: 'Snare'
       level: 0.7
@@ -89,22 +89,30 @@ class @DrumkitSynthesizer extends Model
       elapsed = time - @notes[index]
       return memo if elapsed > drum.decay
 
-      level = drum.level * simpleEnvelope drum.decay, elapsed
+      env = simpleEnvelope drum.decay, elapsed
       freq = minFreq + drum.pitch * freqScale
 
+      # apply pitch bend
+      if drum.bend
+        freq = (2 - drum.bend + drum.bend * env) / 2 * freq
+
+      # apply fm
       if drum.fm > 0
-        signal = oscillators.sine elapsed, freq * Math.pow(2, 1 + (drum.fmFreq - 0.5)*2) / 2
+        signal = oscillators.sine elapsed, minFreq + drum.fmFreq * freqScale
         freq += drum.fm * signal * simpleEnvelope(drum.fmDecay + 0.01, elapsed) 
 
+      # sum noise and oscillator
       sample = (
         (1 - drum.noise) * oscillators.sine(elapsed, freq) +
         drum.noise * oscillators.noise()
       )
 
+      # apply highpass
       if drum.hp > 0
         sample = @filters[index] sample, drum.hp
 
-      memo + level * sample
+      memo + drum.level * env * sample
+    
     , 0)
 
   tick: (time, i, beat, bps, notesOn) =>

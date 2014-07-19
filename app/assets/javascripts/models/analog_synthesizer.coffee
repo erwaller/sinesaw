@@ -42,7 +42,7 @@ class @AnalogSynthesizer extends Model
     @notes = new RingBuffer @state.maxPolyphony, Array, @state.polyphony
     @filters =
       LP: (lowpassFilter() for i in [0...@maxPolyphony])
-      HP: (highpassFilter() for i in [0...@maxPpolyphony])
+      HP: (highpassFilter() for i in [0...@maxPolyphony])
       none: (((sample) -> sample) for i in [0...@maxPolyphony])
 
   setPolyphony: (polyphony) ->

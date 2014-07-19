@@ -179,7 +179,20 @@
     note = {key, start, length: 1 / @state.quantization}
     @props.sequence.addNote note
 
-  # select the clicked note
+  # change cursor to indicate possible action
+  onMouseMoveNote: (e) ->
+    position = e.target.getBoundingClientRect()
+
+    if position.left > e.clientX - @state.resizeHandleWidth
+      @noteHoverCursor = Cursor.set 'w-resize', 1, @noteHoverCursor
+    else if position.right < e.clientX + @state.resizeHandleWidth
+      @noteHoverCursor = Cursor.set 'e-resize', 1, @noteHoverCursor
+    else
+      Cursor.clear @noteHoverCursor
+
+  onMouseOutNote: (e) ->
+    Cursor.clear @noteHoverCursor
+
   onMouseDownNote: (e) ->
     e.stopPropagation()
     id = parseInt e.target.dataset.id
@@ -213,12 +226,15 @@
     if position.left > e.clientX - @state.resizeHandleWidth
       stateChanges.resizeTarget = id
       stateChanges.resizeDirection = 'left'
+      @dragActionCursor = Cursor.set 'w-resize', 2, @dragActionCursor
     else if position.right < e.clientX + @state.resizeHandleWidth
       stateChanges.resizeTarget = id
       stateChanges.resizeDirection = 'right'
+      @dragActionCursor = Cursor.set 'e-resize', 2, @dragActionCursor
     # handle translate
     else 
       stateChanges.translateTarget = id
+      @dragActionCursor = Cursor.set 'move', 2, @dragActionCursor
 
     # apply state changes
     @setState stateChanges
@@ -290,6 +306,9 @@
 
     @originalValue = null
     @dragOrigin = null
+
+    Cursor.clear @dragActionCursor
+
 
   onArrowKey: (e) ->
     changes = {}
@@ -471,6 +490,8 @@
           ry={this.state.lineWidth}
           data-id={id}
           onMouseDown={this.onMouseDownNote}
+          onMouseMove={this.onMouseMoveNote}
+          onMouseOut={this.onMouseOutNote}
           onClick={this.onClickNote}
           onDoubleClick={this.onDoubleClickNote}
         />`

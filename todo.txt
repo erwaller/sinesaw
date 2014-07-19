@@ -1,7 +1,6 @@
-- add polyphony control to analog
-- add pitch bend to drums
-- add fm synth
 - cursors on piano roll
+- add lfo to analog synth
+- add fm synth
 - test using web workers to render audio in parallel
 - test current approach vs using web audio nodes
 - redo drum ui to only show controls for currently selected drum, use complex fm / pitch / vol envs
