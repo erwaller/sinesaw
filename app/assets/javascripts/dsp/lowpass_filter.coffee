@@ -7,12 +7,12 @@ sampleRate = 48000
 
   (sample, cutoff, res) ->
     freq = 20 * Math.pow 10, 3 * cutoff
-    freq = 2 * freq / sampleRate
+    freq = freq / sampleRate
     p = freq * (1.8 - (0.8 * freq))
     k = 2 * Math.sin(freq * Math.PI / 2) - 1
     t1 = (1 - p) * 1.386249
     t2 = 12 + t1 * t1
-    r = res * (t2 + 6 * t1) / (t2 - 6 * t1)
+    r = res * 0.57 * (t2 + 6 * t1) / (t2 - 6 * t1)
 
     x = sample - r * y4
 

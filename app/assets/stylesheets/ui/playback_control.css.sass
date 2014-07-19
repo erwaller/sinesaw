@@ -8,6 +8,45 @@
   background-color: $ctrl-bg-color
   border-bottom: none
   position: relative
+  color: $dark-line-color
+
+  .group
+    flex-shrink: 0
+
+    &.playback,
+    &.menu
+      flex-grow: 0
+
+    &.tempo
+      flex-grow: 1
+      text-align: right
+      padding: 0 10px
+
+    .scale-handle
+      display: inline-block
+      margin: 10px 0
+
+  input
+    color: $dark-line-color
+    font: $font
+    border: none
+    outline: none
+    line-height: 16px
+    font-size: 12px
+    height: 16px
+    margin: 5px 2px 5px 10px
+    padding: 2px 0
+    width: 28px
+    text-align: center
+    background-color: transparent
+    box-sizing: content-box
+
+    &:focus
+      background-color: #fff
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button 
+      display: none
 
   .icon
     display: inline-block
@@ -38,10 +77,10 @@
     width: 100px
     margin-left: -50px
     display: inline-block
-    height: 20px
     font: $heavy-font
     font-size: 20px
     line-height: 20px
     padding: 5px 0
     color: $light-text-color
     text-align: center
+

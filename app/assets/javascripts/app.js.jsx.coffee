@@ -13,10 +13,10 @@
       new Track {name: 'Analog'}, new AnalogSynthesizer
     ]
 
-    song.tracks[0].sequence.addNote note for note in sequences.test
+    song.tracks[0].sequence.addNote note for note in sequences.beat
     song.tracks[0].sequence.state.loopSize = 4
-    # song.tracks[1].sequence.addNote note for note in sequences.bass
-    # song.tracks[1].sequence.state.loopSize = 4
+    song.tracks[1].sequence.addNote note for note in sequences.terje
+    song.tracks[1].sequence.state.loopSize = 8
 
     selectedTrack = 0
 

@@ -16,14 +16,20 @@
   .drum
     display: flex
     flex-flow: column nowrap
-    margin: 0 $margin
+    margin: $margin
 
     .column
       flex-flow: column wrap
       align-items: flex-start
-      justify-content: space-around
+      justify-content: space-between
       flex-shrink: 1
+
+    .knob
+      margin: 0 $margin
+
+      > label
+        margin: $margin 0 0
 
     > label
       border-top: solid $line-width $line-color
-      margin: 0 0 $margin
+      margin: $margin 0 0

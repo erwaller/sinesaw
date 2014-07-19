@@ -1,18 +1,34 @@
 @sequences =
-  test: [
+  fourfour: [
     {key: 0, start: 0, length: 1/4}
     {key: 0, start: 1, length: 1/4}
     {key: 0, start: 2, length: 1/4}
     {key: 0, start: 3, length: 1/4}
-    {key: 2, start: 1/2, length: 1/4}
-    {key: 2, start: 3/2, length: 1/4}
-    {key: 2, start: 5/2, length: 1/4}
-    {key: 2, start: 7/2, length: 1/4}
+  ]
+  beat: [
+    {key: 0, start: 0, length: 1/4}
+    {key: 0, start: 1, length: 1/4}
+    {key: 0, start: 2, length: 1/4}
+    {key: 0, start: 3, length: 1/4}
+    {key: 3, start: 1/2, length: 1/4}
+    {key: 3, start: 3/2, length: 1/4}
+    {key: 3, start: 5/2, length: 1/4}
+    {key: 3, start: 7/2, length: 1/4}
     {key: 1, start: 1, length: 1/4}
     {key: 1, start: 3, length: 1/4}
-    {key: 4, start: 10/4, length: 1/4}
+    {key: 4, start: 11/4, length: 1/4}
     {key: 4, start: 15/4, length: 1/4}
-  ] 
+  ]
+  simple: [
+    {key: 60, start: 0, length: 1/4}
+    {key: 63, start: 1/2, length: 1/4}
+    {key: 67, start: 2/2, length: 1/4}
+    {key: 63, start: 3/2, length: 1/4}
+    {key: 60, start: 4/2, length: 1/4}
+    {key: 65, start: 5/2, length: 1/4}
+    {key: 70, start: 6/2, length: 1/4}
+    {key: 65, start: 7/2, length: 1/4}
+  ]
   bass: [
     {key: 48, start: 2/4, length: 1/4}
     {key: 48, start: 3/4, length: 1/4}

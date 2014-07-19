@@ -30,13 +30,26 @@ label
   white-space: nowrap
   text-overflow: ellipsis
   margin: $margin 0 0
-  padding: $margin - $line-width 0 0
+  padding: $margin 0 0
   border-top: solid $line-color $line-width
   flex-grow: 0
   flex-shrink: 0 
 
 ::-webkit-scrollbar
   display: none
+
+      
+select
+  -webkit-appearance: none
+  outline: none
+  background: #fff
+  border-radius: 0
+  border: 0
+  padding: 0 $margin/2
+  min-width: 30px
+  text-align: -webkit-center
+  font: $heavy-font
+  color: $text-color
 
 .ui
   margin: $margin

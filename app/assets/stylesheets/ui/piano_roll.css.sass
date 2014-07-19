@@ -3,6 +3,7 @@
 $grid-shade-color: lighten($bg-color, 5%)
 $grid-line-color: $bg-color
 $strong-grid-line-color: darken($bg-color, 6%)
+$key-width: 60px
 
 .ui.piano-roll
   display: flex
@@ -14,14 +15,18 @@ $strong-grid-line-color: darken($bg-color, 6%)
   .body
     flex-grow: 1
     background-color: #fff
-    overflow-y: scroll
-    overflow-x: hidden
     position: relative
     z-index: 1
     box-sizing: border-box
+    overflow: scroll
+
+    .outer,
+    .inner,
+    .keys,
+    .grid
+      position: absolute
 
     .keys
-      position: absolute
       top: 0
       left: 0
       border-right: solid $dark-line-color $line-width
@@ -41,12 +46,10 @@ $strong-grid-line-color: darken($bg-color, 6%)
         dominant-baseline: central
 
     .grid
-      position: absolute
-      left: 40px
+      left: $key-width
       right: 0
       top: 0
-      overflow-x: scroll
-      overflow-y: visible
+      width: 0
 
       line
         stroke: $grid-line-color
@@ -71,6 +74,14 @@ $strong-grid-line-color: darken($bg-color, 6%)
         &.active
           fill: darken($c1, 30%)
           stroke: darken($c1, 40%)
+
+        &.ghost
+          opacity: 0.8
+
+      rect.selection
+        fill: transparentize($c4, 0.8)
+        //stroke: $c4
+        //stroke-width: $line-width
 
 
     svg
@@ -124,15 +135,3 @@ $strong-grid-line-color: darken($bg-color, 6%)
         border-top: none
         border-right: solid $line-width $line-color
         color: $light-text-color
-      
-      select
-        -webkit-appearance: none
-        outline: none
-        background: #fff
-        border-radius: 0
-        border: 0
-        padding: 0 $margin/2
-        min-width: 30px
-        text-align: -webkit-center
-        font: $heavy-font
-        color: $text-color

@@ -19,6 +19,14 @@ class @Model
       o[attr] = value
       @set o
 
+  createBindingFor: (attr) ->
+    (e) =>
+      console.log 'binding running'
+      e.stopPropagation()
+      o = {}
+      o[attr] = e.target.value
+      @set o
+
   addComponent: (component) ->
     i = @components.indexOf component
     @components.push component if i < 0

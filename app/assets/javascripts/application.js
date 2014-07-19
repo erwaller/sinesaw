@@ -1,5 +1,5 @@
 //= require ./sequences
-//= require ./react
+//= require ./react.min
 //= require ./models/model
 //= require_tree ./util
 //= require_tree ./dsp

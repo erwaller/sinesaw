@@ -1,11 +1,19 @@
-- refactor piano roll scrolling to use elements only for what is shown on screen, store scroll offset as an intergral # of notes / beats
-- handle scroll while dragging notes
-- drag to select all notes in rectangle
-- make note size adjustable
-- add hp filter
-- add bandpass filter
-- create drum roll sequencer (shows names of drums in place of piano on left, non scalable, one row for each drum)
-- add keyboard controls to piano roll (option to copy instead of drag, arrows to move selected, etc..)
-- meters on tracks in track selection view
+- add polyphony control to analog
+- add pitch bend to drums
+- add fm synth
+- cursors on piano roll
+- test using web workers to render audio in parallel
+- test current approach vs using web audio nodes
+- redo drum ui to only show controls for currently selected drum, use complex fm / pitch / vol envs
+- make tempo adjustment use a drag handle
+- add 'live' view
+- add arrange view
+- add reverb
+- add ui for adding effects to tracks
+  - http://component.fm/#components/web-audio-components/overdrive
+  - https://github.com/web-audio-components/simple-reverb
+  - https://github.com/web-audio-components/delay
+- add busses and effect send
+- frequency viewer on master track
   - https://www.npmjs.org/package/amplitude-viewer
   - https://www.npmjs.org/package/frequency-viewer

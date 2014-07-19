@@ -1,6 +1,7 @@
 @import "../variables"
 
 $size: 5px
+$count: 6
 
 .ui.meter
   display: flex
@@ -19,5 +20,14 @@ $size: 5px
 
     &.on
       -webkit-transition: 0
-      background-color: $c3
 
+      @for $i from 1 through ($count - 1)
+        &:nth-child(#{$i})
+          $amt: 1 - 1.0 * $i / ($count - 1)
+          $color: desaturate(darken($c3, $amt * 10%), $amt * 60%)
+          background-color: $color
+          box-shadow: 0 0 1px $color
+
+
+      &:last-child
+        background-color: $c1

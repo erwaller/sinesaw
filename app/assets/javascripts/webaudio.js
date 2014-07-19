@@ -9,7 +9,7 @@
       context = new Context();
     }
 
-    var self = context.createScriptProcessor(2048, 1, 1);
+    var self = context.createScriptProcessor(4096, 1, 1);
 
     self.fn = fn
   

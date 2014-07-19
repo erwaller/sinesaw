@@ -28,9 +28,22 @@ class @Sequence extends Model
     notes[noteId] = note
     @set {notes}
 
+  addNotes: (additions) ->
+    notes = @clonedNotes()
+    for id, note of additions
+      noteId += 1
+      note.id = noteId
+      notes[noteId] = note
+    @set {notes}
+
   removeNote: (id) ->
     notes = @clonedNotes()
     delete notes[id]
+    @set {notes}
+
+  removeNotes: (ids) ->
+    notes = @clonedNotes()
+    delete notes[id] for id in ids
     @set {notes}
 
   updateNote: (id, attrs) ->

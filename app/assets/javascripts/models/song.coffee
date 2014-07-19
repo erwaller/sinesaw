@@ -1,6 +1,6 @@
 class @Song extends Model
 
-  clockRatio = 460
+  clockRatio = 230
 
   defaults:
     bpm: 120

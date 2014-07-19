@@ -12,4 +12,4 @@ tau = Math.PI * 2
     1 - 2 * (((time % (1 / frequency)) * frequency) % 1)
 
   noise: ->
-    2 * (Math.random() - 0.5)
+    2 * Math.random() - 1
