@@ -19,6 +19,14 @@
     {key: 4, start: 11/4, length: 1/4}
     {key: 4, start: 15/4, length: 1/4}
   ]
+  chords: [
+    {key: 60, start: 0, length: 1/4}
+    {key: 63, start: 0, length: 1/4}
+    {key: 67, start: 0, length: 1/4}
+    {key: 60, start: 1/2, length: 1/4}
+    {key: 63, start: 1/2, length: 1/4}
+    {key: 67, start: 1/2, length: 1/4}
+  ]
   simple: [
     {key: 60, start: 0, length: 1/4}
     {key: 63, start: 1/2, length: 1/4}

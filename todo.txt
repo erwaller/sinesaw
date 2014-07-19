@@ -5,7 +5,6 @@
 - test using web workers to render audio in parallel
 - test current approach vs using web audio nodes
 - redo drum ui to only show controls for currently selected drum, use complex fm / pitch / vol envs
-- make tempo adjustment use a drag handle
 - add 'live' view
 - add arrange view
 - add reverb

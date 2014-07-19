@@ -4,7 +4,13 @@
 
   mixins: [Modelable('instrument')]
 
+  setPolyphony: (e) ->
+    @props.instrument.setPolyphony parseInt e.target.value
+
   render: ->
+    options = for i in [1..@props.instrument.maxPolyphony]
+      `<option key={i} value={i}>{i}</option>`
+
     `<div className="ui analog">
       <div className="column channel">
         <Slider
@@ -12,11 +18,10 @@
           value={this.state.level}
           onChange={this.props.instrument.createSetterFor('level')}
         />
-        <Knob
-          label="Pan"
-          value={this.state.pan}
-          onChange={this.props.instrument.createSetterFor('pan')}
-        />
+        <div className="ui">
+          <select onChange={this.setPolyphony} value={this.state.polyphony}>{options}</select>
+          <label>Poly</label>
+        </div>
       </div>
       <div className="column">
         <Envelope

@@ -15,8 +15,8 @@
 
     song.tracks[0].sequence.addNote note for note in sequences.beat
     song.tracks[0].sequence.state.loopSize = 4
-    song.tracks[1].sequence.addNote note for note in sequences.terje
-    song.tracks[1].sequence.state.loopSize = 8
+    song.tracks[1].sequence.addNote note for note in sequences.chords
+    song.tracks[1].sequence.state.loopSize = 1
 
     selectedTrack = 0
 

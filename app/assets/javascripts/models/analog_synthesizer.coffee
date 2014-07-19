@@ -1,15 +1,15 @@
 class @AnalogSynthesizer extends Model
 
   tune = 440
-  polyphony = 3
-
   frequency = (key) ->
     tune * Math.pow 2, (key - 69) / 12
 
+  maxPolyphony: 6
 
   defaults:
     level: 0.5
     pan: 0.5
+    polyphony: 3
     volumeEnv:
       a: 0
       d: 0.25
@@ -39,15 +39,18 @@ class @AnalogSynthesizer extends Model
 
   constructor: ->
     super
-    @notes = new RingBuffer polyphony, Array
+    @notes = new RingBuffer @state.maxPolyphony, Array, @state.polyphony
     @filters =
-      LP: (lowpassFilter() for i in [0...polyphony])
-      HP: (highpassFilter() for i in [0...polyphony])
-      none: (((sample) -> sample) for i in [0...polyphony])
+      LP: (lowpassFilter() for i in [0...@maxPolyphony])
+      HP: (highpassFilter() for i in [0...@maxPpolyphony])
+      none: (((sample) -> sample) for i in [0...@maxPolyphony])
+
+  setPolyphony: (polyphony) ->
+    @notes.resize polyphony
+    @set {polyphony}
 
   reset: ->
     @notes.reset()
-
 
   out: (time) =>
     return 0 if @state.level == 0
@@ -74,7 +77,6 @@ class @AnalogSynthesizer extends Model
       memo + sample
 
     , 0)
-
 
   tick: (time, i, beat, bps, notesOn) =>
     # add new notes

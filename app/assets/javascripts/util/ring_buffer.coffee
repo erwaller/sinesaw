@@ -1,12 +1,16 @@
 class @RingBuffer
   
-  constructor: (@length, @Type = Float32Array) ->
+  constructor: (@maxLength, @Type = Float32Array, @length) ->
+    @length ||= @maxLength
     @array = new Type @length
     @pos = 0
 
   reset: ->
-    @array = new @Type @length
+    @array = new @Type @maxLength
     this
+
+  resize: (@length) ->
+    @pos = 0 if @pos >= @length
 
   push: (el) ->
     @array[@pos] = el
