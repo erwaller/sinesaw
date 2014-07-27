@@ -11,16 +11,16 @@ class @DrumkitSynthesizer extends Model
       name: 'Kick'
       level: 1
       hp: 0
-      decay: 0.3
+      decay: 0.35
       noise: 0.001
       pitch: 0
-      bend: 1
+      bend: 0.39
       fm: 1
-      fmDecay: 0.27
-      fmFreq: 0
+      fmDecay: 0.05
+      fmFreq: 0.02
     drum1:
       name: 'Snare'
-      level: 0.7
+      level: 0.5
       hp: 0.22
       decay: 0.1
       noise: 0.8

@@ -1,13 +1,13 @@
-- cursors on piano roll
-- add lfo to analog synth
-- add fm synth
 - test using web workers to render audio in parallel
 - test current approach vs using web audio nodes
-- redo drum ui to only show controls for currently selected drum, use complex fm / pitch / vol envs
-- add 'live' view
-- add arrange view
+- add lfo to analog synth
+- redo drum ui to only show controls for currently selected drum, make number of drums variable, rename to drumsynth
+- add sampler
+- add drum sampler
+- add fm synth
+- add 'live' view, arrange view, rethink ui
 - add reverb
-- add ui for adding effects to tracks
+- allow effects on tracks
   - http://component.fm/#components/web-audio-components/overdrive
   - https://github.com/web-audio-components/simple-reverb
   - https://github.com/web-audio-components/delay
