@@ -1,10 +1,7 @@
 //= require ./sequences
-//= require ./react.min
 //= require ./models/model
-//= require_tree ./util
+//= require ./util/ring_buffer
+//= require ./util/log_sample
 //= require_tree ./dsp
 //= require_tree ./models
-//= require_tree ./ui/mixins
-//= require_tree ./ui
 //= require ./webaudio
-//= require ./app
