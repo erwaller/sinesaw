@@ -1,10 +1,14 @@
-- test using web workers to render audio in parallel
+- piano roll
+  - fix bug where playback position does not match what is shown
+  - fix bug where option key is stuck on
+  - use immutable data helpers
 - test current approach vs using web audio nodes
+  - each note adds 
 - add lfo to analog synth
-- redo drum ui to only show controls for currently selected drum, make number of drums variable, rename to drumsynth
 - add sampler
 - add drum sampler
 - add fm synth
+- redo drum ui to only show controls for currently selected drum, make number of drums variable, rename to drumsynth
 - add 'live' view, arrange view, rethink ui
 - add reverb
 - allow effects on tracks

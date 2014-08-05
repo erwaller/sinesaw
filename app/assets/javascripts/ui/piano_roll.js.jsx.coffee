@@ -18,7 +18,7 @@
     xScroll: 0
     yScroll: 50
     keyWidth: 60
-    lineWidth: 2
+    lineWidth: 1
     scrollPadding: 500
     quantization: 4
     resizeHandleWidth: 10
@@ -183,9 +183,11 @@
   onMouseMoveNote: (e) ->
     position = e.target.getBoundingClientRect()
 
-    if position.left > e.clientX - @state.resizeHandleWidth
+    handleSize = Math.max 0, Math.min @state.resizeHandleWidth, (position.width - @state.resizeHandleWidth) / 2
+
+    if position.left > e.clientX - handleSize
       @noteHoverCursor = Cursor.set 'w-resize', 1, @noteHoverCursor
-    else if position.right < e.clientX + @state.resizeHandleWidth
+    else if position.right < e.clientX + handleSize
       @noteHoverCursor = Cursor.set 'e-resize', 1, @noteHoverCursor
     else
       Cursor.clear @noteHoverCursor
@@ -222,12 +224,15 @@
 
     @dragOrigin = @state.notes[id]
     
+
+    handleSize = Math.max 0, Math.min @state.resizeHandleWidth, (position.width - @state.resizeHandleWidth) / 2
+
     # handle resize
-    if position.left > e.clientX - @state.resizeHandleWidth
+    if position.left > e.clientX - handleSize
       stateChanges.resizeTarget = id
       stateChanges.resizeDirection = 'left'
       @dragActionCursor = Cursor.set 'w-resize', 2, @dragActionCursor
-    else if position.right < e.clientX + @state.resizeHandleWidth
+    else if position.right < e.clientX + handleSize
       stateChanges.resizeTarget = id
       stateChanges.resizeDirection = 'right'
       @dragActionCursor = Cursor.set 'e-resize', 2, @dragActionCursor
