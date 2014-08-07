@@ -1,6 +1,9 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-@Meter = React.createClass
+React = require 'react'
+Modelable = require './mixins/modelable'
+
+module.exports = React.createClass
 
   mixins: [Modelable('track')]
 
@@ -9,13 +12,14 @@
 
   render: ->
     level = Math.ceil(@state.meterLevel * @props.steps)
+    
     steps = for i in [1..@props.steps]
       className = if i <= level then 'on' else ''
-      `<div key={i} className={className}/>`
+      <div key={i} className={className}/>
 
-    `<div className="ui meter">
+    <div className="ui meter">
       {steps}
-    </div>`
+    </div>
 
   shouldComponentUpdate: (nextProps, nextState) ->
     nextProps != @props or

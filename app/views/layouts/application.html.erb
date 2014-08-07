@@ -4,19 +4,8 @@
   <title>Sinesaw</title>
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag "application", media: "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= javascript_include_tag "ui" %>
   <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
-  <script>
-    WebFont.load({
-      google: {
-        families: ['Roboto:300:latin']
-      },
-      active: function() {
-        React.renderComponent(App(), document.body)
-      }
-    });
-  </script>
+  <%= javascript_include_tag "application" %>
 </head>
 <body>
 

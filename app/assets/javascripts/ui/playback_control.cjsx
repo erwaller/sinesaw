@@ -1,6 +1,11 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-@PlaybackControl = React.createClass
+React = require 'react'
+Modelable = require './mixins/modelable'
+ScaleHandle = require './scale_handle'
+Keyboard = require '../util/keyboard'
+
+module.exports = React.createClass
   
   mixins: [Modelable('song')]
 
@@ -27,19 +32,19 @@
     playClassName = 'icon icon-play' + if @state.playing then ' active' else ''
     recordClassName = 'icon icon-record' + if @state.recording then ' active' else ''
 
-    `<div className="ui playback-control">
+    <div className="ui playback-control">
       <div className="group playback">
-        <div className={playClassName} onClick={this.play}/>
-        <div className={recordClassName} onClick={this.props.song.record}/>
-        <div className="icon icon-stop" onClick={this.props.song.stop}/>
+        <div className={playClassName} onClick={@play}/>
+        <div className={recordClassName} onClick={@props.song.record}/>
+        <div className="icon icon-stop" onClick={@props.song.stop}/>
       </div>
       <div className="group tempo">
-        <ScaleHandle value={Math.log(this.state.bpm) / Math.LN10} min={0} max={3} onChange={this.onChangeBpm}>
-          {this.state.bpm} bpm
+        <ScaleHandle value={Math.log(@state.bpm) / Math.LN10} min={0} max={3} onChange={@onChangeBpm}>
+          {@state.bpm} bpm
         </ScaleHandle>
       </div>
       <div className="logo">sinesaw</div>
       <div className="group menu">
         <div className="icon icon-air"/>
       </div>
-    </div>`
+    </div>

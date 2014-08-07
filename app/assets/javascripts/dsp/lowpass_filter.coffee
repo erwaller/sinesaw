@@ -1,6 +1,6 @@
 sampleRate = 48000
 
-@lowpassFilter = ->
+module.exports = ->
 
   y1 = y2 = y3 = y4 = oldx = oldy1 = oldy2 = oldy3 = 0
   p = k = t1 = t2 = r = x = null

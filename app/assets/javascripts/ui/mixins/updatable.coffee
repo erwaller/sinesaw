@@ -1,4 +1,4 @@
-@Updatable =
+module.exports =
   
   update: (prop) ->
     (value) =>

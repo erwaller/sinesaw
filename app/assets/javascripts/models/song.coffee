@@ -1,4 +1,7 @@
-class @Song extends Model
+Model = require './model'
+webaudio = require '../dsp/webaudio'
+
+module.exports = class Song extends Model
 
   clockRatio = 230
 
@@ -28,10 +31,9 @@ class @Song extends Model
     bps = @state.bpm / 60
     beat = time * bps
 
-    # update ui state on 32nd notes
-    b = Math.floor(beat * 16)/16
-    if b > @state.position 
-      @set(position: b)
+    # update ui state on 1/4th notes
+    b = Math.floor(beat * 4) / 4
+    @set position: b if b > @state.position 
 
     track.tick time, i, beat, bps for track in @tracks 
 

@@ -1,4 +1,4 @@
-@Modelable = (name = 'model') ->
+module.exports = (name = 'model') ->
 
   getInitialState: ->
     @props[name].state

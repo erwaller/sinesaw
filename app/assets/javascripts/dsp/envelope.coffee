@@ -1,6 +1,6 @@
 minEnvValue = 0.01
 
-@envelope = (env, note, time) ->
+module.exports = (env, note, time) ->
 
   elapsed = time - note.time
   a = Math.max minEnvValue, env.a

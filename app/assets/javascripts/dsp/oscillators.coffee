@@ -1,6 +1,6 @@
 tau = Math.PI * 2
 
-@oscillators =
+module.exports =
 
   sine: (time, frequency) ->
     Math.sin time * tau * frequency

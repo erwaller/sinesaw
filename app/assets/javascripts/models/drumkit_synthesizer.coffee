@@ -1,4 +1,9 @@
-class @DrumkitSynthesizer extends Model
+Model = require './model'
+highpassFilter = require '../dsp/highpass_filter'
+simpleEnvelope = require '../dsp/simple_envelope'
+oscillators = require '../dsp/oscillators'
+
+module.exports = class DrumkitSynthesizer extends Model
 
   minFreq = 60
   maxFreq = 3000

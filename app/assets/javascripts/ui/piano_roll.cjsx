@@ -1,6 +1,15 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-@PianoRoll = React.createClass
+React = require 'react'
+SizeMeasurable = require './mixins/size_measurable'
+Updatable = require './mixins/updatable'
+Modelable = require './mixins/modelable'
+Draggable = require './mixins/draggable'
+ScaleHandle = require './scale_handle'
+Keyboard = require '../util/keyboard'
+Cursor = require '../util/cursor'
+
+module.exports = React.createClass
   
   mixins: [SizeMeasurable, Updatable, Modelable('song'), Modelable('sequence'), Draggable]
 
@@ -357,19 +366,19 @@
       unless @keyPattern[row % 12]
         y = height - (i + 1) * keyHeight
         text = null
-        els.push `<rect key={'k' + i} x={0} y={y} width={keyWidth} height={keyHeight}/>`
+        els.push <rect key={'k' + i} x={0} y={y} width={keyWidth} height={keyHeight}/>
 
     # lines
     for row, i in rows
       y = i * keyHeight
-      els.push `<line key={'l' + i} x1={0} y1={y} x2={keyWidth} y2={y}/>`
+      els.push <line key={'l' + i} x1={0} y1={y} x2={keyWidth} y2={y}/>
 
     # text
     for row, i in rows
       if row % 12 == 0
         y = height - (i + 0.5) * keyHeight
         text = "C #{Math.floor(row / 12) - 2}"
-        els.push `<text key={'t' + i} x={keyWidth - 4} y={y}>{text}</text>`
+        els.push <text key={'t' + i} x={keyWidth - 4} y={y}>{text}</text>
 
     els
 
@@ -394,37 +403,37 @@
     for row, i in rows
       unless @keyPattern[row % 12]
         y = height - (i + 1) * squareHeight
-        els.push `<rect key={'s'+i} x={0} y={y} width={width} height={squareHeight} className='shade'/>`
+        els.push <rect key={'s'+i} x={0} y={y} width={width} height={squareHeight} className='shade'/>
 
     # horizontal lines
     for row, i in rows
       unless (128 - row) % 12 == 0
         y = i * squareHeight
-        els.push `<line key={'h'+i} x1={0} y1={y} x2={width} y2={y}/>`
+        els.push <line key={'h'+i} x1={0} y1={y} x2={width} y2={y}/>
 
     # vertical lines
     for col, i in cols
       unless col % @state.quantization == 0
         x = i * squareWidth
-        els.push `<line key={'v'+i} x1={x} y1={0} x2={x} y2={height}/>`
+        els.push <line key={'v'+i} x1={x} y1={0} x2={x} y2={height}/>
 
     # strong horizontal lines
     for row, i in rows
       if (128 - row) % 12 == 0
         y = i * squareHeight
-        els.push `<line key={'hs'+i} x1={0} y1={y} x2={width} y2={y} className='strong'/>`
+        els.push <line key={'hs'+i} x1={0} y1={y} x2={width} y2={y} className='strong'/>
 
     # strong vertical lines
     for col, i in cols
       if col % @state.quantization == 0
         x = i * squareWidth
-        els.push `<line key={'vs'+i} x1={x} y1={0} x2={x} y2={height} className='strong'/>`
+        els.push <line key={'vs'+i} x1={x} y1={0} x2={x} y2={height} className='strong'/>
 
     # playback marker
     position = @state.position % @state.loopSize
     if position >= @state.xScroll and position <= @state.xScroll + @state.xScale
       x = Math.floor(position * @state.quantization) * squareWidth
-      els.push `<line key='pb' x1={x} y1={0} x2={x} y2={height} className='playback'/>`
+      els.push <line key='pb' x1={x} y1={0} x2={x} y2={height} className='playback'/>
 
     # selection
     if @state.selectionOrigin? and @state.selectionPosition?
@@ -437,14 +446,14 @@
       w = (beatWidth * @state.quantization + 1) * squareWidth
       h = (keyWidth + 1) * squareHeight
       els.push(
-        `<rect
+        <rect
           className='selection'
           key='sel'
           x={x}
           y={y}
           width={w}
           height={h}
-        />`
+        />
       )
 
     # ghost notes
@@ -458,16 +467,16 @@
         h = squareHeight - @state.lineWidth
 
         els.push(
-          `<rect
+          <rect
             className="ghost note"
             key={'g' + id}
             x={x}
             y={y}
             width={w}
             height={h}
-            rx={this.state.lineWidth}
-            ry={this.state.lineWidth}
-          />`
+            rx={@state.lineWidth}
+            ry={@state.lineWidth}
+          />
         )
 
     # notes
@@ -484,22 +493,22 @@
       className += ' active' if @state.translateTarget == note.id or @state.resizeTarget == note.id
 
       els.push(
-        `<rect
+        <rect
           className={className}
           key={'n' + id}
           x={x}
           y={y}
           width={w}
           height={h}
-          rx={this.state.lineWidth}
-          ry={this.state.lineWidth}
+          rx={@state.lineWidth}
+          ry={@state.lineWidth}
           data-id={id}
-          onMouseDown={this.onMouseDownNote}
-          onMouseMove={this.onMouseMoveNote}
-          onMouseOut={this.onMouseOutNote}
-          onClick={this.onClickNote}
-          onDoubleClick={this.onDoubleClickNote}
-        />`
+          onMouseDown={@onMouseDownNote}
+          onMouseMove={@onMouseMoveNote}
+          onMouseOut={@onMouseOutNote}
+          onClick={@onClickNote}
+          onDoubleClick={@onDoubleClickNote}
+        />
       )
 
     els
@@ -517,26 +526,26 @@
       top: @state.scrollPadding
       left: @state.scrollPadding
 
-    `<div className="ui piano-roll">
-      <div className="body" ref='container' onScroll={this.snapScrolling}>
+    <div className="ui piano-roll">
+      <div className="body" ref='container' onScroll={@snapScrolling}>
         <div className="outer" style={outerStyle}>
           <div className="inner" style={innerStyle}>
             <div className='keys'>
               <svg
-                width={this.state.keyWidth - this.state.lineWidth}
-                height={this.state.height}
-                onClick={this.onClickKeys}
+                width={@state.keyWidth - @state.lineWidth}
+                height={@state.height}
+                onClick={@onClickKeys}
               >
                 {keys}
               </svg>
             </div>
             <div className='grid' ref='grid'>
               <svg
-                width={Math.max(0, this.state.width - this.state.keyWidth)}
-                height={this.state.height}
-                onMouseDown={this.onMouseDownGrid}
-                onMouseUp={this.onMouseUpGrid}
-                onDoubleClick={this.onDoubleClickGrid}
+                width={Math.max(0, @state.width - @state.keyWidth)}
+                height={@state.height}
+                onMouseDown={@onMouseDownGrid}
+                onMouseUp={@onMouseUpGrid}
+                onDoubleClick={@onDoubleClickGrid}
               >
                 {grid}
               </svg>
@@ -547,7 +556,7 @@
       <div className="view-controls">
         <div className="setting">
           <label>Grid</label>
-          <select value={this.state.quantization} onChange={this.updateQuantization}>
+          <select value={@state.quantization} onChange={@updateQuantization}>
             <option value="1">1</option>
             <option value="2">1/2</option>
             <option value="4">1/4</option>
@@ -557,7 +566,7 @@
         </div>
         <div className="setting">
           <label>Length</label>
-          <select value={this.state.loopSize} onChange={this.updateLoopSize}>
+          <select value={@state.loopSize} onChange={@updateLoopSize}>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="4">4</option>
@@ -567,13 +576,13 @@
             <option value="64">64</option>
           </select>
         </div>
-        <ScaleHandle min={this.state.minYScale} max={this.state.maxYScale} value={this.state.yScale} onChange={this.updateYScale}>
+        <ScaleHandle min={@state.minYScale} max={@state.maxYScale} value={@state.yScale} onChange={@updateYScale}>
           <span className="icon icon-arrow-up"/>
           <span className="icon icon-arrow-down"/>
         </ScaleHandle>
-        <ScaleHandle min={this.state.minXScale} max={this.state.maxXScale} value={this.state.xScale} onChange={this.updateXScale}>
+        <ScaleHandle min={@state.minXScale} max={@state.maxXScale} value={@state.xScale} onChange={@updateXScale}>
           <span className="icon icon-arrow-left"/>
           <span className="icon icon-arrow-right"/>
         </ScaleHandle>
       </div>
-    </div>`
+    </div>

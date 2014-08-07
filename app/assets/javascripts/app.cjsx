@@ -1,6 +1,19 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-@App = React.createClass
+React = require 'react'
+Updatable = require './ui/mixins/updatable'
+Song = require './models/song'
+Track = require './models/track'
+DrumkitSynthesizer = require './models/drumkit_synthesizer'
+AnalogSynthesizer = require './models/analog_synthesizer'
+PlaybackControl = require './ui/playback_control'
+TrackSelection = require './ui/track_selection'
+PianoRoll = require './ui/piano_roll'
+Analog = require './ui/analog'
+Drumkit = require './ui/drumkit'
+sequences = require './sequences'
+
+module.exports = React.createClass
 
   mixins: [Updatable]
 
@@ -8,9 +21,9 @@
     song = new Song
 
     song.tracks = [
-      new Track {name: 'Drum Kit'}, new DrumkitSynthesizer
-      new Track {name: 'Analog'}, new AnalogSynthesizer
-      new Track {name: 'Analog'}, new AnalogSynthesizer
+      new Track new DrumkitSynthesizer, name: 'Drum Kit'
+      new Track new AnalogSynthesizer, name: 'Analog 1'
+      new Track new AnalogSynthesizer, name: 'Analog 2'
     ]
 
     song.tracks[0].sequence.addNote note for note in sequences.beat
@@ -29,11 +42,11 @@
     track = @state.song.tracks[@state.selectedTrack]
 
     if track.instrument instanceof AnalogSynthesizer
-      instrument = `<Analog instrument={track.instrument}/>`
+      instrument = <Analog instrument={track.instrument}/>
     else if track.instrument instanceof DrumkitSynthesizer
-      instrument = `<Drumkit instrument={track.instrument}/>`
+      instrument = <Drumkit instrument={track.instrument}/>
 
-    `<div className="app">
+    <div className="app">
       <div className="row playback">
         <PlaybackControl song={song}/>
       </div>
@@ -54,4 +67,4 @@
           </div>
         </div>
       </div>
-    </div>`
+    </div>

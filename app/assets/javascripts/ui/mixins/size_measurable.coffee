@@ -1,4 +1,4 @@
-@SizeMeasurable =
+module.exports =
 
   getInitialState: ->
     height: 0

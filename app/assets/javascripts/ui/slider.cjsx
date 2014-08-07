@@ -1,6 +1,10 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-@Slider = React.createClass
+React = require 'react'
+SizeMeasurable = require './mixins/size_measurable'
+Draggable = require './mixins/draggable'
+
+module.exports = React.createClass
   
   mixins: [SizeMeasurable, Draggable]
 
@@ -26,10 +30,10 @@
     className = 'ui slider'
     className += ' active' if @state.active
 
-    `<div className={className}>
+    <div className={className}>
       <div className="control" ref="container">
         <div className="track"/>
-        <div className="handle" style={style} onMouseDown={this.draggableOnMouseDown}/>
+        <div className="handle" style={style} onMouseDown={@draggableOnMouseDown}/>
       </div>
-      <label>{this.props.label}</label>
-    </div>`
+      <label>{@props.label}</label>
+    </div>
