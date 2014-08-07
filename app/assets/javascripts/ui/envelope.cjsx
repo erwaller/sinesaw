@@ -1,8 +1,11 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-EnvelopeHandle = React.createClass
+React = require 'react'
+SizeMeasurable = require './mixins/size_measurable'
+Draggable = require './mixins/draggable'
+Knob = require './knob'
 
-@Envelope = React.createClass
+module.exports = React.createClass
 
   mixins: [SizeMeasurable, Draggable]
 
@@ -46,23 +49,23 @@ EnvelopeHandle = React.createClass
       p.y += m
 
     # base
-    lines.push `<line key="b" x1={m} y1={m+h} x2={m+w} y2={m+h}/>`
+    lines.push <line key="b" x1={m} y1={m+h} x2={m+w} y2={m+h}/>
 
     # path
     d = 'M ' + [p1, p2, p3, p4, p5].map((p) -> "#{p.x} #{p.y}").join ' L '
-    lines.push `<path key="p" d={d}/>`
+    lines.push <path key="p" d={d}/>
 
     # attack
     className = if @state.dragTarget is 'attack' then 'active' else ''
-    dots.push `<circle key="a" className={className} cx={p2.x} cy={p2.y} r={this.props.dotRadius} onMouseDown={this.onMouseDownAttack}/>`
+    dots.push <circle key="a" className={className} cx={p2.x} cy={p2.y} r={@props.dotRadius} onMouseDown={@onMouseDownAttack}/>
 
     # decay / sustain
     className = if @state.dragTarget is 'decay' then 'active' else ''
-    dots.push `<circle key="d" className={className} cx={p3.x} cy={p3.y} r={this.props.dotRadius} onMouseDown={this.onMouseDownDecay}/>`
+    dots.push <circle key="d" className={className} cx={p3.x} cy={p3.y} r={@props.dotRadius} onMouseDown={@onMouseDownDecay}/>
 
     #release
     className = if @state.dragTarget is 'release' then 'active' else ''
-    dots.push `<circle key="r" className={className} cx={p5.x} cy={p5.y} r={this.props.dotRadius} onMouseDown={this.onMouseDownRelease}/>`
+    dots.push <circle key="r" className={className} cx={p5.x} cy={p5.y} r={@props.dotRadius} onMouseDown={@onMouseDownRelease}/>
 
     lines.concat dots
 
@@ -119,21 +122,21 @@ EnvelopeHandle = React.createClass
   render: ->
     lines = @buildLines() if @state.width > 0
 
-    `<div className='ui envelope'>
+    <div className='ui envelope'>
       <div className='control' ref='container'>
-        <svg width={this.state.width} height={this.state.height}>
+        <svg width={@state.width} height={@state.height}>
           {lines}
         </svg>
       </div>
       <div className='knobs'>
         <div className='group'>
-          <Knob label='A' value={this.props.env.a} onChange={this.update('a')}/>
-          <Knob label='D' value={this.props.env.d} onChange={this.update('d')}/>
+          <Knob label='A' value={@props.env.a} onChange={@update('a')}/>
+          <Knob label='D' value={@props.env.d} onChange={@update('d')}/>
         </div>
         <div className='group'>
-          <Knob label='S' value={this.props.env.s} onChange={this.update('s')}/>
-          <Knob label='R' value={this.props.env.r} onChange={this.update('r')}/>
+          <Knob label='S' value={@props.env.s} onChange={@update('s')}/>
+          <Knob label='R' value={@props.env.r} onChange={@update('r')}/>
         </div>
       </div>
-      <label>{this.props.label}</label>
-    </div>`
+      <label>{@props.label}</label>
+    </div>

@@ -1,4 +1,4 @@
-@simpleEnvelope = (decay, elapsed) ->
+module.exports = (decay, elapsed) ->
   if elapsed > decay
     0
   else

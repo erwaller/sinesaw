@@ -1,4 +1,4 @@
-class @Model
+module.exports = class Model
 
   defaults: {}
 

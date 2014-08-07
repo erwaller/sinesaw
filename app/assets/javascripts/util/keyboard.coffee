@@ -1,4 +1,4 @@
-@Keyboard =
+Keyboard =
 
   callbacks: {}
   pressed: {}
@@ -24,3 +24,5 @@ window.addEventListener 'keydown', (e) ->
 
 window.addEventListener 'keyup', (e) ->
   Keyboard.pressed[e.keyCode] = false
+
+module.exports = Keyboard

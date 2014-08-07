@@ -1,6 +1,9 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-@Knob = React.createClass
+React = require 'react'
+Draggable = require './mixins/draggable'
+
+module.exports = React.createClass
 
   range: 100
 
@@ -37,9 +40,9 @@
     className = 'ui knob'
     className += ' active' if @state.active
 
-    `<div className={className}>
+    <div className={className}>
       <div className="control">
-        <div className="handle" style={style} onMouseDown={this.draggableOnMouseDown}/>
+        <div className="handle" style={style} onMouseDown={@draggableOnMouseDown}/>
       </div>
-      <label>{this.props.label}</label>
-    </div>`
+      <label>{@props.label}</label>
+    </div>

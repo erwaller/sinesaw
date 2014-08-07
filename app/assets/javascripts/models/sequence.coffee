@@ -1,4 +1,6 @@
-class @Sequence extends Model
+Model = require './model'
+
+module.exports = class Sequence extends Model
 
   noteId = 0
 

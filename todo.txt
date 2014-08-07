@@ -1,9 +1,9 @@
 - piano roll
   - fix bug where playback position does not match what is shown
   - fix bug where option key is stuck on
-  - use immutable data helpers
+  - automation: make some way to have props on models calculated including automation
 - test current approach vs using web audio nodes
-  - each note adds 
+  - each note adds a new node w/ scheduled playback, param changes
 - add lfo to analog synth
 - add sampler
 - add drum sampler
@@ -16,6 +16,3 @@
   - https://github.com/web-audio-components/simple-reverb
   - https://github.com/web-audio-components/delay
 - add busses and effect send
-- frequency viewer on master track
-  - https://www.npmjs.org/package/amplitude-viewer
-  - https://www.npmjs.org/package/frequency-viewer

@@ -1,4 +1,4 @@
-@Draggable =
+module.exports =
 
   draggableOnMouseDown: (e) ->
     window.addEventListener 'mousemove', @draggableOnMouseMove

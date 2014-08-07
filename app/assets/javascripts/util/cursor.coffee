@@ -9,7 +9,7 @@ apply = ->
 
   document.body.style.cursor = if max then actions[max].value else 'default'
 
-@Cursor =
+module.exports =
 
   set: (value, priority, id) ->
     id ||= nextId += 1

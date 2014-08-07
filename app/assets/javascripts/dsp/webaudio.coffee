@@ -1,4 +1,4 @@
-bufferSize = 16384
+bufferSize = 2048
 
 module.exports = (context, fn) ->
 

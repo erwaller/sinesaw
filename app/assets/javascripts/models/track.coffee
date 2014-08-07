@@ -1,4 +1,7 @@
-class @Track extends Model
+Model = require './model'
+Sequence = require './sequence'
+
+module.exports = class Track extends Model
 
   meterDecay = 0.0005
 
@@ -6,7 +9,7 @@ class @Track extends Model
     name: 'Track'
     meterLevel: 0
 
-  constructor: (state, @instrument) ->
+  constructor: (@instrument, @state) ->
     super
     @sequence = new Sequence
     @effects = []

@@ -1,1 +1,1 @@
-class @Effect
+module.exports = class Effect

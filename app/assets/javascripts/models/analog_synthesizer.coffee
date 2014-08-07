@@ -1,4 +1,11 @@
-class @AnalogSynthesizer extends Model
+Model = require './model'
+RingBuffer = require '../util/ring_buffer'
+lowpassFilter = require '../dsp/lowpass_filter'
+highpassFilter = require '../dsp/highpass_filter'
+envelope = require '../dsp/envelope'
+oscillators = require '../dsp/oscillators'
+
+module.exports = class AnalogSynthesizer extends Model
 
   tune = 440
   frequency = (key) ->

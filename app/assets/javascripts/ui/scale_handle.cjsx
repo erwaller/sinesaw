@@ -1,6 +1,9 @@
-###* @jsx React.DOM ###
+# @cjsx React.DOM
 
-@ScaleHandle = React.createClass
+React = require 'react'
+Draggable = require './mixins/draggable'
+
+module.exports = React.createClass
 
   range: 300
 
@@ -35,6 +38,6 @@
     className = 'ui scale-handle'
     className += ' active' if @state.active
 
-    `<div className={className} onMouseDown={this.draggableOnMouseDown}>
-      {this.props.children}
-    </div>`
+    <div className={className} onMouseDown={@draggableOnMouseDown}>
+      {@props.children}
+    </div>

@@ -14,7 +14,7 @@ sinh = (x) ->
   y = Math.exp x
   (y - 1 / y) / 2
 
-@highpassFilter = ->
+module.exports = ->
   a0 = a1 = a2 = a3 = a4 = x1 = x2 = y1 = y2 = 0
   freq = omega = sn = alpha = 0
   cs = 1

@@ -1,4 +1,4 @@
-class @RingBuffer
+module.exports = class RingBuffer
   
   constructor: (@maxLength, @Type = Float32Array, @length) ->
     @length ||= @maxLength
