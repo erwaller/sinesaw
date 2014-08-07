@@ -30,12 +30,10 @@ module.exports = React.createClass
 
   render: ->
     playClassName = 'icon icon-play' + if @state.playing then ' active' else ''
-    recordClassName = 'icon icon-record' + if @state.recording then ' active' else ''
 
     <div className="ui playback-control">
       <div className="group playback">
         <div className={playClassName} onClick={@play}/>
-        <div className={recordClassName} onClick={@props.song.record}/>
         <div className="icon icon-stop" onClick={@props.song.stop}/>
       </div>
       <div className="group tempo">

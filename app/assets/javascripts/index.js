@@ -2,8 +2,8 @@ React = require('react');
 App = require('./app.cjsx');
 
 // inject request animation frame batching strategy into react
-// rafb = require('react-raf-batching')
-// rafb.inject()
+rafb = require('react-raf-batching')
+rafb.inject()
 
 // load webfonts and mount app
 WebFont.load({

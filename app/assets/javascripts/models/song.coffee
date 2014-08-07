@@ -32,7 +32,7 @@ module.exports = class Song extends Model
     beat = time * bps
 
     # update ui state on 1/4th notes
-    b = Math.floor(beat * 4) / 4
+    b = Math.floor(beat * 8) / 8
     @set position: b if b > @state.position 
 
     track.tick time, i, beat, bps for track in @tracks 

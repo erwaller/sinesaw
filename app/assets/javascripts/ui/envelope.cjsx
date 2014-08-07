@@ -1,6 +1,9 @@
 # @cjsx React.DOM
 
 React = require 'react'
+SizeMeasurable = require './mixins/size_measurable'
+Draggable = require './mixins/draggable'
+Knob = require './knob'
 
 module.exports = React.createClass
 

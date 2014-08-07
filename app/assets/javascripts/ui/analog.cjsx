@@ -2,6 +2,11 @@
 
 React = require 'react'
 Modelable = require './mixins/modelable'
+Slider = require './slider'
+Envelope = require './envelope'
+Filter = require './filter'
+Oscillator = require './oscillator'
+
 
 module.exports = React.createClass
 

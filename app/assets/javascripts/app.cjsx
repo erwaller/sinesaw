@@ -26,10 +26,14 @@ module.exports = React.createClass
       new Track new AnalogSynthesizer, name: 'Analog 2'
     ]
 
-    song.tracks[0].sequence.addNote note for note in sequences.beat
-    song.tracks[0].sequence.state.loopSize = 4
-    song.tracks[1].sequence.addNote note for note in sequences.chords
-    song.tracks[1].sequence.state.loopSize = 1
+    # song.tracks[0].sequence.addNote note for note in sequences.beat
+    # song.tracks[0].sequence.state.loopSize = 4
+    # song.tracks[1].sequence.addNote note for note in sequences.chords
+    # song.tracks[1].sequence.state.loopSize = 1
+
+    song.tracks[0].instrument.state.level = 0
+    song.tracks[1].instrument.state.level = 0
+    song.tracks[2].instrument.state.level = 0
 
     selectedTrack = 0
 

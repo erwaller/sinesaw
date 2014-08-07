@@ -1,6 +1,8 @@
 # @cjsx React.DOM
 
 React = require 'react'
+Chooser = require './chooser'
+Knob = require './knob'
 
 module.exports = React.createClass
 
