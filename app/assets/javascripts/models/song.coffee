@@ -24,7 +24,7 @@ module.exports = class Song extends Model
     @tick time, i if i % clockRatio is 0
 
     clip @tracks.reduce((sample, t) ->
-      sample + t.out time
+      sample + t.out time, i
     , 0)
 
   tick: (time, i) ->
@@ -32,7 +32,7 @@ module.exports = class Song extends Model
     beat = time * bps
 
     # update ui state on 1/4th notes
-    b = Math.floor(beat * 8) / 8
+    b = Math.floor(beat * 4) / 4
     @set position: b if b > @state.position 
 
     track.tick time, i, beat, bps for track in @tracks 

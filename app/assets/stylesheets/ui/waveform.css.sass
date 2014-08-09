@@ -1,0 +1,27 @@
+@import "../variables"
+
+.ui.waveform
+  flex-grow: 1
+  position: relative
+  display: flex
+  flex-flow: column nowrap
+
+  > .control
+    border: solid $line-width $line-color
+    background-color: $ctrl-bg-color
+    flex-grow: 1
+    display: flex
+    padding: $margin / 2
+
+    div
+      flex-grow: 1
+
+  svg
+    stroke-width: $line-width
+
+  path
+    stroke: $med-line-color
+    stroke-linecap: round
+    stroke-linejoin: round
+    stroke-width: $line-width * 2
+    fill: $med-line-color

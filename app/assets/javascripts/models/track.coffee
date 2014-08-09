@@ -9,16 +9,16 @@ module.exports = class Track extends Model
     name: 'Track'
     meterLevel: 0
 
-  constructor: (@instrument, @state) ->
+  constructor: (state, @instrument) ->
     super
     @sequence = new Sequence
     @effects = []
     @meterLevel = 0
 
-  out: (time) ->
+  out: (time, i) ->
     sample = @effects.reduce((sample, e) ->
-      e.out time, sample
-    , @instrument.out time)
+      e.out time, i, sample
+    , @instrument.out time, i)
 
     if sample > @meterLevel
       @meterLevel = sample

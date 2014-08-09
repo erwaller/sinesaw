@@ -1,0 +1,33 @@
+@import "../variables"
+
+.ui.sample-chooser
+  flex-grow: 1
+  position: relative
+  display: flex
+  flex-flow: column nowrap
+
+  input[type=file]
+    display: none
+
+  .trigger
+    display: flex
+    flex-flow: column nowrap
+    flex-grow: 1
+    position: relative
+
+  .file-name
+    position: absolute
+    top: 0
+    right: 0
+    margin: $margin/2
+    color: $med-line-color
+
+  .instruction
+    position: absolute
+    top: 50%
+    line-height: 0
+    width: 100%
+    text-align: center
+
+  .ui.waveform
+    margin: 0

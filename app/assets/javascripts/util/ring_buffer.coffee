@@ -2,7 +2,7 @@ module.exports = class RingBuffer
   
   constructor: (@maxLength, @Type = Float32Array, @length) ->
     @length ||= @maxLength
-    @array = new Type @length
+    @array = new Type @maxLength
     @pos = 0
 
   reset: ->

@@ -46,7 +46,7 @@ module.exports = class AnalogSynthesizer extends Model
 
   constructor: ->
     super
-    @notes = new RingBuffer @state.maxPolyphony, Array, @state.polyphony
+    @notes = new RingBuffer @maxPolyphony, Array, @state.polyphony
     @filters =
       LP: (lowpassFilter() for i in [0...@maxPolyphony])
       HP: (highpassFilter() for i in [0...@maxPolyphony])
@@ -63,10 +63,10 @@ module.exports = class AnalogSynthesizer extends Model
     return 0 if @state.level == 0
 
     # sum all active notes
-    r = Math.max 0.01, @state.volumeEnv.release
+    r = Math.max 0.01, @state.volumeEnv.r
     @state.level * @notes.reduce((memo, note, index) =>
       return memo unless note?
-      return memo if note.len + r > time - note.time
+      return memo unless note.len + r > time - note.time
 
       # sum oscillators and apply volume envelope
       osc1Freq = frequency note.key + @state.osc1.tune - 0.5 + Math.round(24 * (@state.osc1.pitch - 0.5))

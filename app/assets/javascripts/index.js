@@ -14,3 +14,9 @@ WebFont.load({
     React.renderComponent(App(), document.body);
   }
 });
+
+// window.onload = function(){
+//   setTimeout(function(){
+//     React.renderComponent(App(), document.body);
+//   }, 1000);
+// };

@@ -1,9 +1,9 @@
 module.exports =
   fourfour: [
-    {key: 0, start: 0, length: 1/4}
-    {key: 0, start: 1, length: 1/4}
-    {key: 0, start: 2, length: 1/4}
-    {key: 0, start: 3, length: 1/4}
+    {key: 72, start: 0, length: 1/4}
+    {key: 72, start: 1, length: 1/4}
+    {key: 72, start: 2, length: 1/4}
+    {key: 72, start: 3, length: 1/4}
   ]
   beat: [
     {key: 0, start: 0, length: 1/4}
