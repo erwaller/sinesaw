@@ -21,8 +21,8 @@ module.exports = React.createClass
     else
       @props.song.play()
 
-  onChangeBpm: (value) ->
-    bpm = Math.floor Math.pow 10, value - 0.00000001
+  onChangeBpm: (e) ->
+    bpm = parseInt e.target.value
     @props.song.set {bpm}
 
   stopPropagation: (e) ->
@@ -30,6 +30,8 @@ module.exports = React.createClass
 
   render: ->
     playClassName = 'icon icon-play' + if @state.playing then ' active' else ''
+    
+    bpmOptions = (<option value={i}>{i} bpm</option> for i in [200..20])
 
     <div className="ui playback-control">
       <div className="group playback">
@@ -37,9 +39,7 @@ module.exports = React.createClass
         <div className="icon icon-stop" onClick={@props.song.stop}/>
       </div>
       <div className="group tempo">
-        <ScaleHandle value={Math.log(@state.bpm) / Math.LN10} min={0} max={3} onChange={@onChangeBpm}>
-          {@state.bpm} bpm
-        </ScaleHandle>
+        <select value={@state.bpm} onChange={@onChangeBpm}>{bpmOptions}</select>
       </div>
       <div className="logo">sinesaw</div>
       <div className="group menu">

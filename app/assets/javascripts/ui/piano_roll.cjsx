@@ -32,7 +32,7 @@ module.exports = React.createClass
     xScroll: 0
     yScroll: 50
     keyWidth: 60
-    lineWidth: 1
+    lineWidth: 2
     scrollPadding: 500
     quantization: 4
     resizeHandleWidth: 10
@@ -96,7 +96,7 @@ module.exports = React.createClass
     if Math.abs(@scrollDeltaY) > yQuantum
       quanta = (if @scrollDeltaX > 0 then Math.floor else Math.ceil)(@scrollDeltaY / yQuantum)
       @scrollDeltaY -= quanta * yQuantum
-      yScroll = Math.min Math.max(0, @state.yScroll + quanta), 127 - @state.yScale
+      yScroll = Math.min Math.max(0, @state.yScroll + quanta), 128 - @state.yScale
 
     # apply changes
     if xScroll? or yScroll?
@@ -112,7 +112,7 @@ module.exports = React.createClass
       minKey = key if key < minKey
       maxKey = key if key > maxKey
 
-    size = Math.max(@state.minYScale, maxKey - minKey) + 8
+    size = Math.max(@state.minYScale, maxKey - minKey) + 12
 
     @setState
       xScroll: 0
@@ -143,6 +143,50 @@ module.exports = React.createClass
     yScroll = Math.min @state.yScroll, 127 - @state.yScale
 
     @setState {yScale, yScroll}
+
+  updateNotes: (changes) ->
+    notes = Object.keys(changes).map (i) =>
+      key: if changes[i].key then changes[i].key else @state.notes[i].key
+      start: if changes[i].start then changes[i].start else @state.notes[i].start
+      length: if changes[i].length then changes[i].length else @state.notes[i].length
+
+    keys = notes.map (note) -> note.key
+    starts = notes.map (note) -> note.start
+    ends = notes.map (note) -> note.start + note.length
+
+    minKey = Math.min.apply null, keys
+    maxKey = Math.max.apply null, keys
+    minStart = Math.min.apply null, starts
+    maxEnd = Math.max.apply null, ends
+
+    # prevent notes from being moved out of the available range
+
+    return false if minKey < 0 or maxKey > 127
+    return false if minStart < 0 or maxEnd > @state.loopSize
+
+    # update scroll so notes remain on screen
+
+    stateChanges = {}
+    
+    console.log {minStart, maxEnd, starts, notes}
+
+    if minKey < @state.yScroll and maxKey <= @state.yScroll + @state.yScale
+      stateChanges.yScroll = minKey
+
+    if maxKey >= @state.yScroll + @state.yScale and minKey > @state.yScroll
+      stateChanges.yScroll = maxKey - @state.yScale + 1
+
+
+    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # this does not work yet, i dont think.. also you need to add right scrolling
+    # also, this could be refactored to updateNotes: (ids, delta) -> so that notes
+    # can move as far as possible when you attempt to move an octave near the edge
+    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if minStart < @state.xScroll and maxEnd <= @state.xScroll + @state.xScale
+      stateChanges.xScroll = minStart
+
+    @props.sequence.updateNotes changes
+    @setState stateChanges
 
   getRelativePosition: ({x,y}) ->
     {top, left} = @refs.grid.getDOMNode().getBoundingClientRect()
@@ -298,7 +342,7 @@ module.exports = React.createClass
               start: start
               length: note.start + note.length - start
 
-      @props.sequence.updateNotes notes
+      @updateNotes notes
 
 
   onDragEnd: (e) ->
@@ -340,7 +384,8 @@ module.exports = React.createClass
 
       # up arrow
       else if e.keyCode is 38
-        changes[id] = key: note.key + 1
+        distance = if Keyboard.pressed[16] then 12 else 1
+        changes[id] = key: note.key + distance
 
       # right arrow
       else if e.keyCode is 39
@@ -348,9 +393,10 @@ module.exports = React.createClass
 
       # down arrow
       else if e.keyCode is 40
-        changes[id] = key: note.key - 1
+        distance = if Keyboard.pressed[16] then 12 else 1
+        changes[id] = key: note.key - distance
 
-    @props.sequence.updateNotes changes
+    @updateNotes changes
 
   render: ->
     outerStyle =
@@ -416,7 +462,7 @@ module.exports = React.createClass
                 <Notes
                   notes={@state.notes}
                   selectedNotes={@state.selectedNotes}
-                  dragOriginalValues={@orignalValues}
+                  dragOriginalValue={@originalValue}
                   translateTarget={@state.translateTarget}
                   resizeTarget={@state.resizeTarget}
                   width={gridWidth}

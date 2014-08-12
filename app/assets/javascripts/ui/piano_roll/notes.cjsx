@@ -9,7 +9,7 @@ module.exports = React.createClass
   propTypes:
     notes: React.PropTypes.object.isRequired
     selectedNotes: React.PropTypes.array.isRequired
-    dragOriginalValues: React.PropTypes.object
+    dragOriginalValue: React.PropTypes.object
     translateTarget: React.PropTypes.number
     resizeTarget: React.PropTypes.number
     width: React.PropTypes.number.isRequired
@@ -33,6 +33,8 @@ module.exports = React.createClass
     note.key <= @props.yScroll + @props.yScale
 
   render: ->
+    return <g/> unless @props.width > 0 and @props.height > 0
+
     width = @props.width
     height = @props.height
     squareHeight = height / @props.yScale

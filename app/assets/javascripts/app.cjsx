@@ -25,17 +25,17 @@ module.exports = React.createClass
 
     song.tracks = [
       new Track name: 'Basic Sampler', new BasicSampler
-      new Track name: 'Drum Synth', new DrumkitSynthesizer
       new Track name: 'Analog Synth', new AnalogSynthesizer
+      # new Track name: 'Drum Synth', new DrumkitSynthesizer
     ]
 
-    song.tracks[0].sequence.addNote note for note in sequences.fourfour
+    # song.tracks[0].sequence.addNote note for note in sequences.fourfour
     # song.tracks[1].sequence.addNote note for note in sequences.beat
     # song.tracks[1].sequence.state.loopSize = 4
-    song.tracks[1].instrument.state.level = 0
+    # song.tracks[1].instrument.state.level = 0
     # song.tracks[2].sequence.addNote note for note in sequences.terje
     # song.tracks[2].sequence.state.loopSize = 8
-    song.tracks[2].instrument.state.level = 0
+    # song.tracks[2].instrument.state.level = 0
 
     selectedTrack = 0
 

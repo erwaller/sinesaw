@@ -1,17 +1,19 @@
-- add sampler
+- prevent notes from being dragged past top / bottom edges of piano roll
 - moving note w/ arrows needs to scroll piano roll
-- fix ghost notes
-- prevent notes from being dragged past edges of piano roll
-- redo tempo setting to use a select
-- add drum sampler
+- test current approach vs using web audio nodes
+  - each note adds a new node w/ scheduled playback, param changes
+- if not going w/ multiple nodes approach, fix playback marker to show right time independent of buffering
+- update instruments to work w/ note on / note off instead of 
+- look at using webmidi
+- show loop size like ableton, make view size independtent of loop size, make dragging notes expand view size- add drum sampler
+- add loop slicing sampler
 - redo drum synth ui to only show controls for currently selected drum, make number of drums variable
+- fix note positions when mouse is dragged past edge of piano roll and piano roll autoscrolls
 - piano roll
   - automation: make some way to have props on models calculated including automation
   - fix bug where playback position does not match what is shown
   - fix bug where option key is stuck on
   - fix bug where cursor gets stuck
-- test current approach vs using web audio nodes
-  - each note adds a new node w/ scheduled playback, param changes
 - ui to add / remove / rearrange tracks
 - ability to save
 - add lfo to analog synth
