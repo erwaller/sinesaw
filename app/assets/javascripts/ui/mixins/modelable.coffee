@@ -1,7 +1,10 @@
 module.exports = (name = 'model') ->
 
   getInitialState: ->
-    @props[name].state
+    o = {}
+    for k, v of @props[name].state
+      o[k] = v
+    o
 
   componentDidMount: ->
     @props[name].addComponent this

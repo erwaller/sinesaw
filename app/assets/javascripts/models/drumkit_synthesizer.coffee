@@ -1,7 +1,9 @@
+Immutable = require 'immutable'
 Model = require './model'
 highpassFilter = require '../dsp/highpass_filter'
 simpleEnvelope = require '../dsp/simple_envelope'
 oscillators = require '../dsp/oscillators'
+logSample = require '../util/log_sample'
 
 module.exports = class DrumkitSynthesizer extends Model
 
@@ -9,77 +11,82 @@ module.exports = class DrumkitSynthesizer extends Model
   maxFreq = 3000
   freqScale = maxFreq - minFreq
 
+  drumId = 0
+
   defaults:
     level: 0.5
     pan: 0.5
-    drum0:
-      name: 'Kick'
-      level: 1
-      hp: 0
-      decay: 0.35
-      noise: 0.001
-      pitch: 0
-      bend: 0.39
-      fm: 1
-      fmDecay: 0.05
-      fmFreq: 0.02
-    drum1:
-      name: 'Snare'
-      level: 0.5
-      hp: 0.22
-      decay: 0.1
-      noise: 0.8
-      pitch: 0.1
-      bend: 0
-      fm: 0
-      fmDecay: 0
-      fmFreq: 0
-    drum2:
-      name: 'HH1'
-      level: 0.05
-      hp: 1
-      decay: 0.07
-      noise: 0.8
-      pitch: 0.4
-      bend: 0
-      fm: 1
-      fmDecay: 0.4
-      fmFreq: 0
-    drum3:
-      name: 'HH2'
-      level: 0.2
-      hp: 0.6
-      decay: 0.22
-      noise: 1
-      pitch: 0.5
-      bend: 0
-      fm: 0
-      fmDecay: 0
-      fmFreq: 0
-    drum4:
-      name: 'Perc'
-      level: 0.5
-      hp: 0.25
-      decay: 0.2
-      noise: 0.05
-      pitch: 0.1
-      bend: 0
-      fm: 0
-      fmDecay: 0
-      fmFreq: 0
-
-  mapping: [
-    'drum0'
-    'drum1'
-    'drum2'
-    'drum3'
-    'drum4'
-  ]
+    drums: [
+      {
+        id: drumId += 1
+        name: 'Kick'
+        level: 1
+        hp: 0
+        decay: 0.35
+        noise: 0.001
+        pitch: 0
+        bend: 0.39
+        fm: 1
+        fmDecay: 0.05
+        fmFreq: 0.02
+      }, {
+        id: drumId += 1
+        name: 'Snare'
+        level: 0.5
+        hp: 0.22
+        decay: 0.1
+        noise: 0.8
+        pitch: 0.1
+        bend: 0
+        fm: 0
+        fmDecay: 0
+        fmFreq: 0
+      }, {
+        id: drumId += 1
+        name: 'HH1'
+        level: 0.05
+        hp: 1
+        decay: 0.07
+        noise: 0.8
+        pitch: 0.4
+        bend: 0
+        fm: 1
+        fmDecay: 0.4
+        fmFreq: 0
+      }, {
+        id: drumId += 1
+        name: 'HH2'
+        level: 0.2
+        hp: 0.6
+        decay: 0.22
+        noise: 1
+        pitch: 0.5
+        bend: 0
+        fm: 0
+        fmDecay: 0
+        fmFreq: 0
+      }
+    ]
 
   constructor: ->
     super
     @notes = {}
-    @filters = (highpassFilter() for drum in @mapping)
+    @filters = {}
+    @updateFilters()
+
+    console.log "CONSTRCUTOR"
+    console.log @state.activeDrum
+
+  updateFilters: ->
+    @filters = @state.drums.reduce((memo, drum) =>
+      memo[drum.id] = @filters[drum.id] or highpassFilter()
+      memo
+    , {})
+
+  createSetterForDrum: (index) ->
+    (value) =>
+      @set drums: @state.drums.map (drum, i) ->
+        if i == index then value else drum
 
   reset: ->
     @notes = {}
@@ -88,9 +95,8 @@ module.exports = class DrumkitSynthesizer extends Model
     return 0 if @state.level == 0
 
     # sum all active notes
-    @state.level * @mapping.reduce((memo, drumName, index) =>
+    @state.level * @state.drums.reduce((memo, drum, index) =>
       return memo unless @notes[index]?
-      drum = @state[drumName]
       elapsed = time - @notes[index]
       return memo if elapsed > drum.decay
 
@@ -123,4 +129,4 @@ module.exports = class DrumkitSynthesizer extends Model
   tick: (time, i, beat, bps, notesOn) =>
     # add new notes
     notesOn.forEach (note) =>
-      @notes[note.key] = time if @mapping[note.key]?
+      @notes[note.key] = time if @state.drums[note.key]?

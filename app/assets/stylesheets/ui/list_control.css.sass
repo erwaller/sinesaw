@@ -1,0 +1,25 @@
+@import "../variables"
+
+.ui.list-control
+  border: solid $line-width $line-color
+  display: flex
+  flex-flow: column nowrap
+  min-width: 100px
+
+  .list
+    flex-grow: 1
+    overflow-y: auto
+
+    .option
+      padding: $margin
+      border-bottom: solid $line-width $line-color
+      cursor: pointer
+
+      &.selected
+        background-color: $ctrl-color
+
+  .controls
+    border-top: solid $line-width $line-color
+    padding: $margin
+    background-color: $ctrl-bg-color
+    flex-grow: 0

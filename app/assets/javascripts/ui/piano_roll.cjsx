@@ -534,6 +534,5 @@ module.exports = React.createClass
           <span className="icon icon-arrow-left"/>
           <span className="icon icon-arrow-right"/>
         </ScaleHandle>
-        {JSON.stringify @props.sequence.state.notes[@state.selectedNotes[0]]}
       </div>
     </div>
