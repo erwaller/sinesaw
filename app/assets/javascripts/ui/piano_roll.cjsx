@@ -22,20 +22,39 @@ module.exports = React.createClass
 
   getInitialState: ->
     # x scale and scroll values are in beats
-    # x scale and scroll values are in half steps
-    xScale: 4
-    yScale: 28
+    # y scale and scroll values are in half steps
+    
+    # x and y scale and scroll are set after component mounts based on
+    # sequence property and size of element on screen
+    xScale: 1
+    yScale: 12
+    xScroll: 0
+    yScroll: 0
+    
+    # min and max scales of viewport
     minXScale: 1
     maxXScale: 64
     minYScale: 12
     maxYScale: 128
-    xScroll: 0
-    yScroll: 50
-    keyWidth: 60
-    lineWidth: 2
+
+    # distance around the element used to measure scrolling, should be
+    # more than the maximum possible distance travelled between scroll events
     scrollPadding: 500
+
+    # should match the border width / line width set in css
+    lineWidth: 2
+
+    # width of key markers
+    keyWidth: 60
+
+    # moved notes will be quantized to this fraction of a note
     quantization: 4
+
+    # maximum width from the left/right edge of a note where a drag will resize
+    # rather than translate the note
     resizeHandleWidth: 10
+
+    # state used during selection / resize / translate actions
     selectedNotes: []
     selectionOrigin: null
     selectionPosition: null
@@ -144,11 +163,17 @@ module.exports = React.createClass
 
     @setState {yScale, yScroll}
 
+
+  #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  # this should be refactored to 'updateNotes: (ids, delta) ->' so that notes
+  # can move as far as possible when you attempt to move an octave near the edge
+  #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   updateNotes: (changes) ->
     notes = Object.keys(changes).map (i) =>
-      key: if changes[i].key then changes[i].key else @state.notes[i].key
-      start: if changes[i].start then changes[i].start else @state.notes[i].start
-      length: if changes[i].length then changes[i].length else @state.notes[i].length
+      key: if changes[i].key? then changes[i].key else @state.notes[i].key
+      start: if changes[i].start? then changes[i].start else @state.notes[i].start
+      length: if changes[i].length? then changes[i].length else @state.notes[i].length
 
     keys = notes.map (note) -> note.key
     starts = notes.map (note) -> note.start
@@ -167,8 +192,6 @@ module.exports = React.createClass
     # update scroll so notes remain on screen
 
     stateChanges = {}
-    
-    console.log {minStart, maxEnd, starts, notes}
 
     if minKey < @state.yScroll and maxKey <= @state.yScroll + @state.yScale
       stateChanges.yScroll = minKey
@@ -176,14 +199,11 @@ module.exports = React.createClass
     if maxKey >= @state.yScroll + @state.yScale and minKey > @state.yScroll
       stateChanges.yScroll = maxKey - @state.yScale + 1
 
-
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # this does not work yet, i dont think.. also you need to add right scrolling
-    # also, this could be refactored to updateNotes: (ids, delta) -> so that notes
-    # can move as far as possible when you attempt to move an octave near the edge
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if minStart < @state.xScroll and maxEnd <= @state.xScroll + @state.xScale
       stateChanges.xScroll = minStart
+
+    if maxEnd >= @state.xScroll + @state.xScale and minStart > @state.xScroll
+      stateChanges.xScroll = maxEnd - @state.xScale
 
     @props.sequence.updateNotes changes
     @setState stateChanges
@@ -204,7 +224,7 @@ module.exports = React.createClass
   notesSelectedBy: (from, to) ->
     minKey = Math.min from.key, to.key
     maxKey = Math.max from.key, to.key
-    minStart = Math.min from.start, to.start
+    minEnd = Math.min from.start, to.start
     maxStart = Math.max from.start, to.start
 
     notes = []
@@ -212,7 +232,7 @@ module.exports = React.createClass
       notes.push parseInt id if (
         note.key >= minKey and
         note.key <= maxKey and
-        note.start + note.length > minStart and
+        note.start + note.length > minEnd and
         note.start <= maxStart
       )
 
@@ -514,5 +534,6 @@ module.exports = React.createClass
           <span className="icon icon-arrow-left"/>
           <span className="icon icon-arrow-right"/>
         </ScaleHandle>
+        {JSON.stringify @props.sequence.state.notes[@state.selectedNotes[0]]}
       </div>
     </div>
