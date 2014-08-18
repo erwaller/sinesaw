@@ -6,6 +6,15 @@ Knob = require './knob'
 Slider = require './slider'
 SampleChooser = require './sample_chooser'
 Envelope = require './envelope'
+Filter = require './filter'
+
+
+keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+rootKeyOptions = for i in [127..0]
+  octave = Math.floor(i / 12) - 2
+  note = keys[i % 12]
+  <option key={i} value={i}>{"#{note}#{octave}"}</option>
+
 
 module.exports = React.createClass
 
@@ -32,6 +41,15 @@ module.exports = React.createClass
           onChange={@props.instrument.createSetterFor('level')}
         />
         <div className="ui">
+          <select
+            onChange={@props.instrument.createBindingFor('rootKey')}
+            value={@props.instrument.state.rootKey}
+          >
+            {rootKeyOptions}
+          </select>
+          <label>Root</label>
+        </div>
+        <div className="ui">
           <select onChange={@setPolyphony} value={@state.polyphony}>{options}</select>
           <label>Poly</label>
         </div>
@@ -44,18 +62,25 @@ module.exports = React.createClass
           sampleName={@props.instrument.state.sampleName}
         />
       </div>
-      <div className="column">
+      <div className="column envelope">
         <Envelope
           label="Volume Env"
           env={@props.instrument.state.volumeEnv}
           onChange={@props.instrument.createSetterFor('volumeEnv')}
         />
       </div>
-      <div className="column">
+      <div className="column envelope">
         <Envelope
           label="Filter Env"
           env={@props.instrument.state.filterEnv}
           onChange={@props.instrument.createSetterFor('filterEnv')}
+        />
+      </div>
+      <div className="column controls">
+        <Filter
+          label="Filter"
+          filter={@props.instrument.state.filter}
+          onChange={@props.instrument.createSetterFor('filter')}
         />
       </div>
     </div>

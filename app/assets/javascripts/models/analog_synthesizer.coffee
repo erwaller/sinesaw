@@ -43,7 +43,6 @@ module.exports = class AnalogSynthesizer extends Model
       pitch: 0.5
       tune: 0.5
 
-
   constructor: ->
     super
     @notes = new RingBuffer @maxPolyphony, Array, @state.polyphony

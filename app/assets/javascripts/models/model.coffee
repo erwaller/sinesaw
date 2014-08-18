@@ -19,6 +19,12 @@ module.exports = class Model
       o[attr] = value
       @set o
 
+  createBindingFor: (attr) ->
+    (e) =>
+      o = {}
+      o[attr] = e.target.value
+      @set o
+
   addComponent: (component) ->
     i = @components.indexOf component
     @components.push component if i < 0

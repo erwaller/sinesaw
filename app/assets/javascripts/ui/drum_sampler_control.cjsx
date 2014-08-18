@@ -77,11 +77,6 @@ module.exports = React.createClass
           value={@state.level}
           onChange={@props.instrument.createSetterFor('level')}
         />
-        <Knob
-          label="Pan"
-          value={@state.pan}
-          onChange={@props.instrument.createSetterFor('pan')}
-        />
       </div>
       <ListControl
         options={drumOptions}

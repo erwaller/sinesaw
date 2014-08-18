@@ -1,7 +1,9 @@
 Model = require './model'
 RingBuffer = require '../util/ring_buffer'
-envelope = require '../dsp/envelope'
 linearInterpolator = require '../dsp/linear_interpolator'
+lowpassFilter = require '../dsp/lowpass_filter'
+highpassFilter = require '../dsp/highpass_filter'
+envelope = require '../dsp/envelope'
 
 module.exports = class BasicSampler extends Model
 
@@ -24,10 +26,19 @@ module.exports = class BasicSampler extends Model
       d: 0.25
       s: 1
       r: 0.5
+    filter:
+      type: 'none'
+      freq: 0.27
+      res: 0.05
+      env: 0.45
 
   constructor: ->
     super
     @notes = new RingBuffer @maxPolyphony, Array, @state.polyphony
+    @filters =
+      LP: (lowpassFilter() for i in [0...@maxPolyphony])
+      HP: (highpassFilter() for i in [0...@maxPolyphony])
+      none: (((sample) -> sample) for i in [0...@maxPolyphony])
 
   setPolyphony: (polyphony) ->
     @notes.resize polyphony
@@ -45,11 +56,19 @@ module.exports = class BasicSampler extends Model
       return memo unless note?
       return memo unless note.len + r > time - note.time
 
+      # get pitch shifted interpolated sample and apply volume envelope
       transpose = note.key - @state.rootKey
       samplesElapsed = i - note.i
       sample = linearInterpolator @state.sampleData, transpose, samplesElapsed
+      sample = envelope(@state.volumeEnv, note, time) * (sample or 0)
 
-      memo + envelope(@state.volumeEnv, note, time) * (sample or 0)
+      # apply filter with envelope
+      filterCutoff = Math.min 1, @state.filter.freq + @state.filter.env * envelope(@state.filterEnv, note, time)
+      sample = @filters[@state.filter.type][index] sample, filterCutoff, @state.filter.res
+
+      # return result
+      memo + sample
+
     , 0)
 
   tick: (time, i, beat, bps, notesOn) =>
