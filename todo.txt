@@ -1,24 +1,58 @@
+pre launch:
+
 - add drum sampler
+  - transpose
+  - start
+- update basic sampler
+  - add root key chooser
+  - add filter
+  - add start / end / loop controls
 - add loop slicing sampler
+  - global pitch / envelope
+  - waveform slicing ui w/ zoom
+- update analog synth
+  - filter lfo
+
 - test current approach vs using web audio nodes
   - each note adds a new node w/ scheduled playback, param changes
+
 - if not going w/ multiple nodes approach, fix playback marker to show time independent of buffering
+
 - update instruments to work w/ note on / note off instead of note recieveing length at note start
 - look at using webmidi
-- show loop size like ableton, make view size independtent of loop size, make dragging notes expand view size
-- fix note positions when mouse is dragged past edge of piano roll and piano roll autoscrolls
+
+- ui to add / remove / rearrange tracks
+
+- ability to save
+  - account creation
+  - sample storage limit / price
+
+
+post launch:
+
+- plugin format / plugin import from github
+
 - piano roll
-  - automation: make some way to have props on models calculated including automation
+  - fix note positions when mouse is dragged past edge of piano roll and piano roll autoscrolls
+  - show loop size like ableton, make view size independtent of loop size, make dragging notes expand view size
   - try to reproduce bug where option key is stuck on
   - try to reproduce bug where cursor gets stuck on
-- ui to add / remove / rearrange tracks
-- ability to save
-- add lfo to analog synth
+
+- automation
+  - make some way to have props on models calculated including automation
+  - add automation ui.. experiment w/ sweep / lfo generators
+
+- effects
+  - add effects busses
+  - add insert effects
+  - reverb
+    - https://github.com/web-audio-components/simple-reverb
+  - delay
+    - https://github.com/web-audio-components/delay
+  - compression (w/ sidechain)
+  - distortion
+    - http://component.fm/#components/web-audio-components/overdrive
+
 - add fm synth
-- add 'live' view, arrange view, rethink ui
-- add reverb
-- allow effects on tracks
-  - http://component.fm/#components/web-audio-components/overdrive
-  - https://github.com/web-audio-components/simple-reverb
-  - https://github.com/web-audio-components/delay
-- add busses and effect send
+
+- rethink ui: 'live' view? arrange view?

@@ -1,7 +1,7 @@
 Model = require './model'
 RingBuffer = require '../util/ring_buffer'
 envelope = require '../dsp/envelope'
-logSample = require '../util/log_sample'
+linearInterpolator = require '../dsp/linear_interpolator'
 
 module.exports = class BasicSampler extends Model
 
@@ -11,6 +11,7 @@ module.exports = class BasicSampler extends Model
     level: 0.5
     pan: 0.5
     polyphony: 1
+    rootKey: 60
     sampleData: null
     sampleName: ''
     volumeEnv:
@@ -30,14 +31,6 @@ module.exports = class BasicSampler extends Model
   reset: ->
     @notes.reset()
 
-  resample: (key, index) ->
-    i = index * Math.pow 2, (key - 60) / 12
-    i1 = Math.floor i
-    i2 = i1 + 1
-    l = i % 1
-
-    @state.sampleData[i1] * (1 - l) + @state.sampleData[i2] * l
-
   out: (time, i) =>
     return 0 if @state.level == 0
     return 0 unless @state.sampleData?
@@ -47,7 +40,9 @@ module.exports = class BasicSampler extends Model
       return memo unless note?
       return memo unless note.len + r > time - note.time
 
-      sample = @resample note.key, i - note.i
+      transpose = note.key - @state.rootKey
+      samplesElapsed = i - note.i
+      sample = linearInterpolator @state.sampleData, transpose, samplesElapsed
 
       memo + envelope(@state.volumeEnv, note, time) * (sample or 0)
     , 0)

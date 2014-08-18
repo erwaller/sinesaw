@@ -19,7 +19,14 @@ Drum = React.createClass
         o[k] = if k == key then value else v
       @props.onChange o
 
-  setSample: ->
+  setSample: (sampleName, sampleData) ->
+    o = {}
+    o[k] = v for k, v of @props.drum
+
+    o.sampleName = sampleName
+    o.sampleData = sampleData
+
+    @props.onChange o
 
   render: ->
     return <div className="drum"/> unless @props.drum
@@ -27,7 +34,7 @@ Drum = React.createClass
     <div className="drum">
       <div className="column">
         <SampleChooser
-          label="Sample"
+          label={"Sample"}
           onChange={@setSample}
           sampleData={@props.drum.sampleData}
           sampleName={@props.drum.sampleName}
