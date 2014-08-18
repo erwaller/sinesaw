@@ -7,12 +7,14 @@ Track = require './models/track'
 DrumkitSynthesizer = require './models/drumkit_synthesizer'
 AnalogSynthesizer = require './models/analog_synthesizer'
 BasicSampler = require './models/basic_sampler'
+DrumSampler = require './models/drum_sampler'
 PlaybackControl = require './ui/playback_control'
 TrackSelection = require './ui/track_selection'
 PianoRoll = require './ui/piano_roll'
 AnalogSynthesizerControl = require './ui/analog_synthesizer_control'
 DrumkitSynthesizerControl = require './ui/drumkit_synthesizer_control'
 BasicSamplerControl = require './ui/basic_sampler_control'
+DrumSamplerControl = require './ui/drum_sampler_control'
 
 sequences = require './sequences'
 
@@ -24,8 +26,9 @@ module.exports = React.createClass
     song = new Song
 
     song.tracks = [
-      new Track name: 'Drum Synth', new DrumkitSynthesizer
+      new Track name: 'Drum Sampler', new DrumSampler
       new Track name: 'Basic Sampler', new BasicSampler
+      new Track name: 'Drum Synth', new DrumkitSynthesizer
       new Track name: 'Analog Synth', new AnalogSynthesizer
     ]
 
@@ -53,6 +56,8 @@ module.exports = React.createClass
       instrument = <AnalogSynthesizerControl instrument={track.instrument}/>
     else if track.instrument instanceof DrumkitSynthesizer
       instrument = <DrumkitSynthesizerControl instrument={track.instrument}/>
+    else if track.instrument instanceof DrumSampler
+      instrument = <DrumSamplerControl instrument={track.instrument}/>
 
     <div className="app">
       <div className="row playback">

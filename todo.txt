@@ -1,4 +1,3 @@
-- redo drum synth ui to only show controls for currently selected drum, make number of drums variable
 - add drum sampler
 - add loop slicing sampler
 - test current approach vs using web audio nodes

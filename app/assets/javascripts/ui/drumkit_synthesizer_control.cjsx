@@ -74,10 +74,18 @@ Drum = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Modelable('instrument')]
+  mixins: [Modelable('instrument'), Updatable]
 
   getInitialState: ->
     activeDrum: 0
+
+  onAddDrum: ->
+    @props.instrument.addDrum()
+    @setState activeDrum: @props.instrument.state.drums.length - 1
+
+  onRemoveDrum: ->
+    @props.instrument.removeDrum @state.activeDrum
+    @setState activeDrum: Math.min @state.activeDrum, @props.instrument.state.drums.length - 1
 
   render: ->
     activeDrum = @props.instrument.state.drums[@state.activeDrum]
@@ -100,9 +108,9 @@ module.exports = React.createClass
       <ListControl
         options={drumOptions}
         selectedIndex={@state.activeDrum}
-        onSelect={(v) => @setState activeDrum: v}
-        onAdd={@props.instrument.addDrum}
-        onDelete={@props.instrument.removeDrum}
+        onSelect={@update 'activeDrum'}
+        onAdd={@onAddDrum}
+        onRemove={@onRemoveDrum}
       />
       <Drum drum={activeDrum} onChange={updateDrum}/>
     </div>

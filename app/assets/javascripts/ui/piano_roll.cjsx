@@ -41,8 +41,8 @@ module.exports = React.createClass
     # more than the maximum possible distance travelled between scroll events
     scrollPadding: 500
 
-    # should match the border width / line width set in css
-    lineWidth: 2
+    # should match the $line-width sass variable
+    lineWidth: 1
 
     # width of key markers
     keyWidth: 60

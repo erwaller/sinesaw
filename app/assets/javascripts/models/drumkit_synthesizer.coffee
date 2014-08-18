@@ -68,14 +68,27 @@ module.exports = class DrumkitSynthesizer extends Model
       }
     ]
 
+  defaultDrum: ->
+    id: drumId += 1
+    name: "Drum #{@state.drums.length + 1}"
+    level: 0.5
+    hp: 0
+    decay: 0.5
+    noise: 0.5
+    pitch: 0.5
+    bend: 0
+    fm: 0
+    fmDecay: 0
+    fmFreq: 0
+
   constructor: ->
     super
     @notes = {}
     @filters = {}
     @updateFilters()
 
-    console.log "CONSTRCUTOR"
-    console.log @state.activeDrum
+  reset: ->
+    @notes = {}
 
   updateFilters: ->
     @filters = @state.drums.reduce((memo, drum) =>
@@ -88,8 +101,15 @@ module.exports = class DrumkitSynthesizer extends Model
       @set drums: @state.drums.map (drum, i) ->
         if i == index then value else drum
 
-  reset: ->
-    @notes = {}
+  addDrum: =>
+    drums = @state.drums.slice(0)
+    drums.push @defaultDrum()
+    @set {drums}
+
+  removeDrum: (index) =>
+    drums = @state.drums.slice(0)
+    drums.splice index, 1
+    @set {drums}
 
   out: (time) ->
     return 0 if @state.level == 0

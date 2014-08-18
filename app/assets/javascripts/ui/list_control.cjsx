@@ -4,6 +4,9 @@ React = require 'react'
 
 module.exports = React.createClass
 
+  onRemove: ->
+    @props.onRemove @props.selectedIndex
+
   render: ->
     options = @props.options.map (name, i) =>
       className = 'option'
@@ -16,6 +19,7 @@ module.exports = React.createClass
         {options}
       </div>
       <div className="controls">
-        <div>Add</div>
+        <div className="icon icon-plus pull-right" onClick={@props.onAdd}></div>
+        <div className="icon icon-minus pull-left" onClick={@onRemove}></div>
       </div>
     </div>
