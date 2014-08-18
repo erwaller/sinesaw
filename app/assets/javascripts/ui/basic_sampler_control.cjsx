@@ -51,4 +51,11 @@ module.exports = React.createClass
           onChange={@props.instrument.createSetterFor('volumeEnv')}
         />
       </div>
+      <div className="column">
+        <Envelope
+          label="Filter Env"
+          env={@props.instrument.state.filterEnv}
+          onChange={@props.instrument.createSetterFor('filterEnv')}
+        />
+      </div>
     </div>

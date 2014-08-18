@@ -1,28 +1,49 @@
 @import "../variables"
 
 .ui.list-control
-  border: solid $line-width $line-color
-  display: flex
-  flex-flow: column nowrap
   min-width: 100px
+  position: relative
 
   .list
-    flex-grow: 1
-    overflow-y: auto
+    border: solid $line-width $line-color
+    border-right: none
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 15px + $margin
+    overflow-y: scroll
 
     .option
       padding: $margin
       border-bottom: solid $line-width $line-color
+      border-right: solid $line-width $line-color
       cursor: pointer
+      background: $ctrl-bg-color
+      position: relative
+      z-index: 2
 
       &.selected
-        background-color: $ctrl-color
+        background-color: $bg-color
+        border-right: none
+
+    &:after
+      content: ''
+      position: absolute
+      z-index: 1
+      top: 0
+      bottom: 0
+      right: 0
+      border-right: solid $line-width $line-color
+
 
   .controls
-    border-top: solid $line-width $line-color
     padding: $margin/2 $margin
     background-color: $ctrl-bg-color
-    flex-grow: 0
+    position: absolute
+    bottom: 0
+    left: 0
+    right: 0
 
     .icon
       font-size: 15px

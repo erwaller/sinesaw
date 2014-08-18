@@ -1,14 +1,16 @@
 pre launch:
 
-- add drum sampler
-  - transpose
-  - start
 - update basic sampler
   - add root key chooser
   - add filter
   - add start / end / loop controls
+- add drum sampler
+  - transpose
+  - start
+  - level
 - add loop slicing sampler
-  - global pitch / envelope
+  - global pitch / volume envelope
+  - global filter
   - waveform slicing ui w/ zoom
 - update analog synth
   - filter lfo

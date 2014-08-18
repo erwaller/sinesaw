@@ -60,6 +60,7 @@ module.exports = class DrumSampler extends Model
     # sum all active notes
     @state.level * @state.drums.reduce((memo, drum, index) =>
       return memo unless @notes[index]?
+      return memo unless drum.sampleData
       samplesElapsed = i - @notes[index].i
       return memo if samplesElapsed > drum.sampleData.length
 

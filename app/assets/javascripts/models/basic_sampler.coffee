@@ -19,6 +19,11 @@ module.exports = class BasicSampler extends Model
       d: 0.25
       s: 1
       r: 0.5
+    filterEnv:
+      a: 0
+      d: 0.25
+      s: 1
+      r: 0.5
 
   constructor: ->
     super
