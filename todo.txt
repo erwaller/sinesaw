@@ -1,12 +1,7 @@
 pre launch:
 
-- update basic sampler
-  - add root key chooser
-  - add filter
-  - add start / end / loop controls
 - add drum sampler
   - transpose
-  - start
   - level
 - add loop slicing sampler
   - global pitch / volume envelope
@@ -31,6 +26,9 @@ pre launch:
 
 
 post launch:
+
+- update basic sampler
+  - add start / end / loop controls
 
 - plugin format / plugin import from github
 
