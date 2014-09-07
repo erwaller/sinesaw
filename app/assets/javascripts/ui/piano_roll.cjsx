@@ -124,6 +124,8 @@ module.exports = React.createClass
         yScroll: if yScroll? then yScroll else @state.yScroll
 
   autoScaleViewport: (sequence) ->
+    return unless sequence?
+
     minKey = 128
     maxKey = 0
 
@@ -509,8 +511,11 @@ module.exports = React.createClass
           <select value={@state.quantization} onChange={@updateQuantization}>
             <option value="1">1</option>
             <option value="2">1/2</option>
+            <option value="3">1/3</option>
             <option value="4">1/4</option>
+            <option value="6">1/6</option>
             <option value="8">1/8</option>
+            <option value="12">1/12</option>
             <option value="16">1/16</option>
           </select>
         </div>

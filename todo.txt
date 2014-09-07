@@ -1,29 +1,36 @@
 pre launch:
 
-- add drum sampler
-  - transpose
-  - level
+- add instrument keyMap() function to drum sampler and loop sampler, pass to piano roll to display rows only for mapped drums
+
+- update basic sampler
+  - buttons for upload / record
+  - record modal (maybe add a generalized modal function to app)
+  - sample start / loop on sample view
+
+- update analog synth
+  - filter lfo
+
+- automation
+  - make some way to have props on models calculated including automation
+  - add automation ui.. experiment w/ sweep / lfo generators
+
 - add loop slicing sampler
   - global pitch / volume envelope
   - global filter
   - waveform slicing ui w/ zoom
-- update analog synth
-  - filter lfo
 
 - test current approach vs using web audio nodes
   - each note adds a new node w/ scheduled playback, param changes
 
 - if not going w/ multiple nodes approach, fix playback marker to show time independent of buffering
 
-- update instruments to work w/ note on / note off instead of note recieveing length at note start
-- look at using webmidi
-
-- ui to add / remove / rearrange tracks
+- look at using webmidi (would need to update instruments to work w/ note on / note off instead of note recieveing length at note start)
 
 - ability to save
   - account creation
   - sample storage limit / price
 
+- sample import from youtube soundcloud
 
 post launch:
 
@@ -37,10 +44,6 @@ post launch:
   - show loop size like ableton, make view size independtent of loop size, make dragging notes expand view size
   - try to reproduce bug where option key is stuck on
   - try to reproduce bug where cursor gets stuck on
-
-- automation
-  - make some way to have props on models calculated including automation
-  - add automation ui.. experiment w/ sweep / lfo generators
 
 - effects
   - add effects busses

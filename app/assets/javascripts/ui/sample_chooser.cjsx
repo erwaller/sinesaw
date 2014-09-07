@@ -26,6 +26,7 @@ module.exports = React.createClass
       <input type="file" ref="input" onChange={@onFileSelect}/>
       <div className="trigger" onClick={@triggerFileInput}>
         <Waveform sampleData={@props.sampleData}/>
+        <div className="start" style={left: "#{100*@props.sampleStart}%", display: if @props.sampleData then 'block' else 'none'}/>
         <div className="file-name">{@props.sampleName}</div>
         <div className="instruction" style={{display: if @props.sampleData? then 'none' else 'block'}}>
           click to upload

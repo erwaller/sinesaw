@@ -34,13 +34,19 @@ module.exports = React.createClass
     @initalValue = null
     @setState active: false
 
+  preventDefault: (e) ->
+    e.preventDefault()
+    e.stopPropagation()
+
   render: ->
     style = '-webkit-transform': "rotate(#{(@props.value - 0.5) * 300}deg)"
     
     className = 'ui knob'
     className += ' active' if @state.active
 
-    <div className={className}>
+    # include draggable and ondragstart to allow use of the knob component
+    # inside a parent element using native html drag/drop
+    <div className={className} draggable={true} onDragStart={@preventDefault}>
       <div className="control">
         <div className="handle" style={style} onMouseDown={@draggableOnMouseDown}/>
       </div>

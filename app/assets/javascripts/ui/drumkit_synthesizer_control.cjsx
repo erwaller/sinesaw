@@ -6,6 +6,8 @@ Updatable = require './mixins/updatable'
 Knob = require './knob'
 Slider = require './slider'
 ListControl = require './list_control'
+keyOptions = require '../util/key_options'
+
 
 Drum = React.createClass
 
@@ -16,13 +18,13 @@ Drum = React.createClass
         o[k] = if k == key then value else v
       @props.onChange o
 
-  # level decay noise
-  # pitch bend hp 
-  # fm fmdcy pan
+  bind: (key) ->
+    update = @update key
+    (e) -> update e.target.value
 
   render: ->
     <div className='drum'>
-      <div className='column'>
+      <div className='column attrs'>
         <Knob
           label="Level"
           value={@props.drum.level}
@@ -69,6 +71,17 @@ Drum = React.createClass
           onChange={@update('fmFreq')}
         />
       </div>
+      <div className="column control">
+        <div className="ui">
+          <select
+            value={@props.drum.key}
+            onChange={@bind 'key'}
+          >
+            {keyOptions()}
+          </select>
+          <label>Trigger</label>
+        </div>
+      </div>
     </div>
 
 
@@ -90,7 +103,6 @@ module.exports = React.createClass
   render: ->
     activeDrum = @props.instrument.state.drums[@state.activeDrum]
     updateDrum = @props.instrument.createSetterForDrum @state.activeDrum
-    drumOptions = @props.instrument.state.drums.map (drum) -> drum.name
 
     <div className="ui drumkit">
       <div className="column channel">
@@ -101,11 +113,12 @@ module.exports = React.createClass
         />
       </div>
       <ListControl
-        options={drumOptions}
+        options={@props.instrument.state.drums}
         selectedIndex={@state.activeDrum}
         onSelect={@update 'activeDrum'}
         onAdd={@onAddDrum}
         onRemove={@onRemoveDrum}
+        onSort={@props.instrument.createSetterFor 'drums'}
       />
       <Drum drum={activeDrum} onChange={updateDrum}/>
     </div>

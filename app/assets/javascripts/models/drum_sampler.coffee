@@ -13,11 +13,13 @@ module.exports = class DrumSampler extends Model
         sampleData: null
         sampleName: ''
         transpose: 0
+        level: 1
+        key: 0
         volumeEnv:
           a: 0
           d: 1
-          s: 0.5
-          r: 0.5
+          s: 1
+          r: 1
       }
     ]
 
@@ -26,11 +28,16 @@ module.exports = class DrumSampler extends Model
     sampleData: null
     sampleName: ''
     transpose: 0
+    level: 1
+    key: do =>
+      key = 0
+      key += 1 while @state.drums.some (drum) -> drum.key == key
+      key
     volumeEnv:
       a: 0
       d: 1
-      s: 0.5
-      r: 0.5
+      s: 1
+      r: 1
 
   constructor: ->
     super
@@ -58,14 +65,17 @@ module.exports = class DrumSampler extends Model
     return 0 if @state.level == 0
 
     # sum all active notes
-    @state.level * @state.drums.reduce((memo, drum, index) =>
-      return memo unless @notes[index]?
-      return memo unless drum.sampleData
-      samplesElapsed = i - @notes[index].i
+    @state.level * @state.drums.reduce((memo, drum) =>
+      return memo unless drum.sampleData?
+
+      note = @notes[drum.key]
+      return memo unless note?
+
+      samplesElapsed = i - note.i
       return memo if samplesElapsed > drum.sampleData.length
 
       sample = linearInterpolator drum.sampleData, drum.transpose, samplesElapsed
-      memo + envelope(drum.volumeEnv, @notes[index], time) * (sample or 0)
+      memo + drum.level * envelope(drum.volumeEnv, note, time) * (sample or 0)
     , 0)
 
   tick: (time, i, beat, bps, notesOn) =>

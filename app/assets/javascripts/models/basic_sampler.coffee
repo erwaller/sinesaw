@@ -16,6 +16,8 @@ module.exports = class BasicSampler extends Model
     rootKey: 60
     sampleData: null
     sampleName: ''
+    start: 0
+    tune: 0.5
     volumeEnv:
       a: 0
       d: 0.25
@@ -57,9 +59,10 @@ module.exports = class BasicSampler extends Model
       return memo unless note.len + r > time - note.time
 
       # get pitch shifted interpolated sample and apply volume envelope
-      transpose = note.key - @state.rootKey
+      transpose = note.key - @state.rootKey + @state.tune - 0.5
       samplesElapsed = i - note.i
-      sample = linearInterpolator @state.sampleData, transpose, samplesElapsed
+      offset = Math.floor @state.start * @state.sampleData.length
+      sample = linearInterpolator @state.sampleData, transpose, samplesElapsed, offset
       sample = envelope(@state.volumeEnv, note, time) * (sample or 0)
 
       # apply filter with envelope

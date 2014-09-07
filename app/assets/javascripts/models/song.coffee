@@ -10,20 +10,30 @@ module.exports = class Song extends Model
     playing: false
     recording: false
     position: 0
+    tracks: []
 
   clip = (sample) ->
     Math.min(2, sample + 1) - 1
 
   constructor: ->
     super
-    @tracks = []
     @ctx = new webkitAudioContext
     @audio = webaudio @ctx, @out
+
+  addTrack: (track) =>
+    tracks = @state.tracks.slice 0
+    tracks.push track
+    @set {tracks}
+
+  removeTrack: (index) =>
+    tracks = @state.tracks.slice 0
+    tracks.splice index, 1
+    @set {tracks}
 
   out: (time, i) =>
     @tick time, i if i % clockRatio is 0
 
-    clip @tracks.reduce((sample, t) ->
+    clip @state.tracks.reduce((sample, t) ->
       sample + t.out time, i
     , 0)
 
@@ -35,7 +45,7 @@ module.exports = class Song extends Model
     b = Math.floor(beat * 4) / 4
     @set position: b if b > @state.position 
 
-    track.tick time, i, beat, bps for track in @tracks 
+    track.tick time, i, beat, bps for track in @state.tracks 
 
   play: =>
     @set playing: true
@@ -51,5 +61,5 @@ module.exports = class Song extends Model
   stop: =>
     @audio.stop()
     @audio.reset()
-    track.reset() for track in @tracks
+    track.reset() for track in @state.tracks
     @set playing: false, recording: false, position: 0

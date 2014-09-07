@@ -19,6 +19,7 @@ module.exports = class DrumkitSynthesizer extends Model
     drums: [
       {
         id: drumId += 1
+        key: 0
         name: 'Kick'
         level: 1
         hp: 0
@@ -31,6 +32,7 @@ module.exports = class DrumkitSynthesizer extends Model
         fmFreq: 0.02
       }, {
         id: drumId += 1
+        key: 1
         name: 'Snare'
         level: 0.5
         hp: 0.22
@@ -43,6 +45,7 @@ module.exports = class DrumkitSynthesizer extends Model
         fmFreq: 0
       }, {
         id: drumId += 1
+        key: 2
         name: 'HH1'
         level: 0.05
         hp: 1
@@ -55,6 +58,7 @@ module.exports = class DrumkitSynthesizer extends Model
         fmFreq: 0
       }, {
         id: drumId += 1
+        key: 3
         name: 'HH2'
         level: 0.2
         hp: 0.6
@@ -72,6 +76,10 @@ module.exports = class DrumkitSynthesizer extends Model
     id: drumId += 1
     name: "Drum #{@state.drums.length + 1}"
     level: 0.5
+    key: do =>
+      key = 0
+      key += 1 while @state.drums.some (drum) -> drum.key == key
+      key
     hp: 0
     decay: 0.5
     noise: 0.5
@@ -115,9 +123,11 @@ module.exports = class DrumkitSynthesizer extends Model
     return 0 if @state.level == 0
 
     # sum all active notes
-    @state.level * @state.drums.reduce((memo, drum, index) =>
-      return memo unless @notes[index]?
-      elapsed = time - @notes[index]
+    @state.level * @state.drums.reduce((memo, drum) =>
+      note = @notes[drum.key]
+      return memo unless note?
+
+      elapsed = time - note
       return memo if elapsed > drum.decay
 
       env = simpleEnvelope drum.decay, elapsed
@@ -140,7 +150,7 @@ module.exports = class DrumkitSynthesizer extends Model
 
       # apply highpass
       if drum.hp > 0
-        sample = @filters[index] sample, drum.hp
+        sample = @filters[drum.id] sample, drum.hp
 
       memo + drum.level * env * sample
     

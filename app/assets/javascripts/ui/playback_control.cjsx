@@ -31,7 +31,7 @@ module.exports = React.createClass
   render: ->
     playClassName = 'icon icon-play' + if @state.playing then ' active' else ''
     
-    bpmOptions = (<option value={i}>{i} bpm</option> for i in [200..20])
+    bpmOptions = (<option key={i} value={i}>{i} bpm</option> for i in [200..20])
 
     <div className="ui playback-control">
       <div className="group playback">

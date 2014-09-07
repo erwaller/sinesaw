@@ -18,7 +18,6 @@
       padding: $margin
       border-bottom: solid $line-width $line-color
       border-right: solid $line-width $line-color
-      cursor: pointer
       background: $ctrl-bg-color
       position: relative
       z-index: 2
@@ -26,6 +25,12 @@
       &.selected
         background-color: $bg-color
         border-right: none
+
+      &.dragging
+        background-color: $line-color
+
+        > *
+          opacity: 0.5
 
     &:after
       content: ''
