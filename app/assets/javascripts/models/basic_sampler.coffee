@@ -5,6 +5,7 @@ lowpassFilter = require '../dsp/lowpass_filter'
 highpassFilter = require '../dsp/highpass_filter'
 envelope = require '../dsp/envelope'
 
+
 module.exports = class BasicSampler extends Model
 
   maxPolyphony: 6

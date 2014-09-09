@@ -1,23 +1,24 @@
 pre launch:
 
-- add instrument keyMap() function to drum sampler and loop sampler, pass to piano roll to display rows only for mapped drums
-
 - update basic sampler
   - buttons for upload / record
   - record modal (maybe add a generalized modal function to app)
   - sample start / loop on sample view
 
-- update analog synth
-  - filter lfo
-
-- automation
-  - make some way to have props on models calculated including automation
-  - add automation ui.. experiment w/ sweep / lfo generators
-
 - add loop slicing sampler
   - global pitch / volume envelope
   - global filter
   - waveform slicing ui w/ zoom
+
+- add instrument keyMap() function to drum sampler and loop sampler, pass to piano roll to display rows only for mapped drums (piano roll has toggle button for this, if this is not available piano roll has 2 selects to choose root note and scale, can fold into those)
+
+- automation
+  - velocity
+  - make some way to have props on models calculated including automation
+  - add automation ui.. experiment w/ sweep / lfo generators
+
+- update analog synth
+  - filter lfo
 
 - test current approach vs using web audio nodes
   - each note adds a new node w/ scheduled playback, param changes
