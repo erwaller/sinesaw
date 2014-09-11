@@ -4,7 +4,7 @@ React = require 'react'
 Modelable = require './mixins/modelable'
 Knob = require './knob'
 Slider = require './slider'
-SampleChooser = require './sample_chooser'
+SampleControl = require './sample_control'
 Envelope = require './envelope'
 
 module.exports = React.createClass

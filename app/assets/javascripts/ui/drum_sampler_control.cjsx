@@ -7,7 +7,7 @@ Sortable = require './mixins/sortable'
 Knob = require './knob'
 Slider = require './slider'
 ListControl = require './list_control'
-SampleChooser = require './sample_chooser'
+SampleControl = require './sample_control'
 Envelope = require './envelope'
 keyOptions = require '../util/key_options'
 transposeOptions = require '../util/transpose_options'
@@ -42,7 +42,7 @@ Drum = React.createClass
 
     <div className="drum">
       <div className="column">
-        <SampleChooser
+        <SampleControl
           label={"Sample"}
           onChange={@setSample}
           sampleData={@props.drum.sampleData}

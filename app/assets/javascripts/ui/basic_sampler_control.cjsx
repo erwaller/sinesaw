@@ -3,8 +3,9 @@
 React = require 'react/addons'
 Modelable = require './mixins/modelable'
 Knob = require './knob'
+Chooser = require './chooser'
 Slider = require './slider'
-SampleChooser = require './sample_chooser'
+SampleControl = require './sample_control'
 Envelope = require './envelope'
 Filter = require './filter'
 keyOptions = require '../util/key_options'
@@ -40,7 +41,7 @@ module.exports = React.createClass
         </div>
       </div>
       <div className="column">
-        <SampleChooser
+        <SampleControl
           label="Sample"
           onChange={@setSample}
           sampleData={@props.instrument.state.sampleData}
@@ -79,14 +80,23 @@ module.exports = React.createClass
             <label>Root</label>
           </div>
           <Knob
-            label="Start"
-            value={@props.instrument.state.start}
-            onChange={@props.instrument.createSetterFor 'start'}
-          />
-          <Knob
             label="Tune"
             value={@props.instrument.state.tune}
             onChange={@props.instrument.createSetterFor 'tune'}
+          />
+        </div>
+        <div className="row sample">
+          <Chooser options={['loop','off']} value={'off'} onChange={->}/>
+          <Knob
+            label="Loop"
+            value={0.5}
+            disabled={true}
+            onChange={->}
+          />
+          <Knob
+            label="Start"
+            value={@props.instrument.state.start}
+            onChange={@props.instrument.createSetterFor 'start'}
           />
         </div>
       </div>

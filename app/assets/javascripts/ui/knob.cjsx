@@ -20,6 +20,8 @@ module.exports = React.createClass
     @setState active: true
 
   onDrag: (delta) ->
+    return if @props.disabled
+
     upRange = Math.min @range, (@dragStartPosition.y - window.scrollY)
     downRange = Math.min @range, (window.innerHeight + window.scrollY - @dragStartPosition.y)
 
@@ -43,6 +45,7 @@ module.exports = React.createClass
     
     className = 'ui knob'
     className += ' active' if @state.active
+    className += ' disabled' if @props.disabled
 
     # include draggable and ondragstart to allow use of the knob component
     # inside a parent element using native html drag/drop

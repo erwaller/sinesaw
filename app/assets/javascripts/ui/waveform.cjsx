@@ -12,21 +12,24 @@ module.exports = React.createClass
     if @props.sampleData?
       
       sampleData = @props.sampleData
-      sliceSize = sampleData.length / resolution
+      windowSize = Math.max 1, Math.floor @props.windowSize * sampleData.length
+      windowStart = Math.floor @props.windowCenter * sampleData.length - windowSize / 2
+      sliceSize = windowSize / resolution
       
       points = []
 
       points.push x: 0, y: @state.height
 
       for i in [1...resolution]
-        sliceStart = i * sliceSize
+        sliceStart = i * sliceSize + windowStart
         sliceEnd = sliceStart + sliceSize
 
         x = (i + 0.5) * @state.width / (resolution + 1)
 
         y = 0
         for j in [Math.floor(sliceStart)...Math.floor(sliceEnd)]
-          y = sampleData[j] if sampleData[j] > y
+          v = Math.abs sampleData[j]
+          y = v if v > y
         y = ((1 - y) * @state.height) || 0
 
         points.push {x,y}
@@ -35,13 +38,8 @@ module.exports = React.createClass
 
       path = <path key="p" d={'M ' + points.map((p) -> "#{p.x} #{p.y}").join ' L '}/>
 
-
-    <div className="ui waveform">
-      <div className="control">
-        <div ref="container">
-          <svg width={@state.width} height={@state.height}>
-            {path}
-          </svg>
-        </div>
+      <div className="ui waveform" ref="container">
+        <svg width={@state.width} height={@state.height}>
+          {path}
+        </svg>
       </div>
-    </div>

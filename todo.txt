@@ -1,9 +1,16 @@
 pre launch:
 
 - update basic sampler
-  - buttons for upload / record
-  - record modal (maybe add a generalized modal function to app)
+  - drag to zoom
+    - zoom centers around mouse x position
+    - pan left / right w/ cursor
+    - drag determines if action is initially a zoom or pan, works unidirectionally
   - sample start / loop on sample view
+    - add loop to basic sampler model
+    - disabled button state
+    - highlight waveform to show selected area w/ a different color
+    - draggable markers (Marker component, rendred by Waveform, array of marker data passed as prop to Waveform)
+  - record modal (add a generalized modal function to app)
 
 - add loop slicing sampler
   - global pitch / volume envelope
