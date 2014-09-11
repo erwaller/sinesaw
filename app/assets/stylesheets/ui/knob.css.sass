@@ -31,3 +31,9 @@ $size: 24px
   &.active
     .handle
       background-color: lighten($c3, 20%)
+
+  &.disabled
+    .handle
+      border-color: $line-color
+    .handle:after
+      background-color: $line-color

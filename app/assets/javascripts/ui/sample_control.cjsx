@@ -2,6 +2,7 @@ React = require 'react/addons'
 Draggable = require './mixins/draggable'
 SizeMeasurable = require './mixins/size_measurable'
 Waveform = require './waveform'
+Marker = require './sample_control/marker'
 
 decoder = new webkitAudioContext
 
@@ -85,6 +86,9 @@ module.exports = React.createClass
     @props.onChange null, null
 
   render: ->
+    windowStart = @state.windowCenter - 0.5 * @state.windowSize
+    startMarkerPosition = (@props.sampleStart - windowStart) / @state.windowSize
+
     <div className="ui sample-control">
       <input type="file" ref="input" onChange={@onFileSelect}/>
       <div
@@ -100,9 +104,10 @@ module.exports = React.createClass
           height={@state.height}
           windowCenter={@state.windowCenter}
           windowSize={@state.windowSize}
+          selectionStart={@props.sampleStart}
         />
         <div className="markers">
-          <div className="start" style={left: "#{100*@props.sampleStart}%", display: if @props.sampleData then 'block' else 'none'}/>
+          <Marker className="start" style={left: "#{100 * startMarkerPosition}%", display: if @props.sampleData then 'block' else 'none'}/>
         </div>
       </div>
       <div className="controls">

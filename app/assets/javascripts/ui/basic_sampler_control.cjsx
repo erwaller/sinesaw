@@ -86,12 +86,16 @@ module.exports = React.createClass
           />
         </div>
         <div className="row sample">
-          <Chooser options={['loop','off']} value={'off'} onChange={->}/>
+          <Chooser
+            options={['loop','off']}
+            value={@props.instrument.state.loopActive}
+            onChange={@props.instrument.createSetterFor 'loopActive'}
+          />
           <Knob
             label="Loop"
-            value={0.5}
-            disabled={true}
-            onChange={->}
+            value={@props.instrument.state.loop}
+            disabled={@props.instrument.state.loopActive == 'off'}
+            onChange={@props.instrument.createSetterFor 'loop'}
           />
           <Knob
             label="Start"
