@@ -32,7 +32,6 @@ label
   text-overflow: ellipsis
   margin: $margin 0 0
   padding: $margin 0 0
-  border-top: solid $line-color $line-width
   flex-grow: 0
   flex-shrink: 0 
 
@@ -83,16 +82,14 @@ select
   flex-flow: column nowrap
 
 .row.playback
-  flex-basis: 30px + $line-width
+  flex-basis: 30px
   flex-shrink: 0
   flex-grow: 0
-  border-bottom: solid $line-width $dark-line-color
 
 .column.sidebar
   flex-basis: auto
   flex-shrink: 0
   flex-grow: 0
-  border-right: solid $line-width $dark-line-color
 
 .row.sequence
   height: 100%
@@ -102,7 +99,7 @@ select
   flex-shrink: 0
   flex-grow: 0
   justify-content: flex-start
-  border-top: solid $line-width $dark-line-color
+  overflow-x: scroll
 
 .pull-left
   float: left

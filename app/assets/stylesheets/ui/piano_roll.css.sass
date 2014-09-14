@@ -3,7 +3,8 @@
 $grid-shade-color: lighten($bg-color, 5%)
 $grid-line-color: $bg-color
 $strong-grid-line-color: darken($bg-color, 6%)
-$key-width: 60px
+$key-width: 40px
+$playback-marker-width: 1px
 
 .ui.piano-roll
   display: flex
@@ -29,7 +30,6 @@ $key-width: 60px
     .keys
       top: 0
       left: 0
-      border-right: solid $dark-line-color $line-width
       background-color: $bg-color
 
       rect
@@ -52,22 +52,26 @@ $key-width: 60px
       width: 0
 
       line
-        stroke: $grid-line-color
+        stroke: $grid-shade-color
         stroke-width: $line-width
 
         &.strong
-          stroke: $strong-grid-line-color
+          stroke: $grid-line-color
 
-        &.playback
-          stroke: $med-line-color
-          stroke-width: $line-width
+      g.playback
+        transform: translate($playback-marker-width / 2, 0)
+
+        line
+          stroke: $grid-line-color
+          stroke-width: $playback-marker-width
+
 
       rect.shade
         fill: $grid-shade-color
 
       rect.note
         fill: $c1
-        stroke: darken($c1, 20%)
+        stroke: darken($c1, 10%)
         stroke-width: $line-width
 
         &.selected,
@@ -93,7 +97,6 @@ $key-width: 60px
 
   .view-controls
     background-color: $ctrl-bg-color
-    border-top: solid $line-width $dark-line-color
     flex-shrink: 0
     position: relative
     z-index: 2
@@ -133,5 +136,4 @@ $key-width: 60px
         margin: 0 $margin 0 0
         padding: 0 $margin - $line-width 0 0
         border-top: none
-        border-right: solid $line-width $line-color
         color: $light-text-color

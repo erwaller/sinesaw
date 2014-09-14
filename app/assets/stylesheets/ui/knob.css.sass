@@ -15,25 +15,32 @@ $size: 24px
     width: 100%
     height: 100%
     border-radius: 50%
-    border: solid $line-width $c3
     background-color: $ctrl-color
     -webkit-transition: background-color $animation-speed
 
     &:after
       content: ''
-      width: $line-width
+      width: $line-width * 2
       height: calc(50%)
-      background-color: $c3
+      background-color: $bg-color
+      -webkit-transition: background-color $animation-speed
       position: absolute
       top: 0
-      left: $size/2 - 1.5*$line-width
+      left: $size/2 - 1 * $line-width
+      border-bottom-left-radius: $line-width
+      border-bottom-right-radius: $line-width
 
   &.active
     .handle
-      background-color: lighten($c3, 20%)
+      background-color: lighten($c3, 15%)
+
+      &:after
+        background-color: $c3
+
 
   &.disabled
     .handle
-      border-color: $line-color
+      background-color: lighten($bg-color, 4%)
+
     .handle:after
-      background-color: $line-color
+      background-color: $bg-color

@@ -12,12 +12,11 @@ module.exports = React.createClass
     yScroll: React.PropTypes.number.isRequired
     yScale: React.PropTypes.number.isRequired
     keyWidth: React.PropTypes.number.isRequired
-    lineWidth: React.PropTypes.number.isRequired
 
   render: ->
     height = @props.height
     keyHeight = height / @props.yScale
-    keyWidth = @props.keyWidth - @props.lineWidth
+    keyWidth = @props.keyWidth
 
     els = []
 
@@ -32,10 +31,10 @@ module.exports = React.createClass
         text = null
         els.push <rect key={'k' + i} x={0} y={y} width={keyWidth} height={keyHeight}/>
 
-    # lines
-    for row, i in rows
-      y = i * keyHeight
-      els.push <line key={'l' + i} x1={0} y1={y} x2={keyWidth} y2={y}/>
+    # # lines
+    # for row, i in rows
+    #   y = i * keyHeight
+    #   els.push <line key={'l' + i} x1={0} y1={y} x2={keyWidth} y2={y}/>
 
     # text
     for row, i in rows

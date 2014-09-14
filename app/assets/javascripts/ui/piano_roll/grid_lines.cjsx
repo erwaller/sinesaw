@@ -40,10 +40,10 @@ module.exports = React.createClass
         y = height - (i + 1) * squareHeight
         els.push <rect key={'s'+i} x={0} y={y} width={width} height={squareHeight} className='shade'/>
 
-    # horizontal lines
+    # horizontal lines (separating e and f)
     for row, i in rows
-      unless (128 - row) % 12 == 0
-        y = i * squareHeight
+      if row % 12 == 5
+        y = (rows.length - i) * squareHeight
         els.push <line key={'h'+i} x1={0} y1={y} x2={width} y2={y}/>
 
     # vertical lines
@@ -52,15 +52,15 @@ module.exports = React.createClass
         x = i * squareWidth
         els.push <line key={'v'+i} x1={x} y1={0} x2={x} y2={height}/>
 
-    # strong horizontal lines
+    # strong horizontal lines (separating b and c)
     for row, i in rows
-      if (128 - row) % 12 == 0
-        y = i * squareHeight
+      if row % 12 == 0
+        y = (rows.length - i) * squareHeight
         els.push <line key={'hs'+i} x1={0} y1={y} x2={width} y2={y} className='strong'/>
 
     # strong vertical lines
     for col, i in cols
-      if col % quantization == 0
+      if i != 0 and col % quantization == 0
         x = i * squareWidth
         els.push <line key={'vs'+i} x1={x} y1={0} x2={x} y2={height} className='strong'/>
 

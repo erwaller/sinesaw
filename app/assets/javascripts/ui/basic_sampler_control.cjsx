@@ -47,6 +47,7 @@ module.exports = React.createClass
           sampleData={@props.instrument.state.sampleData}
           sampleName={@props.instrument.state.sampleName}
           sampleStart={@props.instrument.state.start}
+          onChangeStart={@props.instrument.createSetterFor 'start'}
         />
       </div>
       <div className="column envelope">

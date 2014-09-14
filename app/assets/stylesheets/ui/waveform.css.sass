@@ -5,14 +5,14 @@
   flex-basis: 100%
   display: flex
 
-  svg
-    stroke-width: $line-width
-
   path
-    stroke: $med-line-color
-    stroke-width: $line-width
     fill: $med-line-color
 
   path.selection
-    stroke: $dark-line-color
     fill: $dark-line-color
+
+  rect.marker
+    fill: $ctrl-color
+
+    &.active
+      fill: lighten($c1, 20%)

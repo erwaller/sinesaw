@@ -16,13 +16,12 @@ $width: 24px
 
   .track
     position: absolute
-    width: $width/3 - 2*$line-width
+    width: $width/3
     left: $width/3
     margin: -$width/6 0
-    padding: $width/6 - $line-width 0
+    padding: $width/6 0
     height: 100%
     box-sizing: content-box
-    border: solid $line-width $line-color
     background-color: $ctrl-bg-color
 
   .handle
@@ -31,11 +30,10 @@ $width: 24px
     height: $width/3
     margin-top: -$width/6
     left: 0
-    border: solid $line-width $c1
     background-color: $ctrl-color
     -webkit-transition: background-color $animation-speed
 
   &.active
     .handle
-      background-color: lighten($c1, 25%)
+      background-color: lighten($c1, 20%)
 

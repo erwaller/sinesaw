@@ -14,6 +14,7 @@ module.exports = class DrumSampler extends Model
         sampleName: ''
         transpose: 0
         level: 1
+        start: 0
         key: 0
         volumeEnv:
           a: 0
@@ -29,6 +30,7 @@ module.exports = class DrumSampler extends Model
     sampleName: ''
     transpose: 0
     level: 1
+    start: 0
     key: do =>
       key = 0
       key += 1 while @state.drums.some (drum) -> drum.key == key
@@ -72,9 +74,10 @@ module.exports = class DrumSampler extends Model
       return memo unless note?
 
       samplesElapsed = i - note.i
-      return memo if samplesElapsed > drum.sampleData.length
+      offset = Math.floor drum.start * drum.sampleData.length
+      return memo if samplesElapsed + offset > drum.sampleData.length
 
-      sample = linearInterpolator drum.sampleData, drum.transpose, samplesElapsed
+      sample = linearInterpolator drum.sampleData, drum.transpose, samplesElapsed, offset
       memo + drum.level * envelope(drum.volumeEnv, note, time) * (sample or 0)
     , 0)
 

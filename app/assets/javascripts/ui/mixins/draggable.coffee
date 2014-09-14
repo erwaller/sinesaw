@@ -7,7 +7,7 @@ module.exports =
     @onDragStart?(@dragStartPosition, e)
 
   draggableOnMouseMove: (e) ->
-    x = @dragStartPosition.x - e.clientX
+    x = e.clientX - @dragStartPosition.x
     y = @dragStartPosition.y - e.clientY
     @onDrag?({x,y}, e)
 

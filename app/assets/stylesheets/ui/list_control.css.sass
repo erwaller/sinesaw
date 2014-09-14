@@ -5,7 +5,6 @@
   position: relative
 
   .list
-    border: solid $line-width $line-color
     border-right: none
     position: absolute
     top: 0
@@ -13,11 +12,10 @@
     right: 0
     bottom: 15px + $margin
     overflow-y: scroll
+    background-color: $line-color
 
     .option
       padding: $margin
-      border-bottom: solid $line-width $line-color
-      border-right: solid $line-width $line-color
       background: $ctrl-bg-color
       position: relative
       z-index: 2
@@ -39,7 +37,6 @@
       top: 0
       bottom: 0
       right: 0
-      border-right: solid $line-width $line-color
 
 
   .controls

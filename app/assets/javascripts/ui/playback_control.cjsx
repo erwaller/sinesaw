@@ -36,6 +36,7 @@ module.exports = React.createClass
     <div className="ui playback-control">
       <div className="group playback">
         <div className={playClassName} onClick={@play}/>
+        <div className="icon icon-record"/>
         <div className="icon icon-stop" onClick={@props.song.stop}/>
       </div>
       <div className="group tempo">

@@ -1,5 +1,7 @@
 @import "../variables"
 
+$marker-width: 4px
+
 .ui.sample-control
   flex-grow: 1
   flex-basis: 100%
@@ -12,17 +14,17 @@
 
   .controls
     font-size: 0
-    border: solid $line-width $line-color
-    border-top: none
-    background-color: $ctrl-bg-color
 
     .control
       display: inline-block
       font-size: 15px
       line-height: 15px
       padding: $margin/4
-      border-right: solid $line-width $line-color
-      background-color: $bg-color
+      color: $dark-line-color
+      -webkit-transition: color $animation-speed
+
+      &:hover
+        color: $text-color
 
     .file-name
       float: right
@@ -37,7 +39,6 @@
     flex-flow: column nowrap
     flex-grow: 1
     position: relative
-    border: solid $line-width $line-color
     background-color: $ctrl-bg-color
 
   .instruction
@@ -48,20 +49,4 @@
     text-align: center
 
   .ui.waveform
-    margin: $margin/2
-
-  .markers
-    position: absolute
-    top: $margin/2
-    left: $margin/2
-    bottom: $margin/2
-    right: $margin/2
-    overflow: hidden
-
-  .start
-    position: absolute
-    height: 100%
-    top: 0
-    border: solid $line-width $c2
-    margin-left: -$line-width
-    border-radius: 2*$line-width
+    margin: $margin/2 $margin/2

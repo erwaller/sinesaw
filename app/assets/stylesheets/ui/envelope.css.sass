@@ -7,7 +7,6 @@
   height: 100%
 
   > .control
-    border: solid $line-width $line-color
     background-color: $ctrl-bg-color
     flex-grow: 1
 
@@ -24,11 +23,10 @@
       fill: none
     
     circle
-      stroke: $c3
       fill: $ctrl-color
 
       &.active
-        fill: lighten($c3, 20%)
+        fill: lighten($c3, 10%)
 
   .knobs
     display: flex

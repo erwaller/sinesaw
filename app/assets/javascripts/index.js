@@ -1,5 +1,5 @@
 (function(){
-  var React = require('react');
+  window.React = require('react');
   var App = require('./app');
 
   var Song = require('./models/song');
@@ -13,30 +13,79 @@
   // // inject request animation frame batching strategy into react
   // require('react-raf-batching').inject()
 
-  // load webfonts and mount app
-  // WebFont.load({
-  //   google: {
-  //     families: ['Roboto:300:latin']
-  //   },
-  //   active: function(){
-  //     React.renderComponent(App(), document.body);
-  //   }
-  // });
-
+  var async = require('async');
   var fs = require('fs');
   var b2a = require('base64-arraybuffer');
-  var file = b2a.decode(fs.readFileSync(__dirname + '/../audio/test.wav', 'base64'));
+  var bass = b2a.decode(fs.readFileSync(__dirname + '/../audio/bass.wav', 'base64'));
+  var kick = b2a.decode(fs.readFileSync(__dirname + '/../audio/kick.wav', 'base64'));
+  var snare = b2a.decode(fs.readFileSync(__dirname + '/../audio/snare.wav', 'base64'));
+  var hat = b2a.decode(fs.readFileSync(__dirname + '/../audio/hat.wav', 'base64'));
   var decoder = new webkitAudioContext();
-  decoder.decodeAudioData(file, function(buffer) {
-    var data = buffer.getChannelData(0);
-    
-    BasicSampler.prototype.defaults.sampleData = data
-    BasicSampler.prototype.defaults.sampleName = 'test.wav'
+
+  async.parallel({
+    bass: function(cb) { decoder.decodeAudioData(bass, function(buffer) { cb(null, buffer) }); },
+    kick: function(cb) { decoder.decodeAudioData(kick, function(buffer) { cb(null, buffer) }); },
+    snare: function(cb) { decoder.decodeAudioData(snare, function(buffer) { cb(null, buffer) }); },
+    hat: function(cb) { decoder.decodeAudioData(hat, function(buffer) { cb(null, buffer) }); }
+  }, function(err, results) {
+
+    console.log("HERE")
+    console.log(err)
+    console.log(results)
+    console.log(arguments)
+
+    BasicSampler.prototype.defaults.sampleData = results.bass.getChannelData(0);
+    BasicSampler.prototype.defaults.sampleName = 'test.wav';
+    DrumSampler.prototype.defaults.drums = [
+      {
+        name: 'Kick',
+        sampleData: results.kick.getChannelData(0),
+        sampleName: 'kick.wav',
+        transpose: 0,
+        level: 1,
+        key: 0,
+        start: 0,
+        volumeEnv: {
+          a: 0,
+          d: 1,
+          s: 1,
+          r: 1
+        }
+      }, {
+        name: 'Snare',
+        sampleData: results.snare.getChannelData(0),
+        sampleName: 'snare.wav',
+        transpose: 0,
+        level: 0.35,
+        key: 1,
+        start: 0,
+        volumeEnv: {
+          a: 0,
+          d: 1,
+          s: 1,
+          r: 1
+        }
+      }, {
+        name: 'High Hat',
+        sampleData: results.hat.getChannelData(0),
+        sampleName: 'hat.wav',
+        transpose: 0,
+        level: 0.2,
+        key: 2,
+        start: 0,
+        volumeEnv: {
+          a: 0,
+          d: 1,
+          s: 1,
+          r: 1
+        }
+      },
+    ];
 
     window.song = new Song();
     
     song.set({tracks: [
-      // new Track({name: 'Drum Sampler'}, new DrumSampler()),
+      new Track({name: 'Drum Sampler'}, new DrumSampler()),
       // new Track({name: 'Drum Synth'}, new DrumkitSynthesizer()),
       new Track({name: 'Basic Sampler'}, new BasicSampler()),
       // new Track({name: 'Loop Sampler'}, new LoopSampler()),

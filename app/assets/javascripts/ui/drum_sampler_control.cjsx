@@ -47,6 +47,8 @@ Drum = React.createClass
           onChange={@setSample}
           sampleData={@props.drum.sampleData}
           sampleName={@props.drum.sampleName}
+          sampleStart={@props.drum.start}
+          onChangeStart={@update 'start'}
         />
       </div>
       <div className="column envelope">

@@ -1,8 +1,5 @@
 React = require 'react/addons'
-Draggable = require './mixins/draggable'
-SizeMeasurable = require './mixins/size_measurable'
 Waveform = require './waveform'
-Marker = require './sample_control/marker'
 
 decoder = new webkitAudioContext
 
@@ -12,60 +9,10 @@ module.exports = React.createClass
   range: 300
   dragTypeDistance: 10
 
-  mixins: [React.addons.pureRenderMixin, Draggable, SizeMeasurable]
+  mixins: [React.addons.pureRenderMixin]
 
-  getInitialState: ->
-    windowCenter: 0.5
-    windowSize: 1
-
-  validateWindowCenter: (center) ->
-    halfSize = @state.windowSize / 2
-
-    if center < halfSize
-      halfSize
-    else if center > 1 - halfSize
-      1 - halfSize
-    else
-      center
-
-  onDragStart: ->
-    @initialWindowSize = @state.windowSize
-    @initialWindowCenter = @state.windowCenter
-    @dragType = null
-
-    # get sample index of initial mousdown
-    relativePosition = (@dragStartPosition.x - @getDOMNode().getBoundingClientRect().left) / @state.width
-    @initialPosition = @state.windowCenter + @state.windowSize * (relativePosition - 0.5)
-    
-
-  onDrag: (delta) ->
-    if @dragType == 'scale'
-
-      upRange = Math.min @range, (@dragStartPosition.y - window.scrollY)
-      downRange = Math.min @range, (window.innerHeight + window.scrollY - @dragStartPosition.y)
-
-      if delta.y < 0
-        minValue = Math.min 1, @state.width / @props.sampleData.length
-        size = Math.max minValue, @initialWindowSize * (downRange + delta.y) / downRange
-      else
-        size = Math.min 1, @initialWindowSize + (1 - @initialWindowSize) * delta.y / upRange
-
-      center = @initialPosition - size / @initialWindowSize * (@initialPosition - @initialWindowCenter)
-
-      @setState
-        windowSize: size
-        windowCenter: @validateWindowCenter center
-
-    else if @dragType == 'pan'
-
-      center = @initialWindowCenter + delta.x / @state.width * @initialWindowSize
-      @setState windowCenter: @validateWindowCenter center
-
-    else
-      if Math.abs(delta.x) > @dragTypeDistance
-        @dragType = 'pan'
-      else if Math.abs(delta.y) > @dragTypeDistance
-        @dragType = 'scale'
+  getDefaultProps: ->
+    sampleStart: 0
 
   triggerFileInput: ->
     @refs.input.getDOMNode().click()
@@ -82,12 +29,14 @@ module.exports = React.createClass
       reader.readAsArrayBuffer file
 
   clear: ->
-    console.log 'clearing'
     @props.onChange null, null
 
   render: ->
-    windowStart = @state.windowCenter - 0.5 * @state.windowSize
-    startMarkerPosition = (@props.sampleStart - windowStart) / @state.windowSize
+    if @props.sampleStart?
+      markers =
+        start:
+          value: @props.sampleStart
+          onChange: @props.onChangeStart
 
     <div className="ui sample-control">
       <input type="file" ref="input" onChange={@onFileSelect}/>
@@ -95,20 +44,14 @@ module.exports = React.createClass
         className="display"
         ref="container"
         onClick={if @props.sampleData? then null else @triggerFileInput}
-        onMouseDown={if @props.sampleData? then @draggableOnMouseDown else null}
       >
         {if @props.sampleData? then null else <div className="instruction">click to upload</div>}
         <Waveform
           sampleData={@props.sampleData}
-          width={@state.width}
-          height={@state.height}
-          windowCenter={@state.windowCenter}
-          windowSize={@state.windowSize}
           selectionStart={@props.sampleStart}
+          selectionEnd={1}
+          markers={markers}
         />
-        <div className="markers">
-          <Marker className="start" style={left: "#{100 * startMarkerPosition}%", display: if @props.sampleData then 'block' else 'none'}/>
-        </div>
       </div>
       <div className="controls">
         <div className="control" onClick={@triggerFileInput}>

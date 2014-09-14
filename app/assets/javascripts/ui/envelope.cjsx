@@ -48,8 +48,8 @@ module.exports = React.createClass
       p.x += m
       p.y += m
 
-    # base
-    lines.push <line key="b" x1={m} y1={m+h} x2={m+w} y2={m+h}/>
+    # # base
+    # lines.push <line key="b" x1={m} y1={m+h} x2={m+w} y2={m+h}/>
 
     # path
     d = 'M ' + [p1, p2, p3, p4, p5].map((p) -> "#{p.x} #{p.y}").join ' L '
@@ -90,14 +90,14 @@ module.exports = React.createClass
     h = @state.height - 2 * m
 
     if @state.dragTarget is 'attack'
-      a = @initialValue - delta.x / w
+      a = @initialValue + delta.x / w
       changes = {a}
     else if @state.dragTarget is 'decay'
-      d = @initialValue.d - delta.x / w
+      d = @initialValue.d + delta.x / w
       s = @initialValue.s + delta.y / h
       changes = {d, s}
     else if @state.dragTarget is 'release'
-      r = @initialValue - delta.x / w
+      r = @initialValue + delta.x / w
       changes = {r}
 
     for k, v of changes

@@ -6,6 +6,9 @@ module.exports = React.createClass
 
   mixins: [React.addons.PureRenderMixin]
 
+  getDefaultProps: ->
+    radius: 0
+
   propTypes:
     notes: React.PropTypes.object.isRequired
     selectedNotes: React.PropTypes.array.isRequired
@@ -37,6 +40,7 @@ module.exports = React.createClass
 
     width = @props.width
     height = @props.height
+    lineWidth = @props.lineWidth
     squareHeight = height / @props.yScale
     quantization = @props.quantization
     cols = @props.xScale * quantization
@@ -57,8 +61,8 @@ module.exports = React.createClass
       for id, note of @props.dragOriginalValue
         continue unless @noteOnScreen note
 
-        x = (note.start - @props.xScroll) * squareWidth * quantization + @props.lineWidth / 2
-        y = (@props.yScale + @props.yScroll - note.key - 1) * squareHeight + @props.lineWidth / 2
+        x = (note.start - @props.xScroll) * squareWidth * quantization + lineWidth / 2
+        y = (@props.yScale + @props.yScroll - note.key - 1) * squareHeight + lineWidth / 2
         w = squareWidth * note.length * @props.quantization - @props.lineWidth
         h = squareHeight - @props.lineWidth
 
@@ -70,8 +74,8 @@ module.exports = React.createClass
             y={y}
             width={w}
             height={h}
-            rx={@props.lineWidth}
-            ry={@props.lineWidth}
+            rx={@props.radius}
+            ry={@props.radius}
           />
         )
 
@@ -79,10 +83,10 @@ module.exports = React.createClass
     for id, note of @props.notes
       continue unless @noteOnScreen note
 
-      x = (note.start - @props.xScroll) * squareWidth * @props.quantization + @props.lineWidth / 2
-      y = (@props.yScale + @props.yScroll - note.key - 1) * squareHeight + @props.lineWidth / 2
-      w = squareWidth * note.length * @props.quantization - @props.lineWidth
-      h = squareHeight - @props.lineWidth
+      x = (note.start - @props.xScroll) * squareWidth * @props.quantization + lineWidth / 2
+      y = (@props.yScale + @props.yScroll - note.key - 1) * squareHeight + lineWidth / 2
+      w = squareWidth * note.length * @props.quantization - lineWidth
+      h = squareHeight - lineWidth
 
       className = 'note'
       className += ' selected' if note.id in @props.selectedNotes
@@ -96,8 +100,8 @@ module.exports = React.createClass
           y={y}
           width={w}
           height={h}
-          rx={@props.lineWidth}
-          ry={@props.lineWidth}
+          rx={@props.radius}
+          ry={@props.radius}
           data-id={id}
           onMouseDown={@props.onMouseDown}
           onMouseMove={@props.onMouseMove}

@@ -41,11 +41,11 @@ module.exports = React.createClass
     # more than the maximum possible distance travelled between scroll events
     scrollPadding: 500
 
-    # should match the $line-width sass variable
+    # should match the $line-width and $margin sass variables
     lineWidth: 1
 
     # width of key markers
-    keyWidth: 60
+    keyWidth: 40
 
     # moved notes will be quantized to this fraction of a note
     quantization: 4
@@ -441,7 +441,6 @@ module.exports = React.createClass
               yScroll={@state.yScroll}
               yScale={@state.yScale}
               keyWidth={@state.keyWidth}
-              lineWidth={@state.lineWidth}
               onClick={@onClickKeys}
             />
             <div className='grid' ref='grid'>
