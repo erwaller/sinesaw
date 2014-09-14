@@ -1,9 +1,9 @@
 pre launch:
 
 - update basic sampler
-  - sample start / loop on sample view
-    - add loop to basic sampler model
   - record modal (add a generalized modal function to app)
+
+- fix bug where piano roll vertical zoom shows a note below 0
 
 - test current approach vs using web audio nodes
   - each note adds a new node w/ scheduled playback, param changes

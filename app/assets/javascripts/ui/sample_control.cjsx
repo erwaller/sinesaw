@@ -32,11 +32,17 @@ module.exports = React.createClass
     @props.onChange null, null
 
   render: ->
+    markers = {}
+
     if @props.sampleStart?
-      markers =
-        start:
-          value: @props.sampleStart
-          onChange: @props.onChangeStart
+      markers.start =
+        value: @props.sampleStart
+        onChange: @props.onChangeStart
+
+    if @props.loopActive
+      markers.loop =
+        value: @props.sampleLoop
+        onChange: @props.onChangeLoop
 
     <div className="ui sample-control">
       <input type="file" ref="input" onChange={@onFileSelect}/>
@@ -49,7 +55,7 @@ module.exports = React.createClass
         <Waveform
           sampleData={@props.sampleData}
           selectionStart={@props.sampleStart}
-          selectionEnd={1}
+          selectionEnd={if @props.loopActive then @props.sampleLoop else 1}
           markers={markers}
         />
       </div>

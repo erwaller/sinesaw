@@ -161,7 +161,7 @@ module.exports = React.createClass
   updateYScale: (scale) ->
     yScale = Math.round scale
 
-    yScroll = Math.min @state.yScroll, 127 - @state.yScale
+    yScroll = Math.min @state.yScroll, 128 - @state.yScale
 
     @setState {yScale, yScroll}
 

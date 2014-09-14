@@ -47,7 +47,10 @@ module.exports = React.createClass
           sampleData={@props.instrument.state.sampleData}
           sampleName={@props.instrument.state.sampleName}
           sampleStart={@props.instrument.state.start}
-          onChangeStart={@props.instrument.createSetterFor 'start'}
+          onChangeStart={@props.instrument.setStart}
+          loopActive={@props.instrument.state.loopActive == 'loop'}
+          sampleLoop={@props.instrument.state.loop}
+          onChangeLoop={@props.instrument.setLoop}
         />
       </div>
       <div className="column envelope">
@@ -96,12 +99,12 @@ module.exports = React.createClass
             label="Loop"
             value={@props.instrument.state.loop}
             disabled={@props.instrument.state.loopActive == 'off'}
-            onChange={@props.instrument.createSetterFor 'loop'}
+            onChange={@props.instrument.setLoop}
           />
           <Knob
             label="Start"
             value={@props.instrument.state.start}
-            onChange={@props.instrument.createSetterFor 'start'}
+            onChange={@props.instrument.setStart}
           />
         </div>
       </div>

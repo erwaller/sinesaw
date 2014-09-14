@@ -18,8 +18,8 @@ module.exports = class BasicSampler extends Model
     sampleData: null
     sampleName: ''
     start: 0.3
-    loopActive: 'off'
-    loop: 0
+    loopActive: 'loop'
+    loop: 0.7
     tune: 0.5
     volumeEnv:
       a: 0
@@ -49,6 +49,16 @@ module.exports = class BasicSampler extends Model
     @notes.resize polyphony
     @set {polyphony}
 
+  setStart: (value) =>
+    @set
+      start: value
+      loop: Math.max value, @state.loop
+
+  setLoop: (value) =>
+    @set
+      loop: value
+      start: Math.min value, @state.start
+
   reset: ->
     @notes.reset()
 
@@ -65,7 +75,8 @@ module.exports = class BasicSampler extends Model
       transpose = note.key - @state.rootKey + @state.tune - 0.5
       samplesElapsed = i - note.i
       offset = Math.floor @state.start * @state.sampleData.length
-      sample = linearInterpolator @state.sampleData, transpose, samplesElapsed, offset
+      loopPoint = Math.floor @state.loop * @state.sampleData.length
+      sample = linearInterpolator @state.sampleData, transpose, samplesElapsed, offset, @state.loopActive == 'loop', loopPoint
       sample = envelope(@state.volumeEnv, note, time) * (sample or 0)
 
       # apply filter with envelope

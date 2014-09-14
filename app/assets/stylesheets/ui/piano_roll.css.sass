@@ -2,7 +2,7 @@
 
 $grid-shade-color: lighten($bg-color, 5%)
 $grid-line-color: $bg-color
-$strong-grid-line-color: darken($bg-color, 6%)
+$strong-grid-line-color: darken($bg-color, $contrast * 6%)
 $key-width: 40px
 $playback-marker-width: 1px
 
@@ -42,7 +42,7 @@ $playback-marker-width: 1px
 
       text
         text-anchor: end
-        fill: $text-color
+        fill: $light-text-color
         dominant-baseline: central
 
     .grid
@@ -136,4 +136,4 @@ $playback-marker-width: 1px
         margin: 0 $margin 0 0
         padding: 0 $margin - $line-width 0 0
         border-top: none
-        color: $light-text-color
+      color: $light-text-color
