@@ -1,5 +1,6 @@
 React = require 'react/addons'
 Waveform = require './waveform'
+RecordControl = require './record_control'
 
 decoder = new webkitAudioContext
 
@@ -30,6 +31,16 @@ module.exports = React.createClass
 
   clear: ->
     @props.onChange null, null
+
+  recordSample: ->
+    @props.app.launchModal <RecordControl
+      onCancel={@props.app.dismissModal}
+      onConfirm={
+        (sampleData) =>
+          @props.onChange 'recorded.wav', sampleData
+          @props.app.dismissModal()
+      }
+    />
 
   render: ->
     markers = {}
@@ -63,7 +74,7 @@ module.exports = React.createClass
         <div className="control" onClick={@triggerFileInput}>
           <div className="icon icon-arrow-up"/>
         </div>
-        <div className="control">
+        <div className="control" onClick={@recordSample}>
           <div className="icon icon-record"/>
         </div>
         <div className="control" onClick={@clear}>

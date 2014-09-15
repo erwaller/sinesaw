@@ -1,6 +1,6 @@
 # @cjsx React.DOM
 
-React = require 'react'
+React = require 'react/addons'
 Updatable = require './ui/mixins/updatable'
 Modelable = require './ui/mixins/modelable'
 Song = require './models/song'
@@ -18,8 +18,9 @@ DrumkitSynthesizerControl = require './ui/drumkit_synthesizer_control'
 BasicSamplerControl = require './ui/basic_sampler_control'
 DrumSamplerControl = require './ui/drum_sampler_control'
 LoopSamplerControl = require './ui/loop_sampler_control'
-
-sequences = require './sequences'
+Modal = require './ui/modal'
+RecordControl = require './ui/record_control'
+ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 module.exports = React.createClass
 
@@ -27,23 +28,37 @@ module.exports = React.createClass
 
   getInitialState: ->
     selectedTrack: 0
+    modalTitle: null
+    modalContent: null
+
+  launchModal: (modalContent) ->
+    @props.song.stop()
+    @setState {modalContent}
+
+  dismissModal: ->
+    @setState modalContent: null, modalTitle: null    
 
   render: ->
     track = @props.song.state.tracks[@state.selectedTrack]
 
     if track
       sequence = track.sequence
-
-      if track.instrument instanceof BasicSampler
-        instrument = <BasicSamplerControl instrument={track.instrument}/>
+      
+      controlClass = if track.instrument instanceof BasicSampler
+        BasicSamplerControl
       else if track.instrument instanceof AnalogSynthesizer
-        instrument = <AnalogSynthesizerControl instrument={track.instrument}/>
+        AnalogSynthesizerControl
       else if track.instrument instanceof DrumkitSynthesizer
-        instrument = <DrumkitSynthesizerControl instrument={track.instrument}/>
+        DrumkitSynthesizerControl
       else if track.instrument instanceof DrumSampler
-        instrument = <DrumSamplerControl instrument={track.instrument}/>
+        DrumSamplerControl
       else if track.instrument instanceof LoopSampler
-        instrument = <LoopSamplerControl instrument={track.instrument}/>
+        LoopSamplerControl
+
+      instrumentControl = <controlClass instrument={track.instrument} app={this}/>
+
+    if @state.modalContent?
+      modal = <Modal app={this} key={'m'}>{@state.modalContent}</Modal>
 
     <div className="app">
       <div className="row playback">
@@ -65,8 +80,11 @@ module.exports = React.createClass
             <PianoRoll sequence={sequence} song={@props.song}/>
           </div>
           <div className="row instrument">
-            {instrument}
+            {instrumentControl}
           </div>
         </div>
       </div>
+      <ReactCSSTransitionGroup transitionName="modal" enter={true} leave={true}>
+        {modal}
+      </ReactCSSTransitionGroup>
     </div>

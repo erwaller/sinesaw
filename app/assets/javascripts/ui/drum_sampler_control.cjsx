@@ -44,6 +44,7 @@ Drum = React.createClass
       <div className="column">
         <SampleControl
           label={"Sample"}
+          app={@props.app}
           onChange={@setSample}
           sampleData={@props.drum.sampleData}
           sampleName={@props.drum.sampleName}
@@ -121,5 +122,5 @@ module.exports = React.createClass
         onRemove={@onRemoveDrum}
         onSort={@props.instrument.createSetterFor 'drums'}
       />
-      <Drum drum={activeDrum} onChange={updateDrum}/>
+      <Drum drum={activeDrum} onChange={updateDrum} app={@props.app}/>
     </div>

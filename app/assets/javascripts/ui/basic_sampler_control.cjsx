@@ -43,6 +43,7 @@ module.exports = React.createClass
       <div className="column">
         <SampleControl
           label="Sample"
+          app={@props.app}
           onChange={@setSample}
           sampleData={@props.instrument.state.sampleData}
           sampleName={@props.instrument.state.sampleName}

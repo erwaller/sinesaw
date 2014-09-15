@@ -1,5 +1,6 @@
 (function(){
   window.React = require('react');
+  window.Modal = require('./ui/modal');
   var App = require('./app');
 
   var Song = require('./models/song');

@@ -51,6 +51,19 @@ select
   font: $heavy-font
   color: $text-color
 
+button
+  outline: none
+  background: $bg-color
+  border-radius: 0
+  border: 0
+  padding: 0 $margin
+  height: 30px
+  color: $text-color
+  -webkit-transition: background $animation-speed, color $animation-speed
+
+  &:hover
+    background: $ctrl-bg-color
+
 .ui
   margin: $margin
   flex-grow: 0

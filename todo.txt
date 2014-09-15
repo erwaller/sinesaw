@@ -1,9 +1,7 @@
 pre launch:
 
 - update basic sampler
-  - record modal (add a generalized modal function to app)
-
-- fix bug where piano roll vertical zoom shows a note below 0
+  - record modal
 
 - test current approach vs using web audio nodes
   - each note adds a new node w/ scheduled playback, param changes

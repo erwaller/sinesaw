@@ -1,0 +1,52 @@
+@import "../variables"
+
+.ui.record-control
+  flex-grow: 1
+  display: flex
+  flex-flow: column nowrap
+  margin: 0
+
+  .row.sample
+    flex-grow: 1
+    flex-shrink: 1
+    padding: $margin / 2
+    background: $ctrl-bg-color
+
+  .display
+    flex-grow: 1
+    display: flex
+    flex-flow: column-nowrap
+    justify-content: center
+
+  .ui.waveform
+    margin: 0
+
+  .instruction
+    align-self: center
+
+  .row.controls
+    flex-basis: 30px
+    flex-grow: 0
+    flex-shrink: 0
+
+    .left,
+    .right
+      flex-grow: 1
+
+    .left
+      text-align: left
+
+    .right
+      text-align: right
+
+    .icon
+      font-size: 20px
+      line-height: 20px
+      padding: $margin/2 $margin
+      display: inline-block
+
+      &:hover
+        background: $ctrl-bg-color
+
+      &.active
+        color: $c3

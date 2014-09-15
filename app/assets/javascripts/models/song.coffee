@@ -1,5 +1,6 @@
 Model = require './model'
 webaudio = require '../dsp/webaudio'
+context = require '../dsp/global_context'
 
 module.exports = class Song extends Model
 
@@ -17,7 +18,7 @@ module.exports = class Song extends Model
 
   constructor: ->
     super
-    @ctx = new webkitAudioContext
+    @ctx = context
     @audio = webaudio @ctx, @out
 
   addTrack: (track) =>
