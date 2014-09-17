@@ -92,7 +92,7 @@ module.exports = React.createClass
     tracks = for track, i in @props.tracks
       do (i) =>
         <TrackRow
-          key={i}
+          key={track.id}
           track={track}
           instrument={track.instrument}
           selected={@props.selectedTrack == i}

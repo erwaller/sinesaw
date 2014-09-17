@@ -53,7 +53,7 @@ module.exports = React.createClass
       else if track.instrument instanceof LoopSampler
         LoopSamplerControl
 
-      instrumentControl = <controlClass instrument={track.instrument} app={this}/>
+      instrumentControl = <controlClass key={track.id} instrument={track.instrument} app={this}/>
 
     if @state.modalContent?
       modal = <Modal key='m'>{@state.modalContent}</Modal>

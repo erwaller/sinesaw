@@ -1,8 +1,11 @@
+id = 0
+
 module.exports = class Model
 
   defaults: {}
 
   constructor: (@state={}) ->
+    @id = id += 1
     @state[k] ||= v for k, v of @defaults
     @components = []
 

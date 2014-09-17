@@ -15,30 +15,32 @@
     bottom 20px + margin
     overflow-y scroll
 
-    .track
-      padding margin margin margin 2 * margin
-      display flex
-      flex-flow row nowrap
-      align-items center
-      justify-content space-between
-      background-color line-color
+  .track
+    padding margin margin margin 2 * margin
+    display flex
+    flex-flow row nowrap
+    align-items center
+    justify-content space-between
+    background-color line-color
+    -webkit-transition background-color animation-speed
 
-      &.selected
-        background-color bg-color
 
-      &.dragging
-        background-color darken(bg-color, 12%)
+    &.selected
+      background-color bg-color
 
-        > *
-          opacity 0.5
+    &.dragging
+      background-color darken(bg-color, 12%)
 
-      .name
-        flex-grow 1
+      > *
+        opacity 0.5
 
-      .ui.knob
-        margin 0 margin
-        label
-          border-color med-line-color
+    .name
+      flex-grow 1
+
+    .ui.knob
+      margin 0 margin
+      label
+        border-color med-line-color
 
   .controls
     padding (margin / 2) margin
@@ -54,24 +56,3 @@
 
       &:hover
         color text-color
-
-// animations
-
-.track-enter
-  -webkit-transition -webkit-transform 0.2s, opacity 0.2s
-  opacity 0
-  -webkit-transform translate(-25%, 0)
-
-.track-enter.track-enter-active
-  opacity 1
-  -webkit-transform translate(0)
-
-.track-leave
-  -webkit-transition -webkit-transform 0.1s, opacity 0.1s
-  background-color line-color
-  opacity 1
-  -webkit-transform translate(0)
-
-.track-leave.track-leave-active
-  opacity 0
-  -webkit-transform translate(-25%, 0)

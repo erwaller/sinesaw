@@ -1,0 +1,36 @@
+@require '../variables'
+
+.modal-enter
+  .modal-backdrop
+    opacity 0
+    -webkit-transition opacity 0.3s
+
+  .modal-body
+    opacity 0
+    -webkit-transition -webkit-transform 0.3s, opacity 0.3s
+    -webkit-transform scale(1.5)
+
+.modal-enter.modal-enter-active
+  .modal-backdrop
+    opacity 0.65
+
+  .modal-body
+    opacity 1
+    -webkit-transform scale(1)
+
+.modal-leave
+
+  .modal-backdrop
+    -webkit-transition opacity 0.3s
+
+  .modal-body
+    -webkit-transition opacity 0.3s, -webkit-transform 0.3s
+    -webkit-transform scale(1)
+
+.modal-leave-active
+  .modal-backdrop
+    opacity 0
+
+  .modal-body
+    opacity 0
+    -webkit-transform scale(1.2)

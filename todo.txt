@@ -1,9 +1,5 @@
 pre launch:
 
-- update basic sampler
-  - record modal
-    - crop
-
 - test current approach vs using web audio nodes
   - each note adds a new node w/ scheduled playback, param changes
   - if not going w/ multiple nodes approach, fix playback marker to show time independent of buffering
