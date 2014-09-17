@@ -1,0 +1,138 @@
+@require "../variables"
+
+grid-shade-color = lighten(bg-color, contrast * 6)
+grid-line-color = bg-color
+key-width = 40px
+playback-marker-width = 1px
+
+.ui.piano-roll
+  display flex
+  flex-flow column nowrap
+  flex-grow 1
+  align-items stretch
+  margin 0
+
+  .body
+    flex-grow 1
+    background-color #fff
+    position relative
+    z-index 1
+    box-sizing border-box
+    overflow scroll
+
+    .outer,
+    .inner,
+    .keys,
+    .grid
+      position absolute
+
+    .keys
+      top 0
+      left 0
+      background-color bg-color
+
+      rect
+        fill med-line-color
+        stroke-width 0
+
+      line
+        stroke med-line-color
+        stroke-width line-width
+
+      text
+        text-anchor end
+        fill light-text-color
+        dominant-baseline central
+
+    .grid
+      left key-width
+      right 0
+      top 0
+      width 0
+
+      line
+        stroke grid-shade-color
+        stroke-width line-width * 1.5
+
+        &.strong
+          stroke grid-line-color
+
+      g.playback
+        transform translate(playback-marker-width / 2, 0)
+
+        line
+          stroke grid-line-color
+          stroke-width playback-marker-width
+
+
+      rect.shade
+        fill grid-shade-color
+
+      rect.note
+        fill c1
+        stroke darken(c1, 10%)
+        stroke-width line-width * 1.5
+
+        &.selected,
+        &.active
+          fill darken(c1, 30%)
+          stroke darken(c1, 40%)
+
+        &.ghost
+          opacity 0.8
+
+      rect.selection
+        fill transparentize(c4, 0.8)
+        //stroke c4
+        //stroke-width line-width
+
+
+    svg
+      margin 0
+      display block
+      top 0
+      left 0
+      overflow hidden
+
+  .view-controls
+    background-color ctrl-bg-color
+    flex-shrink 0
+    position relative
+    z-index 2
+    display flex
+    flex-flow row nowrap
+    justify-content flex-end
+    align-items center
+    padding 0 margin
+
+    .scale-handle
+      padding 0 (margin / 2)
+      height 13px
+      background line-color
+      color light-text-color
+      margin (margin / 2) margin
+      text-align center
+      font heavy-font
+
+      &:active
+        background-color darken(line-color, 5%)
+
+      .icon
+        line-height 13px
+        width 13px
+        height 13px
+        display inline-block
+        font-size 13px
+        cursor ns-resize
+
+    .setting
+      display flex
+      flex-flow row nowrap
+      align-items center
+      margin (margin / 2) margin
+
+      label
+        margin 0 margin 0 0
+        padding 0 margin - line-width 0 0
+        border-top none
+      color light-text-color

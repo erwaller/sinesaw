@@ -1,0 +1,56 @@
+@require "../variables"
+
+.ui.list-control
+  min-width 100px
+  position relative
+
+  .list
+    border-right none
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 15px + margin
+    overflow-y scroll
+    background-color line-color
+
+    .option
+      padding margin
+      background ctrl-bg-color
+      position relative
+      z-index 2
+
+      &.selected
+        background-color bg-color
+        border-right none
+
+      &.dragging
+        background-color line-color
+
+        > *
+          opacity 0.5
+
+    &:after
+      content ''
+      position absolute
+      z-index 1
+      top 0
+      bottom 0
+      right 0
+
+
+  .controls
+    padding (margin / 2) margin
+    background-color ctrl-bg-color
+    position absolute
+    bottom 0
+    left 0
+    right 0
+
+    .icon
+      font-size 15px
+      line-height 15px
+      color dark-line-color
+
+      &:hover
+        color text-color

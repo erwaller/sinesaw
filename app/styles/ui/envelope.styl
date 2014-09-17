@@ -1,0 +1,59 @@
+@require "../variables"
+
+.ui.envelope
+  display flex
+  flex-flow column nowrap
+  flex-grow 1
+  height 100%
+
+  > .control
+    background-color ctrl-bg-color
+    flex-grow 1
+
+  svg
+    stroke-width line-width
+
+    line
+      stroke line-color
+    path
+      stroke med-line-color
+      stroke-linecap round
+      stroke-linejoin round
+      stroke-width line-width * 2
+      fill none
+    
+    circle
+      fill ctrl-color
+
+      &.active
+        fill lighten(c3, 10%)
+
+  .knobs
+    display flex
+    flex-shrink 0
+    flex-flow row wrap
+    justify-content space-around
+    align-items center
+
+    .group
+      display flex
+      flex-flow row nowrap
+      flex-grow 1
+      justify-content space-around
+
+    .knob
+      display flex
+      flex-flow row nowrap
+      align-items center
+
+      > .control
+        display block
+
+      > label
+        margin 0 0 0 margin
+        padding 0 0 0 margin
+        border-top none
+        border-left solid line-width line-color
+
+  > label
+    margin 0

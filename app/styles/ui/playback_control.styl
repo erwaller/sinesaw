@@ -1,0 +1,64 @@
+@require "../variables"
+
+.ui.playback-control
+  margin 0
+  flex-grow 1
+  display flex
+  justify-content space-between
+  background-color ctrl-bg-color
+  border-bottom none
+  position relative
+
+  .group
+    flex-shrink 0
+
+    &.playback,
+    &.menu
+      flex-grow 0
+
+    &.tempo
+      flex-grow 1
+      text-align right
+      padding 0 10px
+
+      select
+        height 20px
+        margin 5px 0
+        background-color bg-color
+
+  .icon
+    display inline-block
+    font-size 20px
+    line-height 20px
+    width 20px
+    height 20px
+    padding 5px margin
+    color dark-line-color
+    box-sizing content-box
+    -webkit-transition color animation-speed, background-color animation-speed
+
+    &:hover
+      color c2
+      background-color line-color
+
+    &.active,
+    &:active
+      color c3
+
+    &.icon-air
+      padding 5px margin
+
+  .logo
+    position absolute
+    top 0
+    left 50%
+    width 100px
+    margin-left -50px
+    display inline-block
+    font font
+    font-size 20px
+    line-height 20px
+    padding 5px 0
+    color light-text-color
+    text-align center
+

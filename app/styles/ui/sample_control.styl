@@ -1,0 +1,49 @@
+@require "../variables"
+
+.ui.sample-control
+  flex-grow 1
+  flex-basis 100%
+  position relative
+  display flex
+  flex-flow column nowrap
+
+  input[type=file]
+    display none
+
+  .controls
+    font-size 0
+
+    .control
+      display inline-block
+      font-size 15px
+      line-height 15px
+      padding (margin / 4)
+      color dark-line-color
+      -webkit-transition color animation-speed
+
+      &:hover
+        color text-color
+
+    .file-name
+      float right
+      padding (margin / 4) (margin / 2)
+      line-height 15px
+      font-size 9px
+
+
+  .display
+    display flex
+    flex-flow column nowrap
+    flex-grow 1
+    position relative
+    background-color ctrl-bg-color
+
+  .instruction
+    position absolute
+    top 50%
+    line-height 0
+    width 100%
+    text-align center
+
+  .ui.waveform
+    margin (margin / 2)

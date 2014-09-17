@@ -1,0 +1,27 @@
+@require "../variables"
+
+.ui.drum-sampler
+  display flex
+  flew-flow row wrap
+  margin margin
+  flex-grow 1
+
+  .column.channel
+    flex-grow 0
+    flex-shrink 0
+    flex-basis 30px + 2*margin
+
+  .column.envelope
+    flex-basis 50%
+
+  .column.control
+    flex-grow 0
+    flex-shrink 0
+    flex-basis auto
+    text-align center
+
+  .drum
+    display flex
+    flex-flow row nowrap
+    flex-grow 1
+    justify-content stretch
