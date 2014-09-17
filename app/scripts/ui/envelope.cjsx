@@ -105,7 +105,7 @@ module.exports = React.createClass
 
     env = {}
     for k, v of @props.env
-      env[k] = changes[k] or v
+      env[k] = if changes[k]? then changes[k] else v
     @props.onChange env
 
   onDragEnd: ->
