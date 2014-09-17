@@ -1,11 +1,11 @@
-Model = require './model'
+Instrument = require './instrument'
 RingBuffer = require '../util/ring_buffer'
 lowpassFilter = require '../dsp/lowpass_filter'
 highpassFilter = require '../dsp/highpass_filter'
 envelope = require '../dsp/envelope'
 oscillators = require '../dsp/oscillators'
 
-module.exports = class AnalogSynthesizer extends Model
+module.exports = class AnalogSynthesizer extends Instrument
 
   tune = 440
   frequency = (key) ->
@@ -88,4 +88,3 @@ module.exports = class AnalogSynthesizer extends Model
     # add new notes
     notesOn.forEach (note) =>
       @notes.push {time, key: note.key, len: note.length / bps}
-

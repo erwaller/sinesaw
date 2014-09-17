@@ -13,7 +13,6 @@ module.exports = class Track extends Model
     super
     @sequence = new Sequence
     @effects = []
-    @meterLevel = 0
 
   out: (time, i) ->
     sample = @effects.reduce((sample, e) ->
@@ -36,3 +35,12 @@ module.exports = class Track extends Model
   reset: ->
     @instrument.reset()
     effect.reset() for effect in @effects
+
+  toJSON: ->
+    result = {}
+    result[k] = v for k, v of @state
+    result.effects = @effects.map (e) -> e.toJSON()
+    result.sequence = @sequence.toJSON()
+    result.instrument = @instrument.toJSON()
+    delete result.meterLevel
+    result

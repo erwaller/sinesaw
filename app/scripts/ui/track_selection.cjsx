@@ -34,7 +34,7 @@ TrackRow = React.createClass
       onDragStart={@dragStart}
       onDragEnd={@dragEnd}
       onDragOver={@dragOver}
-      data-id={@props.key}
+      data-id={@props.index}
     >
       <div className='name'>{@props.track.state.name}</div>
       <Knob
@@ -90,21 +90,23 @@ module.exports = React.createClass
 
   render: ->
     tracks = for track, i in @props.tracks
-      do (i) =>
-        <TrackRow
-          key={track.id}
-          track={track}
-          instrument={track.instrument}
-          selected={@props.selectedTrack == i}
-          selectTrack={=> @props.selectTrack i}
-          sort={@sort}
-          items={@props.tracks}
-          dragging={@state.dragging}
-        />
+      if track
+        do (i) =>
+          <TrackRow
+            key={track.id}
+            index={i}
+            track={track}
+            instrument={track.instrument}
+            selected={@props.selectedTrack == i}
+            selectTrack={=> @props.selectTrack i}
+            sort={@sort}
+            items={@props.tracks}
+            dragging={@state.dragging}
+          />
 
     <div className='ui track-selection'>
       <div className="tracks">
-        <ReactCSSTransitionGroup transitionName="track" enter={true} leave={true}>
+        <ReactCSSTransitionGroup transitionName="track">
           {tracks}
         </ReactCSSTransitionGroup>
       </div>

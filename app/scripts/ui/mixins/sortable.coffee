@@ -29,4 +29,4 @@ module.exports =
     @props.sort items, to
 
   isDragging: ->
-    @props.dragging == @props.key
+    @props.dragging == @props.index

@@ -1,11 +1,10 @@
-Immutable = require 'immutable'
-Model = require './model'
+Instrument = require './instrument'
 highpassFilter = require '../dsp/highpass_filter'
 simpleEnvelope = require '../dsp/simple_envelope'
 oscillators = require '../dsp/oscillators'
 logSample = require '../util/log_sample'
 
-module.exports = class DrumkitSynthesizer extends Model
+module.exports = class DrumkitSynthesizer extends Instrument
 
   minFreq = 60
   maxFreq = 3000

@@ -1,7 +1,7 @@
-Model = require './model'
+Instrument = require './instrument'
 RingBuffer = require '../util/ring_buffer'
 
-module.exports = class LoopSampler extends Model
+module.exports = class LoopSampler extends Instrument
 
   maxPolyphony: 6
 

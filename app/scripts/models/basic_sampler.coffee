@@ -1,4 +1,4 @@
-Model = require './model'
+Instrument = require './instrument'
 RingBuffer = require '../util/ring_buffer'
 linearInterpolator = require '../dsp/linear_interpolator'
 lowpassFilter = require '../dsp/lowpass_filter'
@@ -6,7 +6,7 @@ highpassFilter = require '../dsp/highpass_filter'
 envelope = require '../dsp/envelope'
 
 
-module.exports = class BasicSampler extends Model
+module.exports = class BasicSampler extends Instrument
 
   maxPolyphony: 6
 

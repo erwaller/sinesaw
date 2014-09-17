@@ -21,7 +21,7 @@ gulp.task 'watch-js', ->
     cache: {}
     packageCache: {}
     fullPaths: true
-    entries: ['./app/scripts/index.js']
+    entries: ['./app/scripts/index.coffee']
     extensions: ['.coffee', '.cjsx']
     debug: true
 

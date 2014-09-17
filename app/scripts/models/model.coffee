@@ -38,3 +38,6 @@ module.exports = class Model
 
   update: ->
     component.setState @state for component in @components
+
+  toJSON: ->
+    @state

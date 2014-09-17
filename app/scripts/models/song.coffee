@@ -18,8 +18,7 @@ module.exports = class Song extends Model
 
   constructor: ->
     super
-    @ctx = context
-    @audio = webaudio @ctx, @out
+    @audio = webaudio context, @out
 
   addTrack: (track) =>
     tracks = @state.tracks.slice 0
@@ -64,3 +63,8 @@ module.exports = class Song extends Model
     @audio.reset()
     track.reset() for track in @state.tracks
     @set playing: false, recording: false, position: 0
+
+  toJSON: ->
+    result = bpm: @state.bpm
+    result.tracks = @state.tracks.map (t) -> t.toJSON()
+    result

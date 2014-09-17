@@ -7,12 +7,9 @@ pre launch:
 - look at using webmidi (would need to update instruments to work w/ note on / note off instead of note recieveing length at start)
 
 - ability to save
-  - remove from rails project
-  - convert sass to stylus
-  - assets through gulp instead of browserify directly
-  - write node server serving static assets in dev envt
   - song model exports to json object (add toJSON on child models)
   - keep an array of these for undo
+  - write node server serving static assets in dev envt
   - backend (cors so site can be hosted on s3)
     - postgres on amazon rds
     - /account POST PUT

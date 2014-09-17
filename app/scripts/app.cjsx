@@ -82,7 +82,7 @@ module.exports = React.createClass
           </div>
         </div>
       </div>
-      <ReactCSSTransitionGroup transitionName="modal" enter={true} leave={true}>
+      <ReactCSSTransitionGroup transitionName="modal">
         {modal}
       </ReactCSSTransitionGroup>
     </div>

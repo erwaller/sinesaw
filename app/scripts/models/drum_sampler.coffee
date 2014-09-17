@@ -1,8 +1,8 @@
-Model = require './model'
+Instrument = require './instrument'
 envelope = require '../dsp/envelope'
 linearInterpolator = require '../dsp/linear_interpolator'
 
-module.exports = class DrumSampler extends Model
+module.exports = class DrumSampler extends Instrument
 
   defaults:
     level: 0.5
