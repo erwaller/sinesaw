@@ -12,7 +12,6 @@ module.exports = class LoopSampler extends Model
 
   constructor: ->
     super
-    throw new Error
     @notes = new RingBuffer @maxPolyphony, Array, @state.polyphony
 
   setPolyphony: (polyphony) ->

@@ -26,16 +26,16 @@
 
 // animations
 
-modal-animation-length = 0.3s
+animation-length = 0.3s
 
 .modal-enter
   .modal-backdrop
     opacity 0
-    -webkit-transition opacity modal-animation-length
+    -webkit-transition opacity animation-length
 
   .modal-body
     opacity 0
-    -webkit-transition -webkit-transform modal-animation-length, opacity modal-animation-length
+    -webkit-transition -webkit-transform animation-length, opacity animation-length
     -webkit-transform scale(1.5)
 
 .modal-enter.modal-enter-active
@@ -49,10 +49,10 @@ modal-animation-length = 0.3s
 .modal-leave
 
   .modal-backdrop
-    -webkit-transition opacity modal-animation-length
+    -webkit-transition opacity animation-length
 
   .modal-body
-    -webkit-transition opacity modal-animation-length, -webkit-transform modal-animation-length
+    -webkit-transition opacity animation-length, -webkit-transform animation-length
     -webkit-transform scale(1)
 
 .modal-leave-active

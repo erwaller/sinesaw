@@ -9,13 +9,13 @@ SizeMeasurable = require './mixins/size_measurable'
 Knob = require './knob'
 Meter = require './meter'
 Menu = require './menu'
-
 Track = require '../models/track'
 DrumSampler = require '../models/drum_sampler'
 BasicSampler = require '../models/basic_sampler'
 LoopSampler = require '../models/loop_sampler'
 AnalogSynthesizer = require '../models/analog_synthesizer'
 DrumkitSynthesizer = require '../models/drumkit_synthesizer'
+ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 
 TrackRow = React.createClass
@@ -104,7 +104,9 @@ module.exports = React.createClass
 
     <div className='ui track-selection'>
       <div className="tracks">
-        {tracks}
+        <ReactCSSTransitionGroup transitionName="track" enter={true} leave={true}>
+          {tracks}
+        </ReactCSSTransitionGroup>
       </div>
       <div className="controls">
         <Menu options={Object.keys @trackTypes} onSelect={(option) => @addTrack option} open={@state.menuOpen}/>
