@@ -42,7 +42,7 @@ module.exports = React.createClass
     scrollPadding: 500
 
     # should match the $line-width and $margin sass variables
-    lineWidth: 1
+    lineWidth: 1.5
 
     # width of key markers
     keyWidth: 40

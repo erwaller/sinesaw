@@ -2,28 +2,36 @@ pre launch:
 
 - update basic sampler
   - record modal
+    - crop
 
 - test current approach vs using web audio nodes
   - each note adds a new node w/ scheduled playback, param changes
   - if not going w/ multiple nodes approach, fix playback marker to show time independent of buffering
 
-- add loop slicing sampler
-  - global pitch / volume envelope
-  - global filter
-  - waveform slicing ui w/ zoom
-
 - look at using webmidi (would need to update instruments to work w/ note on / note off instead of note recieveing length at start)
 
 - ability to save
-  - account creation
+  - remove from rails project
+  - convert sass to stylus
+  - assets through gulp instead of browserify directly
+  - write node server serving static assets in dev envt
+  - song model exports to json object (add toJSON on child models)
+  - keep an array of these for undo
+  - backend (cors so site can be hosted on s3)
+    - postgres on amazon rds
+    - /account POST PUT
+    - /session POST DELETE
+    - /songs GET POST
+    - /songs/:id GET PUT DELETE
+    - /samples POST DELETE
+  - billing
+    - stripe
+    - $5/mo for 1gb of sample storage
+    - $10/mo for 10gb of sample storage
+    - $30/mo for 100gb of sample storage
   - sample storage limit / price
-
-- sample import from youtube / soundcloud (any way around same origin?)
-
-
-
-
-
+    - identify files by digest
+    - join files to users
 
 post launch:
 
@@ -38,19 +46,23 @@ post launch:
 
 - add instrument keyMap() function to drum sampler and loop sampler, pass to piano roll to display rows only for mapped drums (piano roll has toggle button for this, if this is not available piano roll has 2 selects to choose root note and scale, can fold into those)
 
+- add loop slicing sampler
+  - global pitch / volume envelope
+  - global filter
+  - waveform slicing ui w/ zoom
+
 - update analog synth
   - filter lfo
-
-- update basic sampler
-  - add start / end / loop controls
 
 - plugin format / plugin import from github
 
 - piano roll
+  - when a note is placed on top of another note they should merge
   - fix note positions when mouse is dragged past edge of piano roll and piano roll autoscrolls
   - show loop size like ableton, make view size independtent of loop size, make dragging notes expand view size
-  - try to reproduce bug where option key is stuck on
-  - try to reproduce bug where cursor gets stuck on
+  - try to reproduce / fix bug where option key is stuck on
+  - try to reproduce / fix bug where cursor gets stuck on
+  - copy / paste
 
 - effects
   - add effects busses

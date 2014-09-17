@@ -19,7 +19,6 @@ BasicSamplerControl = require './ui/basic_sampler_control'
 DrumSamplerControl = require './ui/drum_sampler_control'
 LoopSamplerControl = require './ui/loop_sampler_control'
 Modal = require './ui/modal'
-RecordControl = require './ui/record_control'
 ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 module.exports = React.createClass
@@ -28,7 +27,6 @@ module.exports = React.createClass
 
   getInitialState: ->
     selectedTrack: 0
-    modalTitle: null
     modalContent: null
 
   launchModal: (modalContent) ->
@@ -36,7 +34,7 @@ module.exports = React.createClass
     @setState {modalContent}
 
   dismissModal: ->
-    @setState modalContent: null, modalTitle: null    
+    @setState modalContent: null  
 
   render: ->
     track = @props.song.state.tracks[@state.selectedTrack]
@@ -58,7 +56,7 @@ module.exports = React.createClass
       instrumentControl = <controlClass instrument={track.instrument} app={this}/>
 
     if @state.modalContent?
-      modal = <Modal app={this} key={'m'}>{@state.modalContent}</Modal>
+      modal = <Modal key='m'>{@state.modalContent}</Modal>
 
     <div className="app">
       <div className="row playback">

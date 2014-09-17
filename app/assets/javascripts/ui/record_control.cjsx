@@ -1,17 +1,6 @@
 # @cjsx React.DOM
 
-# markers={
-#   start:
-#     value: @state.cropStart
-#     onChange: @update 'cropStart'
-#   end:
-#     value: @state.cropEnd
-#     onChange: @update 'cropEnd'
-# }
-
-
 React = require 'react/addons'
-Updatable = require './mixins/updatable'
 Modelable = require './mixins/modelable'
 Recording = require '../models/recording'
 Waveform = require './waveform'
@@ -19,14 +8,7 @@ Meter = require './meter'
 
 module.exports = React.createClass
 
-  mixins: [Updatable, React.addons.PureRenderMixin, Modelable('recording')]
-  
-  getInitialState: ->
-    cropStart: 0
-    cropEnd: 1
-
-  getDefaultProps: ->
-    recording: new Recording
+  mixins: [React.addons.PureRenderMixin, Modelable('recording')]
 
   onClick: ->
     if @state.active
@@ -35,7 +17,7 @@ module.exports = React.createClass
       @props.recording.record()
 
   confirm: ->
-    @props.onConfirm @state.sampleData
+    @props.onConfirm @props.recording.croppedSampleData()
 
   render: ->
 
@@ -55,8 +37,16 @@ module.exports = React.createClass
       
       waveform = <Waveform
         sampleData={@state.sampleData}
-        selectionStart={0}
-        selectionEnd={1}
+        selectionStart={@state.cropStart}
+        selectionEnd={@state.cropEnd}
+        markers={
+          start:
+            value: @state.cropStart
+            onChange: @props.recording.createSetterFor 'cropStart'
+          end:
+            value: @state.cropEnd
+            onChange: @props.recording.createSetterFor 'cropEnd'
+        }
       />
 
       leftButtons.push <div
@@ -72,9 +62,9 @@ module.exports = React.createClass
       message = if @state.error?
         @props.recording.state.error
       else if @state.active
-        'Recording..'
+        'Recording, click to stop'
       else
-        'Click to Record'
+        'Click to record'
 
       instruction = <div className="instruction">{message}</div>
 

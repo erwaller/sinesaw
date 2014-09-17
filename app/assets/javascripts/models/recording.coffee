@@ -12,6 +12,8 @@ module.exports = class Recording extends Model
     error: null
     active: false
     playing: false
+    cropStart: 0
+    cropEnd: 1
 
   record: =>
     return if @state.active
@@ -27,6 +29,20 @@ module.exports = class Recording extends Model
         @recorder.record()
       (errorCode) =>
         @set error: 'Unable to access microphone'
+
+  setCropStart: (value) =>
+    @set
+      cropStart: value
+      cropEnd: Math.max value, @state.cropStart
+
+  setCropEnd: (value) =>
+    @set
+      cropEnd: value
+      cropStart: Math.min value, @state.cropEnd
+
+  croppedSampleData: ->
+    length = @state.sampleData.length
+    @state.sampleData.subarray Math.floor(@state.cropStart * length), Math.floor(@state.cropEnd * length)
 
   stop: =>
     return unless @state.active
@@ -49,10 +65,12 @@ module.exports = class Recording extends Model
       @player.stop()
       @player.disconnect context.destination
 
+    data = @croppedSampleData()
+
     @player = context.createBufferSource()
     @player.connect context.destination
-    audioBuffer = context.createBuffer 1, @state.sampleData.length, context.sampleRate
-    audioBuffer.getChannelData(0).set @state.sampleData
+    audioBuffer = context.createBuffer 1, data.length, context.sampleRate
+    audioBuffer.getChannelData(0).set data
     @player.buffer = audioBuffer
     @player.onended = => @set playing: false
     @player.start()
@@ -60,8 +78,4 @@ module.exports = class Recording extends Model
     @set playing: true
 
   clear: =>
-    @set
-      sampleData: null
-      error: null
-      active: false
-      playing: false
+    @set @defaults
