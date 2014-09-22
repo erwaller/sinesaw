@@ -3,7 +3,6 @@
 grid-shade-color = lighten(bg-color, contrast * 6)
 grid-line-color = bg-color
 key-width = 40px
-playback-marker-width = 1px
 
 .ui.piano-roll
   display flex
@@ -58,11 +57,11 @@ playback-marker-width = 1px
           stroke grid-line-color
 
       g.playback
-        transform translate(playback-marker-width / 2, 0)
+        transform translate(line-width * 0.75, 0)
 
         line
-          stroke grid-line-color
-          stroke-width playback-marker-width
+          stroke lighten(c4, 5)
+          stroke-width line-width * 1.5
 
 
       rect.shade

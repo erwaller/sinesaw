@@ -1,13 +1,8 @@
 pre launch:
 
-- test current approach vs using web audio nodes
-  - each note adds a new node w/ scheduled playback, param changes
-  - if not going w/ multiple nodes approach, fix playback marker to show time independent of buffering
-
-- look at using webmidi (would need to update instruments to work w/ note on / note off instead of note recieveing length at start)
-
 - ability to save
   - song model exports to json object (add toJSON on child models)
+  - song model rehydrates from a json object
   - keep an array of these for undo
   - write node server serving static assets in dev envt
   - backend (cors so site can be hosted on s3)
@@ -17,27 +12,32 @@ pre launch:
     - /songs GET POST
     - /songs/:id GET PUT DELETE
     - /samples POST DELETE
-  - billing
-    - stripe
-    - $5/mo for 1gb of sample storage
-    - $10/mo for 10gb of sample storage
-    - $30/mo for 100gb of sample storage
-  - sample storage limit / price
+  - sample storage limit
     - identify files by digest
     - join files to users
 
+- test current approach vs using web audio nodes
+  - each note adds a new node w/ scheduled playback, param changes
+  - if not going w/ multiple nodes approach, fix playback marker to show time independent of buffering
+
+- look at using webmidi (would need to update instruments to work w/ note on / note off instead of note recieveing length at start)
+
+
+
 post launch:
+
+- renamable tracks and items in list view 
 
 - add swing to grid in piano roll
 
 - add 'off' to quantization options
 
+- add instrument keyMap() function to drum sampler and loop sampler, pass to piano roll to display rows only for mapped drums (piano roll has toggle button for this, if this is not available piano roll has 2 selects to choose root note and scale, can fold into those)
+
 - automation
   - velocity
   - make some way to have props on models calculated including automation
   - add automation ui.. experiment w/ sweep / lfo generators
-
-- add instrument keyMap() function to drum sampler and loop sampler, pass to piano roll to display rows only for mapped drums (piano roll has toggle button for this, if this is not available piano roll has 2 selects to choose root note and scale, can fold into those)
 
 - add loop slicing sampler
   - global pitch / volume envelope
