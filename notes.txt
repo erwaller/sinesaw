@@ -1,0 +1,10 @@
+models for immutable data
+
+
+class Model
+  has children
+  immutable
+    - does not handle updating data
+    - data flows one way from model to children
+    - views do not know about models, get data directly and handle updates using cursors
+    - on any change to data, top level model is udpated and changes flow downwards
