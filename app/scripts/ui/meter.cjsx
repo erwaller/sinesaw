@@ -1,17 +1,14 @@
 # @cjsx React.DOM
 
 React = require 'react'
-Modelable = require './mixins/modelable'
 
 module.exports = React.createClass
-
-  mixins: [Modelable('track')]
 
   getDefaultProps: ->
     steps: 6
 
   render: ->
-    level = Math.ceil(@state.meterLevel * @props.steps)
+    level = Math.ceil(@props.track.get('meterLevel') * @props.steps)
     
     steps = for i in [1..@props.steps]
       className = if i <= level then 'on' else ''
@@ -21,6 +18,5 @@ module.exports = React.createClass
       {steps}
     </div>
 
-  shouldComponentUpdate: (nextProps, nextState) ->
-    nextProps != @props or
-    Math.ceil(@state.meterLevel * @props.steps) != Math.ceil(nextState.meterLevel * @props.steps)
+  shouldComponentUpdate: (nextProps) ->
+    Math.ceil(@props.track.get('meterLevel') * @props.steps) != Math.ceil(nextProps.track.get('meterLevel') * nextProps.steps)

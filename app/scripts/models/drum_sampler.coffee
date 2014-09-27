@@ -4,7 +4,8 @@ linearInterpolator = require '../dsp/linear_interpolator'
 
 module.exports = class DrumSampler extends Instrument
 
-  defaults:
+  @defaults:
+    _type: 'DrumSampler'
     level: 0.5
     pan: 0.5
     drums: [

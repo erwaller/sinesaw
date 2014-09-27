@@ -3,7 +3,6 @@
 React = require 'react/addons'
 SizeMeasurable = require './mixins/size_measurable'
 Updatable = require './mixins/updatable'
-Modelable = require './mixins/modelable'
 Draggable = require './mixins/draggable'
 ScaleHandle = require './scale_handle'
 Keyboard = require '../util/keyboard'
@@ -18,7 +17,7 @@ Selection = require './piano_roll/selection'
 
 module.exports = React.createClass
   
-  mixins: [SizeMeasurable, Updatable, Modelable('song'), Modelable('sequence'), Draggable]
+  mixins: [SizeMeasurable, Updatable, Draggable]
 
   getInitialState: ->
     # x scale and scroll values are in beats
@@ -88,7 +87,7 @@ module.exports = React.createClass
     Keyboard.off 40, @onArrowKey
 
   componentWillReceiveProps: (nextProps) ->
-    if nextProps.sequence != @props.sequence
+    if nextProps.sequence.deref() != @props.sequence.deref()
       @autoScaleViewport nextProps.sequence
 
   snapScrolling: (e) ->
@@ -98,6 +97,7 @@ module.exports = React.createClass
     el = e.target
     xQuantum = @state.width / @state.xScale / @state.quantization
     yQuantum = @state.height / @state.yScale
+    loopSize = @props.sequence.get 'loopSize'
 
     # update scroll deltas
     @scrollDeltaX += el.scrollLeft - @state.scrollPadding
@@ -110,7 +110,7 @@ module.exports = React.createClass
     if Math.abs(@scrollDeltaX) > xQuantum
       quanta = (if @scrollDeltaX > 0 then Math.floor else Math.ceil)(@scrollDeltaX / xQuantum)
       @scrollDeltaX -= quanta * xQuantum
-      xScroll = Math.min Math.max(0, @state.xScroll + quanta / @state.quantization), @state.loopSize - @state.xScale
+      xScroll = Math.min Math.max(0, @state.xScroll + quanta / @state.quantization), loopSize - @state.xScale
 
     if Math.abs(@scrollDeltaY) > yQuantum
       quanta = (if @scrollDeltaX > 0 then Math.floor else Math.ceil)(@scrollDeltaY / yQuantum)
@@ -129,7 +129,7 @@ module.exports = React.createClass
     minKey = 128
     maxKey = 0
 
-    for id, {key} of sequence.state.notes
+    sequence.get('notes').forEach (id, {key}) ->
       minKey = key if key < minKey
       maxKey = key if key > maxKey
 
@@ -137,24 +137,25 @@ module.exports = React.createClass
 
     @setState
       xScroll: 0
-      xScale: sequence.state.loopSize
+      xScale: sequence.get 'loopSize'
       yScroll: Math.max 0, Math.ceil (minKey + maxKey - size) / 2
       yScale: size
 
   updateLoopSize: (e) ->
-    value = parseFloat e.target.value
-    @props.sequence.set loopSize: value
-    @setState xScale: value
+    # value = parseFloat e.target.value
+    # @props.sequence.set loopSize: value
+    # @setState xScale: value
 
   updateQuantization: (e) ->
     value = parseFloat e.target.value
     @setState quantization: value
 
   updateXScale: (scale) ->
+    loopSize = @props.sequence.get 'loopSize'
     xScale = Math.round(scale * @state.quantization) / @state.quantization
-    xScale = Math.min(@state.loopSize, xScale)
+    xScale = Math.min loopSize, xScale
 
-    xScroll = Math.min @state.xScroll, @state.loopSize - xScale
+    xScroll = Math.min @state.xScroll, loopSize - xScale
 
     @setState {xScale, xScroll}
 
@@ -172,43 +173,43 @@ module.exports = React.createClass
   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   updateNotes: (changes) ->
-    notes = Object.keys(changes).map (i) =>
-      key: if changes[i].key? then changes[i].key else @state.notes[i].key
-      start: if changes[i].start? then changes[i].start else @state.notes[i].start
-      length: if changes[i].length? then changes[i].length else @state.notes[i].length
+    # notes = Object.keys(changes).map (i) =>
+    #   key: if changes[i].key? then changes[i].key else @state.notes[i].key
+    #   start: if changes[i].start? then changes[i].start else @state.notes[i].start
+    #   length: if changes[i].length? then changes[i].length else @state.notes[i].length
 
-    keys = notes.map (note) -> note.key
-    starts = notes.map (note) -> note.start
-    ends = notes.map (note) -> note.start + note.length
+    # keys = notes.map (note) -> note.key
+    # starts = notes.map (note) -> note.start
+    # ends = notes.map (note) -> note.start + note.length
 
-    minKey = Math.min.apply null, keys
-    maxKey = Math.max.apply null, keys
-    minStart = Math.min.apply null, starts
-    maxEnd = Math.max.apply null, ends
+    # minKey = Math.min.apply null, keys
+    # maxKey = Math.max.apply null, keys
+    # minStart = Math.min.apply null, starts
+    # maxEnd = Math.max.apply null, ends
 
-    # prevent notes from being moved out of the available range
+    # # prevent notes from being moved out of the available range
 
-    return false if minKey < 0 or maxKey > 127
-    return false if minStart < 0 or maxEnd > @state.loopSize
+    # return false if minKey < 0 or maxKey > 127
+    # return false if minStart < 0 or maxEnd > @state.loopSize
 
-    # update scroll so notes remain on screen
+    # # update scroll so notes remain on screen
 
-    stateChanges = {}
+    # stateChanges = {}
 
-    if minKey < @state.yScroll and maxKey <= @state.yScroll + @state.yScale
-      stateChanges.yScroll = minKey
+    # if minKey < @state.yScroll and maxKey <= @state.yScroll + @state.yScale
+    #   stateChanges.yScroll = minKey
 
-    if maxKey >= @state.yScroll + @state.yScale and minKey > @state.yScroll
-      stateChanges.yScroll = maxKey - @state.yScale + 1
+    # if maxKey >= @state.yScroll + @state.yScale and minKey > @state.yScroll
+    #   stateChanges.yScroll = maxKey - @state.yScale + 1
 
-    if minStart < @state.xScroll and maxEnd <= @state.xScroll + @state.xScale
-      stateChanges.xScroll = minStart
+    # if minStart < @state.xScroll and maxEnd <= @state.xScroll + @state.xScale
+    #   stateChanges.xScroll = minStart
 
-    if maxEnd >= @state.xScroll + @state.xScale and minStart > @state.xScroll
-      stateChanges.xScroll = maxEnd - @state.xScale
+    # if maxEnd >= @state.xScroll + @state.xScale and minStart > @state.xScroll
+    #   stateChanges.xScroll = maxEnd - @state.xScale
 
-    @props.sequence.updateNotes changes
-    @setState stateChanges
+    # @props.sequence.updateNotes changes
+    # @setState stateChanges
 
   getRelativePosition: ({x,y}) ->
     {top, left} = @refs.grid.getDOMNode().getBoundingClientRect()
@@ -230,7 +231,7 @@ module.exports = React.createClass
     maxStart = Math.max from.start, to.start
 
     notes = []
-    for id, note of @state.notes
+    @props.sequence.get('notes').forEach (id, note) ->
       notes.push parseInt id if (
         note.key >= minKey and
         note.key <= maxKey and
@@ -255,7 +256,7 @@ module.exports = React.createClass
   onDoubleClickGrid: (e) ->
     {key, start} = @getRelativePosition x: e.clientX, y: e.clientY
     note = {key, start, length: 1 / @state.quantization}
-    @props.sequence.addNote note
+    # @props.sequence.addNote note
 
   # change cursor to indicate possible action
   onMouseMoveNote: (e) ->
@@ -296,12 +297,11 @@ module.exports = React.createClass
     # handle drag start
     @draggableOnMouseDown e
 
-    @originalValue = {}
-    for i in selectedNotes
-      @originalValue[i] = @state.notes[i]
+    # cache original values of selected notes
+    @originalValue = @props.sequence.get('notes').filter (note, id) ->
+      selectedNotes.indexOf(id) >= 0
 
-    @dragOrigin = @state.notes[id]
-    
+    @dragOrigin = @props.sequence.getIn ['notes', id]
 
     handleSize = Math.max 0, Math.min @state.resizeHandleWidth, (position.width - @state.resizeHandleWidth) / 2
 
@@ -461,8 +461,8 @@ module.exports = React.createClass
                   quantization={@state.quantization}
                 />
                 <PlaybackMarker
-                  position={@state.position}
-                  loopSize={@state.loopSize}
+                  position={@props.song.get 'position'}
+                  loopSize={@props.sequence.get 'loopSize'}
                   width={gridWidth}
                   height={@state.height}
                   xScroll={@state.xScroll}
@@ -481,7 +481,7 @@ module.exports = React.createClass
                   quantization={@state.quantization}
                 />
                 <Notes
-                  notes={@state.notes}
+                  notes={@props.sequence.get 'notes'}
                   selectedNotes={@state.selectedNotes}
                   dragOriginalValue={@originalValue}
                   translateTarget={@state.translateTarget}
@@ -520,7 +520,7 @@ module.exports = React.createClass
         </div>
         <div className="setting">
           <label>Length</label>
-          <select value={@state.loopSize} onChange={@updateLoopSize}>
+          <select value={@props.sequence.get 'loopSize'} onChange={@updateLoopSize}>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="4">4</option>

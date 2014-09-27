@@ -1,7 +1,6 @@
 # @cjsx React.DOM
 
 React = require 'react'
-Modelable = require './mixins/modelable'
 Updatable = require './mixins/updatable'
 Sortable = require './mixins/sortable'
 Knob = require './knob'
@@ -17,28 +16,23 @@ Drum = React.createClass
 
   mixins: [Sortable, React.addons.Pure]
 
-  update: (key) ->
-    (value) =>
-      o = {}
-      for k, v of @props.drum
-        o[k] = if k == key then value else v
-      @props.onChange o
-
-  bind: (key) ->
-    update = @update key
-    (e) -> update e.target.value
-
   setSample: (sampleName, sampleData) ->
-    o = {}
-    o[k] = v for k, v of @props.drum
+    # o = {}
+    # o[k] = v for k, v of @props.drum
 
-    o.sampleName = sampleName
-    o.sampleData = sampleData
+    # o.sampleName = sampleName
+    # o.sampleData = sampleData
 
-    @props.onChange o
+    # @props.onChange o
 
   render: ->
-    return <div className="drum"/> unless @props.drum
+    drum = @props.drum
+
+    return <div className="drum"/> unless drum
+
+    console.log "HERE"
+    console.log drum
+    console
 
     <div className="drum">
       <div className="column">
@@ -46,29 +40,29 @@ Drum = React.createClass
           label={"Sample"}
           app={@props.app}
           onChange={@setSample}
-          sampleData={@props.drum.sampleData}
-          sampleName={@props.drum.sampleName}
-          sampleStart={@props.drum.start}
-          onChangeStart={@update 'start'}
+          sampleData={drum.get 'sampleData'}
+          sampleName={drum.get 'sampleName'}
+          sampleStart={drum.get 'start'}
+          onChangeStart={->}
         />
       </div>
       <div className="column envelope">
         <Envelope
           label="Volume Env"
-          env={@props.drum.volumeEnv}
-          onChange={@update 'volumeEnv'}
+          env={drum.get('volumeEnv').toJS()}
+          onChange={->}
         />
       </div>
       <div className="column control">
         <Knob
           label="Level"
-          value={@props.drum.level}
-          onChange={@update 'level'}
+          value={drum.get 'level'}
+          onChange={->}
         />
         <div className="ui">
           <select
-            value={@props.drum.transpose}
-            onChange={@bind 'transpose'}
+            value={drum.get 'transpose'}
+            onChange={->}
           >
             {transposeOptions()}
           </select>
@@ -76,8 +70,8 @@ Drum = React.createClass
         </div>
         <div className="ui">
           <select
-            value={@props.drum.key}
-            onChange={@bind 'key'}
+            value={drum.get 'key'}
+            onChange={->}
           >
             {keyOptions()}
           </select>
@@ -89,38 +83,38 @@ Drum = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Modelable('instrument'), Updatable]
+  mixins: [Updatable]
 
   getInitialState: ->
     activeDrum: 0
 
   onAddDrum: ->
-    @props.instrument.addDrum()
-    @setState activeDrum: @props.instrument.state.drums.length - 1
+    # @props.instrument.addDrum()
+    # @setState activeDrum: @props.instrument.state.drums.length - 1
 
   onRemoveDrum: ->
-    @props.instrument.removeDrum @state.activeDrum
-    @setState activeDrum: Math.min @state.activeDrum, @props.instrument.state.drums.length - 1
+    # @props.instrument.removeDrum @state.activeDrum
+    # @setState activeDrum: Math.min @state.activeDrum, @props.instrument.state.drums.length - 1
 
   render: ->
-    activeDrum = @props.instrument.state.drums[@state.activeDrum]
-    updateDrum = @props.instrument.createSetterForDrum @state.activeDrum
+    instrument = @props.instrument
+    activeDrum = instrument.cursor ['drums', @state.activeDrum]
 
     <div className="ui drum-sampler">
       <div className="column channel">
         <Slider
           label="Level"
-          value={@state.level}
-          onChange={@props.instrument.createSetterFor 'level'}
+          value={instrument.get 'level'}
+          onChange={->}
         />
       </div>
       <ListControl
-        options={@props.instrument.state.drums}
+        options={instrument.get 'drums'}
         selectedIndex={@state.activeDrum}
         onSelect={@update 'activeDrum'}
         onAdd={@onAddDrum}
         onRemove={@onRemoveDrum}
-        onSort={@props.instrument.createSetterFor 'drums'}
+        onSort={->}
       />
-      <Drum drum={activeDrum} onChange={updateDrum} app={@props.app}/>
+      <Drum drum={activeDrum} app={@props.app}/>
     </div>

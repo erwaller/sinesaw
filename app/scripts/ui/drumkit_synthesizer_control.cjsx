@@ -87,7 +87,7 @@ Drum = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Modelable('instrument'), Updatable]
+  mixins: [Modelable, Updatable]
 
   getInitialState: ->
     activeDrum: 0

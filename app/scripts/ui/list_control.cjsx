@@ -42,17 +42,19 @@ module.exports = React.createClass
     @setState {dragging}
 
   render: ->
-    options = @props.options.map (option, i) =>
-      <ListOption
-        key={i}
-        name={option.name}
-        selected={i == @props.selectedIndex}
-        selectOption={=> @props.onSelect i}
-        sort={@sort}
-        items={@props.options}
-        dragging={@state.dragging}
-      />
-    
+    options = @props.options
+      .map (option, i) =>
+        <ListOption
+          key={i}
+          name={option.get 'name'}
+          selected={i == @props.selectedIndex}
+          selectOption={=> @props.onSelect i}
+          sort={@sort}
+          items={@props.options}
+          dragging={@state.dragging}
+        />
+      .toArray()
+
     <div className="ui list-control">
       <div className="list">
         {options}

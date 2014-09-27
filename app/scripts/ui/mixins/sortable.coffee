@@ -1,12 +1,14 @@
 module.exports = 
 
   dragStart: (e) ->
-    @props.sort @props.items, e.currentTarget.dataset.id
+    @props.updateDragging parseInt e.currentTarget.dataset.id
+    @props.selectTrack parseInt e.currentTarget.dataset.id
+ 
     e.dataTransfer.effectAllowed = 'move'
     e.dataTransfer.setData 'text/html', null
 
   dragEnd: ->
-    @props.sort @props.items, null
+    @props.updateDragging null
 
   dragOver: (e) ->
     e.preventDefault()
@@ -22,11 +24,17 @@ module.exports =
     to -= 1 if from < to
 
     return if from == to
-    
-    items = @props.items
-    items.splice to, 0, items.splice(from, 1)[0]
 
-    @props.sort items, to
+    items = @props.items.deref()
+
+    @props.items.update (items) ->
+      item = items.get from
+      items = items.splice from, 1
+      items = items.splice to, 0, item
+      items.toVector()
+
+    @props.updateDragging to
+    @props.selectTrack to
 
   isDragging: ->
     @props.dragging == @props.index

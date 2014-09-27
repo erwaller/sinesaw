@@ -16,27 +16,23 @@ module.exports = React.createClass
   getInitialState: ->
     buffer: null
 
-  mixins: [Modelable('instrument'), React.addons.PureRenderMixin]
-
-  setSample: (sampleName, sampleData) ->
-    @props.instrument.set {sampleName, sampleData}
-
-  setPolyphony: (e) ->
-    @props.instrument.setPolyphony parseInt e.target.value
+  mixins: [Modelable('instrument')]
 
   render: ->
-    options = for i in [1..@props.instrument.maxPolyphony]
+    instrument = @props.instrument
+
+    options = for i in [1..6]
       <option key={i} value={i}>{i}</option>
 
     <div className="ui basic-sampler">
       <div className="column channel">
         <Slider
           label="Level"
-          value={@state.level}
-          onChange={@props.instrument.createSetterFor('level')}
+          value={instrument.get 'level'}
+          onChange={->}
         />
         <div className="ui">
-          <select onChange={@setPolyphony} value={@state.polyphony}>{options}</select>
+          <select value={instrument.get 'polyphony'} onChange={->}>{options}</select>
           <label>Poly</label>
         </div>
       </div>
@@ -45,40 +41,40 @@ module.exports = React.createClass
           label="Sample"
           app={@props.app}
           onChange={@setSample}
-          sampleData={@props.instrument.state.sampleData}
-          sampleName={@props.instrument.state.sampleName}
-          sampleStart={@props.instrument.state.start}
-          onChangeStart={@props.instrument.setStart}
-          loopActive={@props.instrument.state.loopActive == 'loop'}
-          sampleLoop={@props.instrument.state.loop}
-          onChangeLoop={@props.instrument.setLoop}
+          sampleData={instrument.get 'sampleData'}
+          sampleName={instrument.get 'sampleName'}
+          sampleStart={instrument.get 'start'}
+          onChangeStart={->}
+          loopActive={instrument.get('loopActive') == 'loop'}
+          sampleLoop={instrument.get 'loop'}
+          onChangeLoop={->}
         />
       </div>
       <div className="column envelope">
         <Envelope
           label="Volume Env"
-          env={@props.instrument.state.volumeEnv}
-          onChange={@props.instrument.createSetterFor 'volumeEnv'}
+          env={instrument.get('volumeEnv').toJS()}
+          onChange={->}
         />
       </div>
       <div className="column envelope">
         <Envelope
           label="Filter Env"
-          env={@props.instrument.state.filterEnv}
-          onChange={@props.instrument.createSetterFor 'filterEnv'}
+          env={instrument.get('filterEnv').toJS()}
+          onChange={->}
         />
       </div>
       <div className="column controls">
         <Filter
           label="Filter"
-          filter={@props.instrument.state.filter}
-          onChange={@props.instrument.createSetterFor 'filter'}
+          filter={instrument.get('filter').toJS()}
+          onChange={->}
         />
         <div className="row sample">
           <div className="ui">
             <select
-              onChange={@props.instrument.createBindingFor('rootKey')}
-              value={@props.instrument.state.rootKey}
+              value={instrument.get 'rootKey'}
+              onChange={->}
             >
               {keyOptions()}
             </select>
@@ -86,26 +82,26 @@ module.exports = React.createClass
           </div>
           <Knob
             label="Tune"
-            value={@props.instrument.state.tune}
-            onChange={@props.instrument.createSetterFor 'tune'}
+            value={instrument.get 'tune'}
+            onChange={->}
           />
         </div>
         <div className="row sample">
           <Chooser
             options={['loop','off']}
-            value={@props.instrument.state.loopActive}
-            onChange={@props.instrument.createSetterFor 'loopActive'}
+            value={instrument.get 'loopActive'}
+            onChange={->}
           />
           <Knob
             label="Loop"
-            value={@props.instrument.state.loop}
-            disabled={@props.instrument.state.loopActive == 'off'}
-            onChange={@props.instrument.setLoop}
+            value={instrument.get 'loop'}
+            disabled={instrument.get('loopActive') == 'off'}
+            onChange={->}
           />
           <Knob
             label="Start"
-            value={@props.instrument.state.start}
-            onChange={@props.instrument.setStart}
+            value={instrument.get 'start'}
+            onChange={->}
           />
         </div>
       </div>

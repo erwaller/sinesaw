@@ -8,7 +8,7 @@ Meter = require './meter'
 
 module.exports = React.createClass
 
-  mixins: [React.addons.PureRenderMixin, Modelable('recording')]
+  mixins: [Modelable('recording')]
 
   onClick: ->
     if @state.active

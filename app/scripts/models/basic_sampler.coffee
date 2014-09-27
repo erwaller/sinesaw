@@ -8,9 +8,8 @@ envelope = require '../dsp/envelope'
 
 module.exports = class BasicSampler extends Instrument
 
-  maxPolyphony: 6
-
-  defaults:
+  @defaults:
+    _type: 'BasicSampler'
     level: 0.5
     pan: 0.5
     polyphony: 1
@@ -37,58 +36,58 @@ module.exports = class BasicSampler extends Instrument
       res: 0.05
       env: 0.45
 
-  constructor: ->
-    super
-    @notes = new RingBuffer @maxPolyphony, Array, @state.polyphony
-    @filters =
-      LP: (lowpassFilter() for i in [0...@maxPolyphony])
-      HP: (highpassFilter() for i in [0...@maxPolyphony])
-      none: (((sample) -> sample) for i in [0...@maxPolyphony])
+  # constructor: ->
+  #   super
+  #   @notes = new RingBuffer @maxPolyphony, Array, @state.polyphony
+  #   @filters =
+  #     LP: (lowpassFilter() for i in [0...@maxPolyphony])
+  #     HP: (highpassFilter() for i in [0...@maxPolyphony])
+  #     none: (((sample) -> sample) for i in [0...@maxPolyphony])
 
-  setPolyphony: (polyphony) ->
-    @notes.resize polyphony
-    @set {polyphony}
+  # setPolyphony: (polyphony) ->
+  #   @notes.resize polyphony
+  #   @set {polyphony}
 
-  setStart: (value) =>
-    @set
-      start: value
-      loop: Math.max value, @state.loop
+  # setStart: (value) =>
+  #   @set
+  #     start: value
+  #     loop: Math.max value, @state.loop
 
-  setLoop: (value) =>
-    @set
-      loop: value
-      start: Math.min value, @state.start
+  # setLoop: (value) =>
+  #   @set
+  #     loop: value
+  #     start: Math.min value, @state.start
 
-  reset: ->
-    @notes.reset()
+  # reset: ->
+  #   @notes.reset()
 
-  out: (time, i) =>
-    return 0 if @state.level == 0
-    return 0 unless @state.sampleData?
+  # out: (time, i) =>
+  #   return 0 if @state.level == 0
+  #   return 0 unless @state.sampleData?
 
-    r = Math.max 0.01, @state.volumeEnv.r
-    @state.level * @notes.reduce((memo, note, index) =>
-      return memo unless note?
-      return memo unless note.len + r > time - note.time
+  #   r = Math.max 0.01, @state.volumeEnv.r
+  #   @state.level * @notes.reduce((memo, note, index) =>
+  #     return memo unless note?
+  #     return memo unless note.len + r > time - note.time
 
-      # get pitch shifted interpolated sample and apply volume envelope
-      transpose = note.key - @state.rootKey + @state.tune - 0.5
-      samplesElapsed = i - note.i
-      offset = Math.floor @state.start * @state.sampleData.length
-      loopPoint = Math.floor @state.loop * @state.sampleData.length
-      sample = linearInterpolator @state.sampleData, transpose, samplesElapsed, offset, @state.loopActive == 'loop', loopPoint
-      sample = envelope(@state.volumeEnv, note, time) * (sample or 0)
+  #     # get pitch shifted interpolated sample and apply volume envelope
+  #     transpose = note.key - @state.rootKey + @state.tune - 0.5
+  #     samplesElapsed = i - note.i
+  #     offset = Math.floor @state.start * @state.sampleData.length
+  #     loopPoint = Math.floor @state.loop * @state.sampleData.length
+  #     sample = linearInterpolator @state.sampleData, transpose, samplesElapsed, offset, @state.loopActive == 'loop', loopPoint
+  #     sample = envelope(@state.volumeEnv, note, time) * (sample or 0)
 
-      # apply filter with envelope
-      filterCutoff = Math.min 1, @state.filter.freq + @state.filter.env * envelope(@state.filterEnv, note, time)
-      sample = @filters[@state.filter.type][index] sample, filterCutoff, @state.filter.res
+  #     # apply filter with envelope
+  #     filterCutoff = Math.min 1, @state.filter.freq + @state.filter.env * envelope(@state.filterEnv, note, time)
+  #     sample = @filters[@state.filter.type][index] sample, filterCutoff, @state.filter.res
 
-      # return result
-      memo + sample
+  #     # return result
+  #     memo + sample
 
-    , 0)
+  #   , 0)
 
-  tick: (time, i, beat, bps, notesOn) =>
-    # add new notes
-    notesOn.forEach (note) =>
-      @notes.push {time, i, key: note.key, len: note.length / bps}
+  # tick: (time, i, beat, bps, notesOn) =>
+  #   # add new notes
+  #   notesOn.forEach (note) =>
+  #     @notes.push {time, i, key: note.key, len: note.length / bps}

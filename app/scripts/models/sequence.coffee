@@ -4,7 +4,7 @@ module.exports = class Sequence extends Model
 
   noteId = 0
 
-  defaults:
+  @defaults:
     loopSize: 4
     notes: {}
 

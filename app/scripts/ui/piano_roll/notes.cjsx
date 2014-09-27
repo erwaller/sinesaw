@@ -80,8 +80,8 @@ module.exports = React.createClass
         )
 
     # notes
-    for id, note of @props.notes
-      continue unless @noteOnScreen note
+    @props.notes.forEach (id, note) =>
+      return unless @noteOnScreen note
 
       x = (note.start - @props.xScroll) * squareWidth * @props.quantization + lineWidth / 2
       y = (@props.yScale + @props.yScroll - note.key - 1) * squareHeight + lineWidth / 2

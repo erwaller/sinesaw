@@ -23,37 +23,36 @@ ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 module.exports = React.createClass
 
-  mixins: [Updatable, Modelable('song')]
+  mixins: [Modelable, Updatable]
 
   getInitialState: ->
     selectedTrack: 0
     modalContent: null
 
   launchModal: (modalContent) ->
-    @props.song.stop()
+    @props.song.update (song) -> song.set 'playing', false
     @setState {modalContent}
 
   dismissModal: ->
-    @setState modalContent: null  
+    @setState modalContent: null
 
   render: ->
-    track = @props.song.state.tracks[@state.selectedTrack]
+    track = @props.song.cursor ['tracks', @state.selectedTrack]
 
     if track
-      sequence = track.sequence
-      
-      controlClass = if track.instrument instanceof BasicSampler
-        BasicSamplerControl
-      else if track.instrument instanceof AnalogSynthesizer
-        AnalogSynthesizerControl
-      else if track.instrument instanceof DrumkitSynthesizer
-        DrumkitSynthesizerControl
-      else if track.instrument instanceof DrumSampler
-        DrumSamplerControl
-      else if track.instrument instanceof LoopSampler
-        LoopSamplerControl
+      sequence = track.cursor 'sequence'
+      instrument = track.cursor 'instrument'
 
-      instrumentControl = <controlClass key={track.id} instrument={track.instrument} app={this}/>
+      controlClass = switch instrument.get '_type'
+        when 'BasicSampler' then BasicSamplerControl
+        when 'AnalogSynthesizer' then AnalogSynthesizerControl
+        when 'DrumkitSynthesizer' then DrumkitSynthesizerControl
+        when 'DrumSampler' then DrumSamplerControl
+        when 'LoopSampler' then LoopSamplerControl
+        else null
+
+      if controlClass?
+        instrumentControl = <controlClass key={track.get '_id'} instrument={instrument} app={this}/>
 
     if @state.modalContent?
       modal = <Modal key='m'>{@state.modalContent}</Modal>
@@ -65,17 +64,14 @@ module.exports = React.createClass
       <div className="row main">
         <div className="column sidebar">
           <TrackSelection
-            tracks={@props.song.state.tracks}
-            addTrack={@props.song.addTrack}
-            removeTrack={@props.song.removeTrack}
-            sortTracks={@props.song.createSetterFor 'tracks'}
+            tracks={@props.song.cursor 'tracks'}
             selectedTrack={@state.selectedTrack}
-            selectTrack={@update('selectedTrack')}
+            selectTrack={@update 'selectedTrack'}
           />
         </div>
         <div className="column main">
           <div className="row sequence">
-            <PianoRoll sequence={sequence} song={@props.song}/>
+            <PianoRoll song={@props.song} sequence={sequence}/>
           </div>
           <div className="row instrument">
             {instrumentControl}

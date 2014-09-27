@@ -2,22 +2,14 @@ Model = require './model'
 webaudio = require '../dsp/webaudio'
 context = require '../dsp/global_context'
 
-module.exports = class Song extends Model
+module.exports = class Song
 
   clockRatio = 230
 
-  defaults:
-    bpm: 120
-    playing: false
-    recording: false
-    position: 0
-    tracks: []
-
   clip = (sample) ->
-    Math.min(2, sample + 1) - 1
+    Math.max(0, Math.min(2, sample + 1)) - 1
 
   constructor: ->
-    super
     @audio = webaudio context, @out
 
   addTrack: (track) =>

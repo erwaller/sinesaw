@@ -1,46 +1,41 @@
 Model = require './model'
 Sequence = require './sequence'
 
+instrumentTypes =
+  AnalogSynthesizer: require './analog_synthesizer'
+  BasicSampler: require './basic_sampler'
+  DrumSampler: require './drum_sampler'
+  DrumkitSynthesizer: require './drumkit_synthesizer'
+  LoopSampler: require './loop_sampler'
+
+
 module.exports = class Track extends Model
 
   meterDecay = 0.0005
 
-  defaults:
+  @defaults:
     name: 'Track'
     meterLevel: 0
+    sequence: Sequence.build()
 
-  constructor: (state, @instrument) ->
-    super
-    @sequence = new Sequence
-    @effects = []
+  # @out: (data, time, i) ->
+  #   sample = @effects.reduce((sample, e) ->
+  #     e.out time, i, sample
+  #   , @instrument.out time, i)
 
-  out: (time, i) ->
-    sample = @effects.reduce((sample, e) ->
-      e.out time, i, sample
-    , @instrument.out time, i)
+  #   if sample > @meterLevel
+  #     @meterLevel = sample
+  #   else if @meterLevel > 0
+  #     @meterLevel -= meterDecay
 
-    if sample > @meterLevel
-      @meterLevel = sample
-    else if @meterLevel > 0
-      @meterLevel -= meterDecay
+  #   sample
 
-    sample
+  # @tick: (data, time, i, beat, bps) ->
+  #   notesOn = @sequence.notesOn beat
+  #   @instrument.tick time, i, beat, bps, notesOn
+  #   @effects.forEach (e) -> e.tick time, beat, bps
+  #   @set {@meterLevel}
 
-  tick: (time, i, beat, bps) ->
-    notesOn = @sequence.notesOn beat
-    @instrument.tick time, i, beat, bps, notesOn
-    @effects.forEach (e) -> e.tick time, beat, bps
-    @set {@meterLevel}
-
-  reset: ->
-    @instrument.reset()
-    effect.reset() for effect in @effects
-
-  toJSON: ->
-    result = {}
-    result[k] = v for k, v of @state
-    result.effects = @effects.map (e) -> e.toJSON()
-    result.sequence = @sequence.toJSON()
-    result.instrument = @instrument.toJSON()
-    delete result.meterLevel
-    result
+  # @reset: ->
+  #   @instrument.reset()
+  #   effect.reset() for effect in @effects
