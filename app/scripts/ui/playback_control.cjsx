@@ -3,30 +3,27 @@
 React = require 'react'
 Modelable = require './mixins/modelable'
 ScaleHandle = require './scale_handle'
-Keyboard = require '../util/keyboard'
+Keyboard = require 'keyboardjs'
 
 module.exports = React.createClass
 
   mixins: [Modelable]
 
   componentDidMount: ->
-    Keyboard.on 32, @play
+    @keyBindings = [
+      Keyboard.on 'space', @onSpaceKey
+    ]
 
   componentWillUnmount: ->
-    Keyboard.off 32, @play
+    binding.clear() for binding in @keyBindings
 
-  play: ->
-    # if @props.song.get 'playing'
-    #   @props.song.pause()
-    # else
-    #   @props.song.play()
+  onSpaceKey: (e) ->
+    e.preventDefault()
 
-  onChangeBpm: (e) ->
-    # bpm = parseInt e.target.value
-    # @props.song.set {bpm}
-
-  stopPropagation: (e) ->
-    e.stopPropagation()
+    if @props.song.get 'playing'
+      @props.song.update (song) -> song.set 'playing', false
+    else
+      @props.song.update (song) -> song.set 'playing', true
 
   render: ->
     song = @props.song

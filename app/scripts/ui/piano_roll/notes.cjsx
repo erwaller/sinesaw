@@ -1,5 +1,5 @@
 React = require 'react/addons'
-Keyboard = require '../../util/keyboard'
+Keyboard = require 'keyboardjs'
 
 
 module.exports = React.createClass
@@ -57,7 +57,7 @@ module.exports = React.createClass
     cols = [minCol...maxCol]
 
     # ghost notes
-    if @props.translateTarget? and Keyboard.pressed[18]
+    if @props.translateTarget? and 'alt' in Keyboard.activeKeys()
       for id, note of @props.dragOriginalValue
         continue unless @noteOnScreen note
 

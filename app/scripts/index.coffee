@@ -14,18 +14,41 @@ window.Selection = require './ui/piano_roll/selection'
 
 RingBuffer = require './util/ring_buffer'
 
+window.KeyboardJS = require 'keyboardjs'
+
 # # inject request animation frame batching strategy into
 # require('react-raf-batching').inject()
 
 setTimeout ->
-  
+
   require('./default_song') (songData) ->
 
-    undos = new RingBuffer 100, Array
-    redos = new RingBuffer 100, Array
+    historySize = 100
+    undos = []
+    redos = []
+    data = Immutable.fromJS songData
 
-    render = (data) ->
+    undo = ->
+      return unless undos.length > 0
+      redos.push data
+      redos.shift() if redos.length > historySize
+      data = undos.pop()
+      render()
+
+    redo = ->
+      return unless redos.length > 0
       undos.push data
-      React.renderComponent App(song: data.cursor render), document.body
+      undos.shift() if undos.length > historySize
+      data = redos.pop()
+      render()
 
-    render Immutable.fromJS songData
+    update = (newData) ->
+      undos.push data
+      undos.shift() if undos.length > historySize
+      data = newData
+      render()
+
+    render = ->
+      React.renderComponent App({undo, redo, song: data.cursor update}), document.body
+
+    render()

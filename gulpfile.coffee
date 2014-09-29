@@ -13,35 +13,27 @@ gulp.task 'server', ->
   connect.server
     root: 'public'
     port: 3001
-    reload: true
 
 
-gulp.task 'watch-js', ->
 
-  bundler = watchify browserify
-    cache: {}
-    packageCache: {}
-    fullPaths: false
+gulp.task 'js', ->
+
+  browserify(
     entries: ['./app/scripts/index.coffee']
     extensions: ['.coffee', '.cjsx']
     debug: true
-
-  bundle = ->
-
-    gutil.log 'building scripts'
-    start = new Date
-
-    bundler
-      .bundle()
+  )
+    .bundle()
       .on 'error', (e) -> gutil.log "#{e}"
       .pipe source 'index.js'
-      .pipe gulp.dest './public/'
-      .pipe connect.reload()
-      .on 'end', ->
-        gutil.log "built scripts in #{new Date - start}ms"
+      .pipe gulp.dest './public'
 
-  bundler.on 'update', bundle
-  bundle()
+
+gulp.task 'watch-js', ['js'], ->
+
+  gulp.watch ['./app/scripts/**'], ['js']
+
+
 
 
 gulp.task 'css', ->
@@ -63,7 +55,37 @@ gulp.task 'css', ->
 
 gulp.task 'watch-css', ['css'], ->
 
-  gulp.watch ['app/**'], ['css']
+  gulp.watch ['./app/styles/**'], ['css']
 
 
 gulp.task 'default', ['server', 'watch-js', 'watch-css']
+
+
+
+
+# gulp.task 'watch-js', ->
+
+#   bundler = watchify browserify
+#     cache: {}
+#     packageCache: {}
+#     fullPaths: false
+#     entries: ['./app/scripts/index.coffee']
+#     extensions: ['.coffee', '.cjsx']
+#     debug: true
+
+#   bundle = ->
+
+#     gutil.log 'building scripts'
+#     start = new Date
+
+#     bundler
+#       .bundle()
+#       .on 'error', (e) -> gutil.log "#{e}"
+#       .pipe source 'index.js'
+#       .pipe gulp.dest './public/'
+#       .on 'end', ->
+#         gutil.log "built scripts in #{new Date - start}ms"
+
+#   bundler.on 'update', bundle
+#   bundle()
+

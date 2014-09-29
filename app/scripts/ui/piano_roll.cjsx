@@ -1,12 +1,12 @@
 # @cjsx React.DOM
 
-React = require 'react/addons'
+React = require 'react'
 Immutable = require 'immutable'
+Keyboard = require 'keyboardjs'
 SizeMeasurable = require './mixins/size_measurable'
 Updatable = require './mixins/updatable'
 Draggable = require './mixins/draggable'
 ScaleHandle = require './scale_handle'
-Keyboard = require '../util/keyboard'
 Cursor = require '../util/cursor'
 
 Keys = require './piano_roll/keys'
@@ -71,11 +71,10 @@ module.exports = React.createClass
       el.scrollTop = @state.scrollPadding
       el.scrollLeft = @state.scrollPadding
 
-    Keyboard.on 8, @deleteSelectedNotes
-    Keyboard.on 37, @onArrowKey
-    Keyboard.on 38, @onArrowKey
-    Keyboard.on 39, @onArrowKey
-    Keyboard.on 40, @onArrowKey
+    @keyBindings = [
+      Keyboard.on 'backspace', @onBackspaceKey
+      Keyboard.on 'left, right, up, down', @onArrowKey
+    ]
 
     @scrollDeltaY = 0
     @scrollDeltaX = 0
@@ -83,11 +82,7 @@ module.exports = React.createClass
     @autoScaleViewport @props.sequence
 
   componentWillUnmount: ->
-    Keyboard.off 8, @deleteSelectedNotes
-    Keyboard.off 37, @onArrowKey
-    Keyboard.off 38, @onArrowKey
-    Keyboard.off 39, @onArrowKey
-    Keyboard.off 40, @onArrowKey
+    binding.clear() for binding in @keyBindings
 
   componentWillReceiveProps: (nextProps) ->
     if nextProps.sequence.get('_id') != @props.sequence.get('_id')
@@ -179,6 +174,7 @@ module.exports = React.createClass
 
   updateNotes: (changes) ->
     notes = @props.sequence.get 'notes'
+    loopSize = @props.sequence.get 'loopSize'
 
     changedNotes = Object.keys(changes).map (id) =>
       key: if changes[id].key? then changes[id].key else notes.getIn [id, 'key']
@@ -197,7 +193,7 @@ module.exports = React.createClass
     # prevent notes from being moved out of the available range
 
     return false if minKey < 0 or maxKey > 127
-    return false if minStart < 0 or maxEnd > @state.loopSize
+    return false if minStart < 0 or maxEnd > loopSize
 
     # update scroll so notes remain on screen
 
@@ -228,7 +224,9 @@ module.exports = React.createClass
 
     {key, start}
 
-  deleteSelectedNotes: ->
+  onBackspaceKey: (e) ->
+    e.preventDefault()
+
     @props.sequence.update (sequence) =>
       notes = sequence.get('notes').withMutations (notes) =>
         notes.delete id for id in @state.selectedNotes
@@ -263,7 +261,7 @@ module.exports = React.createClass
   # deselect any selected notes,
   # start drag selection
   onMouseDownGrid: (e) ->
-    @setState selectedNotes: [] unless Keyboard.pressed[16]
+    @setState selectedNotes: [] unless 'shift' in Keyboard.activeKeys()
 
     # handle drag start 
     @draggableOnMouseDown e
@@ -302,7 +300,7 @@ module.exports = React.createClass
     position = e.target.getBoundingClientRect()
 
     # handle note selection
-    if Keyboard.pressed[16]
+    if 'shift' in Keyboard.activeKeys()
       selectedNotes = @state.selectedNotes.slice 0
       if id in @state.selectedNotes
         selectedNotes.splice selectedNotes.indexOf(id), 1
@@ -396,7 +394,7 @@ module.exports = React.createClass
 
   onDragEnd: (e) ->
     # if the alt key is held, copy notes
-    if @originalValue? and Keyboard.pressed[18]
+    if @originalValue? and 'alt' in Keyboard.activeKeys()
       
       @props.sequence.update (sequence) =>
         
@@ -420,7 +418,7 @@ module.exports = React.createClass
 
       position = @getRelativePosition x: e.clientX, y: e.clientY
       selectedNotes = @notesSelectedBy @state.selectionOrigin, position
-      selectedNotes = @state.selectedNotes.slice(0).concat selectedNotes if Keyboard.pressed[16]
+      selectedNotes = @state.selectedNotes.slice(0).concat selectedNotes if 'shift' in Keyboard.activeKeys()
       stateChanges.selectedNotes = selectedNotes
 
     @setState stateChanges
@@ -432,6 +430,8 @@ module.exports = React.createClass
 
 
   onArrowKey: (e) ->
+    e.preventDefault()
+
     changes = {}
 
     for id in @state.selectedNotes
@@ -444,7 +444,7 @@ module.exports = React.createClass
 
       # up arrow
       else if e.keyCode is 38
-        distance = if Keyboard.pressed[16] then 12 else 1
+        distance = if 'shift' in Keyboard.activeKeys() then 12 else 1
         changes[id] = key: note.get('key') + distance
 
       # right arrow
@@ -453,7 +453,7 @@ module.exports = React.createClass
 
       # down arrow
       else if e.keyCode is 40
-        distance = if Keyboard.pressed[16] then 12 else 1
+        distance = if 'shift' in Keyboard.activeKeys() then 12 else 1
         changes[id] = key: note.get('key') - distance
 
     @updateNotes changes
