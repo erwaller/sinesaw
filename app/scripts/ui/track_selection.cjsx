@@ -3,6 +3,7 @@
 React = require 'react/addons'
 Sortable = require './mixins/sortable'
 Updatable = require './mixins/updatable'
+Modelable = require './mixins/modelable'
 Draggable = require './mixins/draggable'
 SizeMeasurable = require './mixins/size_measurable'
 Knob = require './knob'
@@ -19,9 +20,12 @@ ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 TrackRow = React.createClass
 
-  mixins: [Sortable, React.addons.PureRenderMixin]
+  mixins: [Sortable, Modelable]
   
   render: ->
+    track = @props.track
+    instrument = track.cursor 'instrument'
+
     className = 'track'
     className += ' selected' if @props.selected
     className += ' dragging' if @isDragging()
@@ -35,19 +39,19 @@ TrackRow = React.createClass
       onDragOver={@dragOver}
       data-id={@props.index}
     >
-      <div className='name'>{@props.track.get 'name'}</div>
+      <div className='name'>{track.get 'name'}</div>
       <Knob
         label="Level"
-        value={@props.track.getIn 'instrument', 'level'}
-        onChange={->}
+        value={instrument.get 'level'}
+        onChange={@updateCursor instrument, 'level'}
       />
-      <Meter track={@props.track}/>
+      <Meter track={track}/>
     </div>
 
 
 module.exports = React.createClass
 
-  mixins: [Updatable, React.addons.PureRenderMixin]
+  mixins: [Updatable, Modelable]
 
   trackTypes:
     'Drum Sampler': DrumSampler
@@ -75,6 +79,7 @@ module.exports = React.createClass
 
   addTrack: (name) ->
     track = Track.build {name, instrument: @trackTypes[name].build()}
+
     index = @props.tracks.length
 
     @props.tracks.update (tracks) -> tracks.set index, track

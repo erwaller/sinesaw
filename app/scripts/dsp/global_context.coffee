@@ -1,1 +1,1 @@
-module.exports = new webkitAudioContext
+module.exports = new (window.webkitAudioContext or window.AudioContext)

@@ -9,7 +9,7 @@ Envelope = require './envelope'
 
 module.exports = React.createClass
 
-  mixins: [Modelable('instrument')]
+  mixins: [Modelable]
 
   setPolyphony: (e) ->
     @props.instrument.setPolyphony parseInt e.target.value

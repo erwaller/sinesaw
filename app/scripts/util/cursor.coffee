@@ -9,6 +9,7 @@ apply = ->
 
   document.body.style.cursor = if max then actions[max].value else 'default'
 
+
 module.exports =
 
   set: (value, priority, id) ->

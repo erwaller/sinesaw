@@ -3,11 +3,12 @@
 React = require 'react'
 SizeMeasurable = require './mixins/size_measurable'
 Draggable = require './mixins/draggable'
+Modelable = require './mixins/modelable'
 Knob = require './knob'
 
 module.exports = React.createClass
 
-  mixins: [SizeMeasurable, Draggable]
+  mixins: [SizeMeasurable, Draggable, Modelable]
 
   getInitialState: ->
     dragTarget: null
@@ -22,7 +23,7 @@ module.exports = React.createClass
     m = @props.margin + @props.dotRadius
     w = @state.width - 2 * m
     h = @state.height - 2 * m
-    env = @props.env
+    env = @props.env.toJS()
 
     p1 =
       x: 0
@@ -70,17 +71,17 @@ module.exports = React.createClass
     lines.concat dots
 
   onMouseDownAttack: (e) ->
-    @initialValue = @props.env.a
+    @initialValue = @props.env.get 'a'
     @setState dragTarget: 'attack'
     @draggableOnMouseDown e
 
   onMouseDownDecay: (e) ->
-    @initialValue = {d: @props.env.d, s: @props.env.s}
+    @initialValue = {d: @props.env.get('d'), s: @props.env.get('s')}
     @setState dragTarget: 'decay'
     @draggableOnMouseDown e
 
   onMouseDownRelease: (e) ->
-    @initialValue = @props.env.r
+    @initialValue = @props.env.get 'r'
     @setState dragTarget: 'release'
     @draggableOnMouseDown e
 
@@ -103,23 +104,14 @@ module.exports = React.createClass
     for k, v of changes
       changes[k] = Math.max 0, Math.min 1, v
 
-    env = {}
-    for k, v of @props.env
-      env[k] = if changes[k]? then changes[k] else v
-    @props.onChange env
+    @props.env.update (env) -> env.merge changes
 
   onDragEnd: ->
     @initialValue = null
     @setState dragTarget: null
 
-  update: (attr) ->
-    (value) =>
-      env = {}
-      for k, v of @props.env
-        env[k] = if k == attr then value else v
-      @props.onChange env
-
   render: ->
+    env = @props.env
     lines = @buildLines() if @state.width > 0
 
     <div className='ui envelope'>
@@ -130,12 +122,12 @@ module.exports = React.createClass
       </div>
       <div className='knobs'>
         <div className='group'>
-          <Knob label='A' value={@props.env.a} onChange={@update('a')}/>
-          <Knob label='D' value={@props.env.d} onChange={@update('d')}/>
+          <Knob label='A' value={@props.env.get 'a'} onChange={@updateCursor env, 'a'}/>
+          <Knob label='D' value={@props.env.get 'd'} onChange={@updateCursor env, 'd'}/>
         </div>
         <div className='group'>
-          <Knob label='S' value={@props.env.s} onChange={@update('s')}/>
-          <Knob label='R' value={@props.env.r} onChange={@update('r')}/>
+          <Knob label='S' value={@props.env.get 's'} onChange={@updateCursor env, 's'}/>
+          <Knob label='R' value={@props.env.get 'r'} onChange={@updateCursor env, 'r'}/>
         </div>
       </div>
       <label>{@props.label}</label>

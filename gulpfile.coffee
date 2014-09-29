@@ -5,6 +5,7 @@ watchify = require 'watchify'
 browserify = require 'browserify'
 connect = require 'gulp-connect'
 stylus = require 'gulp-stylus'
+autoprefixer = require 'autoprefixer-stylus'
 
 
 gulp.task 'server', ->
@@ -20,7 +21,7 @@ gulp.task 'watch-js', ->
   bundler = watchify browserify
     cache: {}
     packageCache: {}
-    fullPaths: true
+    fullPaths: false
     entries: ['./app/scripts/index.coffee']
     extensions: ['.coffee', '.cjsx']
     debug: true
@@ -47,11 +48,15 @@ gulp.task 'css', ->
 
   gulp
     .src './app/styles/index.styl'
-    .pipe stylus
-      sourcemap:
-        inline: true
-        sourceRoot: '.'
-        basePath: 'app/styles'
+    .pipe(
+      stylus(
+        use: autoprefixer browsers: ['ios 7']
+        sourcemap:
+          inline: true
+          sourceRoot: '.'
+          basePath: 'app/styles'
+      )
+    )
     .pipe gulp.dest './public'
     .pipe connect.reload()
 

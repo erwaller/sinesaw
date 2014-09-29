@@ -10,14 +10,15 @@ immutableEqual = (objA, objB) ->
   for key of objA
     if objA.hasOwnProperty key
       return false unless objB.hasOwnProperty key
+      return false if objA[key] isnt objB[key]
 
-      # if objects are cursors, dereference before comparing
-      if objA[key].deref?
-        return false if objA[key].deref() isnt objB[key].deref()
+      # # if objects are cursors, dereference before comparing
+      # if objA[key]?.deref?
+      #   return false if objA[key].deref() isnt objB[key].deref()
       
-      #otherwise test for strict equality
-      else
-        return false if objA[key] isnt objB[key]
+      # #otherwise test for strict equality
+      # else
+      #   return false if objA[key] isnt objB[key]
 
   # Test for B's keys missing from A.
   for key of objB
@@ -28,18 +29,12 @@ immutableEqual = (objA, objB) ->
 
 
 
-module.exports = ->
+module.exports =
 
-  mixin =
-    shouldComponentUpdate: (nextProps, nextState) ->
-      !immutableEqual(@props, nextProps) or !immutableEqual(@state, nextState)
+  shouldComponentUpdate: (nextProps, nextState) ->
+    !immutableEqual(@props, nextProps) or !immutableEqual(@state, nextState)
 
-  for model in arguments
-    do (model) ->
-      mixin["update#{capitalize model}"] = (path, updator = identity) ->
-        c = @props[model].cursor path
-        (value) ->
-          c.update (oldValue) ->
-            updator value, oldValue
-
-  mixin
+  updateCursor: (cursor, attr, updator = identity) ->
+    (v) ->
+      cursor.update (data) ->
+        data.set attr, updator v

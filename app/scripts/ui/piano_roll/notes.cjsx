@@ -13,8 +13,8 @@ module.exports = React.createClass
     notes: React.PropTypes.object.isRequired
     selectedNotes: React.PropTypes.array.isRequired
     dragOriginalValue: React.PropTypes.object
-    translateTarget: React.PropTypes.number
-    resizeTarget: React.PropTypes.number
+    translateTarget: React.PropTypes.string
+    resizeTarget: React.PropTypes.string
     width: React.PropTypes.number.isRequired
     height: React.PropTypes.number.isRequired
     lineWidth: React.PropTypes.number.isRequired
@@ -80,8 +80,8 @@ module.exports = React.createClass
         )
 
     # notes
-    @props.notes.forEach (id, note) =>
-      return unless @noteOnScreen note
+    for id, note of @props.notes.toJS()
+      continue unless @noteOnScreen note
 
       x = (note.start - @props.xScroll) * squareWidth * @props.quantization + lineWidth / 2
       y = (@props.yScale + @props.yScroll - note.key - 1) * squareHeight + lineWidth / 2

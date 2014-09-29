@@ -16,7 +16,19 @@ module.exports = React.createClass
   getInitialState: ->
     buffer: null
 
-  mixins: [Modelable('instrument')]
+  mixins: [Modelable]
+
+  setStart: (value) ->
+    @props.instrument.update (instrument) =>
+      instrument.merge
+        start: value
+        loop: Math.max value, instrument.get 'loop'
+
+  setLoop: (value) ->
+    @props.instrument.update (instrument) =>
+      instrument.merge
+        loop: value
+        start: Math.min value, instrument.get 'start'
 
   render: ->
     instrument = @props.instrument
@@ -29,10 +41,15 @@ module.exports = React.createClass
         <Slider
           label="Level"
           value={instrument.get 'level'}
-          onChange={->}
+          onChange={@updateCursor instrument, 'level'}
         />
         <div className="ui">
-          <select value={instrument.get 'polyphony'} onChange={->}>{options}</select>
+          <select
+            value={instrument.get 'polyphony'}
+            onChange={@updateCursor instrument, 'polyphony', (e) -> parseInt e.target.value}
+          >
+            {options}
+          </select>
           <label>Poly</label>
         </div>
       </div>
@@ -40,41 +57,31 @@ module.exports = React.createClass
         <SampleControl
           label="Sample"
           app={@props.app}
-          onChange={@setSample}
-          sampleData={instrument.get 'sampleData'}
-          sampleName={instrument.get 'sampleName'}
-          sampleStart={instrument.get 'start'}
-          onChangeStart={->}
-          loopActive={instrument.get('loopActive') == 'loop'}
-          sampleLoop={instrument.get 'loop'}
-          onChangeLoop={->}
+          sampler={instrument}
         />
       </div>
       <div className="column envelope">
         <Envelope
           label="Volume Env"
-          env={instrument.get('volumeEnv').toJS()}
-          onChange={->}
+          env={instrument.cursor 'volumeEnv'}
         />
       </div>
       <div className="column envelope">
         <Envelope
           label="Filter Env"
-          env={instrument.get('filterEnv').toJS()}
-          onChange={->}
+          env={instrument.cursor 'filterEnv'}
         />
       </div>
       <div className="column controls">
         <Filter
           label="Filter"
-          filter={instrument.get('filter').toJS()}
-          onChange={->}
+          filter={instrument.cursor 'filter'}
         />
         <div className="row sample">
           <div className="ui">
             <select
               value={instrument.get 'rootKey'}
-              onChange={->}
+              onChange={@updateCursor instrument, 'rootKey', (e) -> parseInt e.target.value}
             >
               {keyOptions()}
             </select>
@@ -83,25 +90,25 @@ module.exports = React.createClass
           <Knob
             label="Tune"
             value={instrument.get 'tune'}
-            onChange={->}
+            onChange={@updateCursor instrument, 'tune'}
           />
         </div>
         <div className="row sample">
           <Chooser
             options={['loop','off']}
             value={instrument.get 'loopActive'}
-            onChange={->}
+            onChange={@updateCursor instrument, 'loopActive'}
           />
           <Knob
             label="Loop"
             value={instrument.get 'loop'}
             disabled={instrument.get('loopActive') == 'off'}
-            onChange={->}
+            onChange={@setLoop}
           />
           <Knob
             label="Start"
             value={instrument.get 'start'}
-            onChange={->}
+            onChange={@setStart}
           />
         </div>
       </div>

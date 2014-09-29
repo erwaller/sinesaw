@@ -48,16 +48,6 @@ module.exports = class BasicSampler extends Instrument
   #   @notes.resize polyphony
   #   @set {polyphony}
 
-  # setStart: (value) =>
-  #   @set
-  #     start: value
-  #     loop: Math.max value, @state.loop
-
-  # setLoop: (value) =>
-  #   @set
-  #     loop: value
-  #     start: Math.min value, @state.start
-
   # reset: ->
   #   @notes.reset()
 

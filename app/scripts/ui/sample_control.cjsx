@@ -1,9 +1,9 @@
 React = require 'react/addons'
+Modelable = require './mixins/modelable'
 Recording = require '../models/recording'
 Waveform = require './waveform'
 RecordControl = require './record_control'
-
-decoder = new webkitAudioContext
+decoder = require '../dsp/global_context'
 
 module.exports = React.createClass
 
@@ -11,7 +11,7 @@ module.exports = React.createClass
   range: 300
   dragTypeDistance: 10
 
-  mixins: [React.addons.pureRenderMixin]
+  mixins: [Modelable]
 
   getDefaultProps: ->
     sampleStart: 0
@@ -26,12 +26,12 @@ module.exports = React.createClass
       reader = new FileReader
       reader.onload = (e) =>
         decoder.decodeAudioData e.target.result, (buffer) =>
-          data = buffer.getChannelData 0
-          @props.onChange file.name, data
+          sampleData = buffer.getChannelData 0
+          @props.sampler.update (sampler) -> sampler.merge {sampleName: file.name, sampleData}
       reader.readAsArrayBuffer file
 
   clear: ->
-    @props.onChange null, null
+    @props.sampler.update (sampler) -> sampler.merge sampleName: null, sampleData: null
 
   recordSample: ->
     @props.app.launchModal <RecordControl
@@ -39,36 +39,54 @@ module.exports = React.createClass
       onCancel={@props.app.dismissModal}
       onConfirm={
         (sampleData) =>
-          @props.onChange 'recorded.wav', sampleData
+          @props.sampler.update (sampler) -> sampler.merge {sampleName: 'recording.wav', sampleData}
           @props.app.dismissModal()
       }
     />
 
+  setStart: (value) ->
+    @props.sampler.update (sampler) =>
+      sampler.merge
+        start: value
+        loop: Math.max value, sampler.get 'loop'
+
+  setLoop: (value) ->
+    @props.sampler.update (sampler) =>
+      sampler.merge
+        loop: value
+        start: Math.min value, sampler.get 'start'
+
   render: ->
+    sampler = @props.sampler
+    sampleStart = sampler.get 'start'
+    loopActive = sampler.get 'loopActive'
+    loopValue = sampler.get 'loop'
+    sampleData = sampler.get 'sampleData'
+
     markers = {}
 
-    if @props.sampleStart?
+    if sampleStart?
       markers.start =
-        value: @props.sampleStart
-        onChange: @props.onChangeStart
+        value: sampleStart
+        onChange: @setStart
 
-    if @props.loopActive
+    if loopActive == 'loop'
       markers.loop =
-        value: @props.sampleLoop
-        onChange: @props.onChangeLoop
+        value: loopValue
+        onChange: @setLoop
 
     <div className="ui sample-control">
       <input type="file" ref="input" onChange={@onFileSelect}/>
       <div
         className="display"
         ref="container"
-        onClick={if @props.sampleData? then null else @triggerFileInput}
+        onClick={if sampleData? then null else @triggerFileInput}
       >
-        {if @props.sampleData? then null else <div className="instruction">click to upload</div>}
+        {if sampleData? then null else <div className="instruction">click to upload</div>}
         <Waveform
-          sampleData={@props.sampleData}
-          selectionStart={@props.sampleStart}
-          selectionEnd={if @props.loopActive then @props.sampleLoop else 1}
+          sampleData={sampleData}
+          selectionStart={sampleStart or 0}
+          selectionEnd={if loopActive == 'loop' then loopValue else 1}
           markers={markers}
         />
       </div>

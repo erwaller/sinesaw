@@ -10,56 +10,55 @@ Oscillator = require './oscillator'
 
 module.exports = React.createClass
 
-  mixins: [Modelable('instrument')]
-
-  setPolyphony: (e) ->
-    @props.instrument.setPolyphony parseInt e.target.value
+  mixins: [Modelable]
 
   render: ->
-    options = for i in [1..@props.instrument.maxPolyphony]
+    instrument = @props.instrument
+
+    options = for i in [1..6]
       <option key={i} value={i}>{i}</option>
 
     <div className="ui analog">
       <div className="column channel">
         <Slider
           label="Level"
-          value={@state.level}
-          onChange={@props.instrument.createSetterFor('level')}
+          value={instrument.get 'level'}
+          onChange={@updateCursor instrument, 'level'}
         />
         <div className="ui">
-          <select onChange={@setPolyphony} value={@state.polyphony}>{options}</select>
+          <select
+            onChange={@updateCursor instrument, 'level', (e) -> parseInt e.target.value}
+            value={instrument.get 'polyphony'}
+          >
+            {options}
+          </select>
           <label>Poly</label>
         </div>
       </div>
       <div className="column">
         <Envelope
           label="Volume Env"
-          env={@props.instrument.state.volumeEnv}
-          onChange={@props.instrument.createSetterFor('volumeEnv')}
+          env={instrument.cursor 'volumeEnv'}
         />
       </div>
       <div className="column">
         <Envelope
           label="Filter Env"
-          env={@props.instrument.state.filterEnv}
-          onChange={@props.instrument.createSetterFor('filterEnv')}
+          env={instrument.cursor 'filterEnv'}
         />
       </div>
       <div className="column oscillators">
         <Filter
           label="Filter"
-          filter={@props.instrument.state.filter}
-          onChange={@props.instrument.createSetterFor('filter')}
+          filter={instrument.cursor 'filter'}
         />
         <Oscillator
           label="Osc 1"
-          osc={@props.instrument.state.osc1}
-          onChange={@props.instrument.createSetterFor('osc1')}
+          osc={instrument.cursor 'osc1'}
         />
         <Oscillator
           label="Osc 2"
-          osc={@props.instrument.state.osc2}
-          onChange={@props.instrument.createSetterFor('osc2')}
+          osc={instrument.cursor 'osc2'}
         />
       </div>
     </div>

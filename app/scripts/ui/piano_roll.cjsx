@@ -1,6 +1,7 @@
 # @cjsx React.DOM
 
 React = require 'react/addons'
+Immutable = require 'immutable'
 SizeMeasurable = require './mixins/size_measurable'
 Updatable = require './mixins/updatable'
 Draggable = require './mixins/draggable'
@@ -13,6 +14,8 @@ GridLines = require './piano_roll/grid_lines'
 Notes = require './piano_roll/notes'
 PlaybackMarker = require './piano_roll/playback_marker'
 Selection = require './piano_roll/selection'
+
+cuid = require 'cuid'
 
 
 module.exports = React.createClass
@@ -87,7 +90,7 @@ module.exports = React.createClass
     Keyboard.off 40, @onArrowKey
 
   componentWillReceiveProps: (nextProps) ->
-    if nextProps.sequence.deref() != @props.sequence.deref()
+    if nextProps.sequence.get('_id') != @props.sequence.get('_id')
       @autoScaleViewport nextProps.sequence
 
   snapScrolling: (e) ->
@@ -129,7 +132,9 @@ module.exports = React.createClass
     minKey = 128
     maxKey = 0
 
-    sequence.get('notes').forEach (id, {key}) ->
+    sequence.get('notes').forEach (note, id) ->
+      return unless note
+      key = note.get 'key'
       minKey = key if key < minKey
       maxKey = key if key > maxKey
 
@@ -142,9 +147,9 @@ module.exports = React.createClass
       yScale: size
 
   updateLoopSize: (e) ->
-    # value = parseFloat e.target.value
-    # @props.sequence.set loopSize: value
-    # @setState xScale: value
+    value = parseFloat e.target.value
+    @props.sequence.update (sequence) -> sequence.set 'loopSize', value
+    @setState xScale: value
 
   updateQuantization: (e) ->
     value = parseFloat e.target.value
@@ -173,43 +178,45 @@ module.exports = React.createClass
   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   updateNotes: (changes) ->
-    # notes = Object.keys(changes).map (i) =>
-    #   key: if changes[i].key? then changes[i].key else @state.notes[i].key
-    #   start: if changes[i].start? then changes[i].start else @state.notes[i].start
-    #   length: if changes[i].length? then changes[i].length else @state.notes[i].length
+    notes = @props.sequence.get 'notes'
 
-    # keys = notes.map (note) -> note.key
-    # starts = notes.map (note) -> note.start
-    # ends = notes.map (note) -> note.start + note.length
+    changedNotes = Object.keys(changes).map (id) =>
+      key: if changes[id].key? then changes[id].key else notes.getIn [id, 'key']
+      start: if changes[id].start? then changes[id].start else notes.getIn [id, 'start']
+      length: if changes[id].length? then changes[id].length else notes.getIn [id, 'length']
 
-    # minKey = Math.min.apply null, keys
-    # maxKey = Math.max.apply null, keys
-    # minStart = Math.min.apply null, starts
-    # maxEnd = Math.max.apply null, ends
+    keys = changedNotes.map (note) -> note.key
+    starts = changedNotes.map (note) -> note.start
+    ends = changedNotes.map (note) -> note.start + note.length
 
-    # # prevent notes from being moved out of the available range
+    minKey = Math.min.apply null, keys
+    maxKey = Math.max.apply null, keys
+    minStart = Math.min.apply null, starts
+    maxEnd = Math.max.apply null, ends
 
-    # return false if minKey < 0 or maxKey > 127
-    # return false if minStart < 0 or maxEnd > @state.loopSize
+    # prevent notes from being moved out of the available range
 
-    # # update scroll so notes remain on screen
+    return false if minKey < 0 or maxKey > 127
+    return false if minStart < 0 or maxEnd > @state.loopSize
 
-    # stateChanges = {}
+    # update scroll so notes remain on screen
 
-    # if minKey < @state.yScroll and maxKey <= @state.yScroll + @state.yScale
-    #   stateChanges.yScroll = minKey
+    stateChanges = {}
 
-    # if maxKey >= @state.yScroll + @state.yScale and minKey > @state.yScroll
-    #   stateChanges.yScroll = maxKey - @state.yScale + 1
+    if minKey < @state.yScroll and maxKey <= @state.yScroll + @state.yScale
+      stateChanges.yScroll = minKey
 
-    # if minStart < @state.xScroll and maxEnd <= @state.xScroll + @state.xScale
-    #   stateChanges.xScroll = minStart
+    if maxKey >= @state.yScroll + @state.yScale and minKey > @state.yScroll
+      stateChanges.yScroll = maxKey - @state.yScale + 1
 
-    # if maxEnd >= @state.xScroll + @state.xScale and minStart > @state.xScroll
-    #   stateChanges.xScroll = maxEnd - @state.xScale
+    if minStart < @state.xScroll and maxEnd <= @state.xScroll + @state.xScale
+      stateChanges.xScroll = minStart
 
-    # @props.sequence.updateNotes changes
-    # @setState stateChanges
+    if maxEnd >= @state.xScroll + @state.xScale and minStart > @state.xScroll
+      stateChanges.xScroll = maxEnd - @state.xScale
+
+    @props.sequence.update (sequence) -> sequence.mergeDeep notes: changes
+    @setState stateChanges
 
   getRelativePosition: ({x,y}) ->
     {top, left} = @refs.grid.getDOMNode().getBoundingClientRect()
@@ -222,7 +229,11 @@ module.exports = React.createClass
     {key, start}
 
   deleteSelectedNotes: ->
-    @props.sequence.removeNotes @state.selectedNotes
+    @props.sequence.update (sequence) =>
+      notes = sequence.get('notes').withMutations (notes) =>
+        notes.delete id for id in @state.selectedNotes
+        notes
+      sequence.set 'notes', notes
 
   notesSelectedBy: (from, to) ->
     minKey = Math.min from.key, to.key
@@ -231,12 +242,18 @@ module.exports = React.createClass
     maxStart = Math.max from.start, to.start
 
     notes = []
-    @props.sequence.get('notes').forEach (id, note) ->
-      notes.push parseInt id if (
-        note.key >= minKey and
-        note.key <= maxKey and
-        note.start + note.length > minEnd and
-        note.start <= maxStart
+    
+    @props.sequence.get('notes').forEach (note, id) ->
+      
+      key = note.get 'key'
+      start = note.get 'start'
+      length = note.get 'length'
+
+      notes.push id if (
+        key >= minKey and
+        key <= maxKey and
+        start + length > minEnd and
+        start <= maxStart
       )
 
     notes
@@ -255,8 +272,13 @@ module.exports = React.createClass
   # add a new note
   onDoubleClickGrid: (e) ->
     {key, start} = @getRelativePosition x: e.clientX, y: e.clientY
-    note = {key, start, length: 1 / @state.quantization}
-    # @props.sequence.addNote note
+    id = cuid()
+
+    changes = {}
+    changes[id] = Immutable.Map {id, key, start, length: 1 / @state.quantization}
+
+    @props.sequence.update (sequence) ->
+      sequence.mergeDeep notes: changes
 
   # change cursor to indicate possible action
   onMouseMoveNote: (e) ->
@@ -276,7 +298,7 @@ module.exports = React.createClass
 
   onMouseDownNote: (e) ->
     e.stopPropagation()
-    id = parseInt e.target.dataset.id
+    id = e.target.dataset.id
     position = e.target.getBoundingClientRect()
 
     # handle note selection
@@ -298,10 +320,12 @@ module.exports = React.createClass
     @draggableOnMouseDown e
 
     # cache original values of selected notes
-    @originalValue = @props.sequence.get('notes').filter (note, id) ->
-      selectedNotes.indexOf(id) >= 0
+    @originalValue = @props.sequence.get('notes')
+      .filter (note, id) ->
+        selectedNotes.indexOf(id) >= 0
+      .toJS()
 
-    @dragOrigin = @props.sequence.getIn ['notes', id]
+    @dragOrigin = @props.sequence.getIn(['notes', id]).toJS()
 
     handleSize = Math.max 0, Math.min @state.resizeHandleWidth, (position.width - @state.resizeHandleWidth) / 2
 
@@ -325,7 +349,10 @@ module.exports = React.createClass
   # remove the double clicked note
   onDoubleClickNote: (e) ->
     e.stopPropagation()
-    @props.sequence.removeNote e.target.dataset.id
+    @props.sequence.update (sequence) =>
+      notes = sequence.get('notes').delete e.target.dataset.id
+      sequence.set 'notes', notes
+
 
   onDrag: (delta, e) ->
 
@@ -369,9 +396,19 @@ module.exports = React.createClass
 
   onDragEnd: (e) ->
     # if the alt key is held, copy notes
-    @props.sequence.addNotes @originalValue if @originalValue? and Keyboard.pressed[18]
+    if @originalValue? and Keyboard.pressed[18]
+      
+      @props.sequence.update (sequence) =>
+        
+        changes = {}
+        for id, note of @originalValue
+          {key, start, length} = note
+          id = cuid()
+          changes[id] = Immutable.Map {id, key, start, length}
 
-    changes =
+        sequence.mergeDeep notes: changes
+
+    stateChanges =
       translateTarget: null
       resizeTarget: null
       resizeDirection: null
@@ -380,12 +417,13 @@ module.exports = React.createClass
 
     # handle drag select
     if @state.selectionOrigin?
+
       position = @getRelativePosition x: e.clientX, y: e.clientY
       selectedNotes = @notesSelectedBy @state.selectionOrigin, position
       selectedNotes = @state.selectedNotes.slice(0).concat selectedNotes if Keyboard.pressed[16]
-      changes.selectedNotes = selectedNotes
+      stateChanges.selectedNotes = selectedNotes
 
-    @setState changes
+    @setState stateChanges
 
     @originalValue = null
     @dragOrigin = null
@@ -398,25 +436,25 @@ module.exports = React.createClass
 
     for id in @state.selectedNotes
 
-      note = @state.notes[id]
+      note = @props.sequence.getIn ['notes', id]
 
       # left arrow
       if e.keyCode is 37
-        changes[id] = start: note.start - 1 / @state.quantization
+        changes[id] = start: note.get('start') - 1 / @state.quantization
 
       # up arrow
       else if e.keyCode is 38
         distance = if Keyboard.pressed[16] then 12 else 1
-        changes[id] = key: note.key + distance
+        changes[id] = key: note.get('key') + distance
 
       # right arrow
       else if e.keyCode is 39
-        changes[id] = start: note.start + 1 / @state.quantization
+        changes[id] = start: note.get('start') + 1 / @state.quantization
 
       # down arrow
       else if e.keyCode is 40
         distance = if Keyboard.pressed[16] then 12 else 1
-        changes[id] = key: note.key - distance
+        changes[id] = key: note.get('key') - distance
 
     @updateNotes changes
 

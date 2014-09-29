@@ -9,4 +9,4 @@ module.exports = class Model
 
   @build: (data = {}) ->
     data._id = cuid() unless data._id?
-    Immutable.fromJS(data).mergeDeep Immutable.fromJS @defaults
+    Immutable.fromJS(@defaults).mergeDeep Immutable.fromJS data

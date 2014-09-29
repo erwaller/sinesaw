@@ -2,13 +2,12 @@ async = require 'async'
 fs = require 'fs'
 b2a = require 'base64-arraybuffer'
 cuid = require 'cuid'
-decoder = new webkitAudioContext
+decoder = require './dsp/global_context'
 
 bass = b2a.decode fs.readFileSync "#{__dirname}/../audio/bass.wav", 'base64'
 kick = b2a.decode fs.readFileSync "#{__dirname}/../audio/kick.wav", 'base64'
 snare = b2a.decode fs.readFileSync "#{__dirname}/../audio/snare.wav", 'base64'
 hat = b2a.decode fs.readFileSync "#{__dirname}/../audio/hat.wav", 'base64'
-
 
 loaded = false
 data = null
@@ -39,6 +38,45 @@ async.parallel
       position: 0
       tracks: [
         {
+          _id: cuid()
+          name: 'Analog Synth'
+          meterLevel: 0
+          sequence:
+            _id: cuid()
+            loopSize: 4
+            notes: {}
+          instrument:
+            _id: cuid()
+            _type: 'AnalogSynthesizer'
+            level: 0.5
+            pan: 0.5
+            polyphony: 3
+            volumeEnv:
+              a: 0
+              d: 0.25
+              s: 0
+              r: 0.5
+            filterEnv:
+              a: 0
+              d: 0.25
+              s: 0.2
+              r: 0.5
+            filter:
+              type: 'LP'
+              freq: 0.27
+              res: 0.05
+              env: 0.45
+            osc1:
+              waveform: 'saw'
+              level: 0.5
+              pitch: 0.5
+              tune: 0.5
+            osc2:
+              waveform: 'saw'
+              level: 0.5
+              pitch: 0.5
+              tune: 0.5
+        }, {
           _id: cuid()
           name: 'Basic Sampler'
           meterLevel: 0

@@ -1,23 +1,21 @@
 # @cjsx React.DOM
 
 React = require 'react'
+Modelable = require './mixins/modelable'
 Chooser = require './chooser'
 Knob = require './knob'
 
 module.exports = React.createClass
 
-  update: (attr) ->
-    (value) =>
-      filter = {}
-      for k, v of @props.filter
-        filter[k] = if k == attr then value else v
-      @props.onChange filter
+  mixins: [Modelable]
 
   render: ->
+    filter = @props.filter
+
     <div className="ui filter">
-      <Chooser options={['LP','HP','none']} value={@props.filter.type} onChange={@update('type')}/>
-      <Knob label="Freq" value={@props.filter.freq} onChange={@update('freq')}/>
-      <Knob label="Res" value={@props.filter.res} onChange={@update('res')}/>    
-      <Knob label="Env" value={@props.filter.env} onChange={@update('env')}/>
+      <Chooser options={['LP','HP','none']} value={filter.get 'type'} onChange={@updateCursor filter, 'type'}/>
+      <Knob label="Freq" value={filter.get 'freq'} onChange={@updateCursor filter, 'freq'}/>
+      <Knob label="Res" value={filter.get 'res'} onChange={@updateCursor filter, 'res'}/>    
+      <Knob label="Env" value={filter.get 'env'} onChange={@updateCursor filter, 'env'}/>
       <label>{@props.label}</label>
     </div>

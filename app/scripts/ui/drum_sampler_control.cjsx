@@ -1,8 +1,9 @@
 # @cjsx React.DOM
 
-React = require 'react'
+React = require 'react/addons'
 Updatable = require './mixins/updatable'
 Sortable = require './mixins/sortable'
+Modelable = require './mixins/modelable'
 Knob = require './knob'
 Slider = require './slider'
 ListControl = require './list_control'
@@ -14,55 +15,37 @@ transposeOptions = require '../util/transpose_options'
 
 Drum = React.createClass
 
-  mixins: [Sortable, React.addons.Pure]
-
-  setSample: (sampleName, sampleData) ->
-    # o = {}
-    # o[k] = v for k, v of @props.drum
-
-    # o.sampleName = sampleName
-    # o.sampleData = sampleData
-
-    # @props.onChange o
+  mixins: [Sortable, Modelable]
 
   render: ->
     drum = @props.drum
 
     return <div className="drum"/> unless drum
 
-    console.log "HERE"
-    console.log drum
-    console
-
     <div className="drum">
       <div className="column">
         <SampleControl
           label={"Sample"}
           app={@props.app}
-          onChange={@setSample}
-          sampleData={drum.get 'sampleData'}
-          sampleName={drum.get 'sampleName'}
-          sampleStart={drum.get 'start'}
-          onChangeStart={->}
+          sampler={drum}
         />
       </div>
       <div className="column envelope">
         <Envelope
           label="Volume Env"
-          env={drum.get('volumeEnv').toJS()}
-          onChange={->}
+          env={drum.cursor('volumeEnv')}
         />
       </div>
       <div className="column control">
         <Knob
           label="Level"
           value={drum.get 'level'}
-          onChange={->}
+          onChange={@updateCursor drum, 'level'}
         />
         <div className="ui">
           <select
             value={drum.get 'transpose'}
-            onChange={->}
+            onChange={@updateCursor drum, 'transpose', (e) -> parseInt e.target.value}
           >
             {transposeOptions()}
           </select>
@@ -71,7 +54,7 @@ Drum = React.createClass
         <div className="ui">
           <select
             value={drum.get 'key'}
-            onChange={->}
+            onChange={@updateCursor drum, 'key', (e) -> parseInt e.target.value}
           >
             {keyOptions()}
           </select>
@@ -83,7 +66,7 @@ Drum = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Updatable]
+  mixins: [Updatable, Modelable]
 
   getInitialState: ->
     activeDrum: 0
@@ -105,7 +88,7 @@ module.exports = React.createClass
         <Slider
           label="Level"
           value={instrument.get 'level'}
-          onChange={->}
+          onChange={@updateCursor instrument, 'level'}
         />
       </div>
       <ListControl
