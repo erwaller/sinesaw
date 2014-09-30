@@ -1,4 +1,4 @@
-Immutable = require 'immutable'
+deepMerge = require '../util/deep_merge'
 cuid = require 'cuid'
 
 
@@ -9,4 +9,4 @@ module.exports = class Model
 
   @build: (data = {}) ->
     data._id = cuid() unless data._id?
-    Immutable.fromJS(@defaults).mergeDeep Immutable.fromJS data
+    deepMerge @defaults, data

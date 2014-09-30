@@ -39,6 +39,61 @@ async.parallel
       tracks: [
         {
           _id: cuid()
+          name: 'Drum Sampler'
+          meterLevel: 0
+          sequence:
+            _id: cuid()
+            loopSize: 4
+            notes: {}
+          instrument:
+            _id: cuid()
+            _type: 'DrumSampler'
+            level: 0.5
+            pan: 0.5
+            drums: [
+              {
+                name: 'Kick'
+                sampleData: results.kick.getChannelData 0
+                sampleName: 'kick.wav'
+                transpose: 0
+                level: 1
+                key: 0
+                start: 0
+                volumeEnv:
+                  a: 0
+                  d: 1
+                  s: 1
+                  r: 1
+              }, {
+                name: 'Snare'
+                sampleData: results.snare.getChannelData 0
+                sampleName: 'snare.wav'
+                transpose: 0
+                level: 0.35
+                key: 1
+                start: 0
+                volumeEnv:
+                  a: 0
+                  d: 1
+                  s: 1
+                  r: 1
+              }, {
+                name: 'High Hat'
+                sampleData: results.hat.getChannelData 0
+                sampleName: 'hat.wav'
+                transpose: 0
+                level: 0.2
+                key: 2
+                start: 0
+                volumeEnv:
+                  a: 0
+                  d: 1
+                  s: 1
+                  r: 1
+              }
+            ]
+        }, {
+          _id: cuid()
           name: 'Analog Synth'
           meterLevel: 0
           sequence:
@@ -112,61 +167,6 @@ async.parallel
               freq: 0.27
               res: 0.05
               env: 0.45
-        }, {
-          _id: cuid()
-          name: 'Drum Sampler'
-          meterLevel: 0
-          sequence:
-            _id: cuid()
-            loopSize: 4
-            notes: {}
-          instrument:
-            _id: cuid()
-            _type: 'DrumSampler'
-            level: 0.5
-            pan: 0.5
-            drums: [
-              {
-                name: 'Kick'
-                sampleData: results.kick.getChannelData 0
-                sampleName: 'kick.wav'
-                transpose: 0
-                level: 1
-                key: 0
-                start: 0
-                volumeEnv:
-                  a: 0
-                  d: 1
-                  s: 1
-                  r: 1
-              }, {
-                name: 'Snare'
-                sampleData: results.snare.getChannelData 0
-                sampleName: 'snare.wav'
-                transpose: 0
-                level: 0.35
-                key: 1
-                start: 0
-                volumeEnv:
-                  a: 0
-                  d: 1
-                  s: 1
-                  r: 1
-              }, {
-                name: 'High Hat'
-                sampleData: results.hat.getChannelData 0
-                sampleName: 'hat.wav'
-                transpose: 0
-                level: 0.2
-                key: 2
-                start: 0
-                volumeEnv:
-                  a: 0
-                  d: 1
-                  s: 1
-                  r: 1
-              }
-            ]
         }
       ]
 

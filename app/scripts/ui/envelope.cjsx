@@ -3,12 +3,11 @@
 React = require 'react'
 SizeMeasurable = require './mixins/size_measurable'
 Draggable = require './mixins/draggable'
-Modelable = require './mixins/modelable'
 Knob = require './knob'
 
 module.exports = React.createClass
 
-  mixins: [SizeMeasurable, Draggable, Modelable]
+  mixins: [SizeMeasurable, Draggable]
 
   getInitialState: ->
     dragTarget: null
@@ -23,7 +22,7 @@ module.exports = React.createClass
     m = @props.margin + @props.dotRadius
     w = @state.width - 2 * m
     h = @state.height - 2 * m
-    env = @props.env.toJS()
+    env = @props.env.get()
 
     p1 =
       x: 0
@@ -104,7 +103,7 @@ module.exports = React.createClass
     for k, v of changes
       changes[k] = Math.max 0, Math.min 1, v
 
-    @props.env.update (env) -> env.merge changes
+    @props.env.merge changes
 
   onDragEnd: ->
     @initialValue = null
@@ -122,12 +121,12 @@ module.exports = React.createClass
       </div>
       <div className='knobs'>
         <div className='group'>
-          <Knob label='A' value={@props.env.get 'a'} onChange={@updateCursor env, 'a'}/>
-          <Knob label='D' value={@props.env.get 'd'} onChange={@updateCursor env, 'd'}/>
+          <Knob label='A' value={env.get 'a'} onChange={env.bind 'a'}/>
+          <Knob label='D' value={env.get 'd'} onChange={env.bind 'd'}/>
         </div>
         <div className='group'>
-          <Knob label='S' value={@props.env.get 's'} onChange={@updateCursor env, 's'}/>
-          <Knob label='R' value={@props.env.get 'r'} onChange={@updateCursor env, 'r'}/>
+          <Knob label='S' value={env.get 's'} onChange={env.bind 's'}/>
+          <Knob label='R' value={env.get 'r'} onChange={env.bind 'r'}/>
         </div>
       </div>
       <label>{@props.label}</label>

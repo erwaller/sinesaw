@@ -1,13 +1,10 @@
 # @cjsx React.DOM
 
 React = require 'react'
-Modelable = require './mixins/modelable'
 ScaleHandle = require './scale_handle'
 Keyboard = require 'keyboardjs'
 
 module.exports = React.createClass
-
-  mixins: [Modelable]
 
   componentDidMount: ->
     @keyBindings = [
@@ -34,12 +31,12 @@ module.exports = React.createClass
 
     <div className="ui playback-control">
       <div className="group playback">
-        <div className={playClassName} onClick={@updateCursor song, 'playing', -> not song.get 'playing'}/>
+        <div className={playClassName} onClick={song.bind 'playing', -> not song.get 'playing'}/>
         <div className="icon icon-record"/>
-        <div className="icon icon-stop" onClick={@updateCursor song, 'playing', -> false}/>
+        <div className="icon icon-stop" onClick={song.bind 'playing', -> false}/>
       </div>
       <div className="group tempo">
-        <select value={song.get 'bpm'} onChange={@updateCursor song, 'bpm', (e) -> parseInt e.target.value}>{bpmOptions}</select>
+        <select value={song.get 'bpm'} onChange={song.bind 'bpm', (e) -> parseInt e.target.value}>{bpmOptions}</select>
       </div>
       <div className="logo">sinesaw</div>
       <div className="group menu">

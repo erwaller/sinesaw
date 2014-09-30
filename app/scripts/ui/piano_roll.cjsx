@@ -127,7 +127,7 @@ module.exports = React.createClass
     minKey = 128
     maxKey = 0
 
-    sequence.get('notes').forEach (note, id) ->
+    for id, note of sequence.get 'notes'
       return unless note
       key = note.get 'key'
       minKey = key if key < minKey
@@ -143,7 +143,7 @@ module.exports = React.createClass
 
   updateLoopSize: (e) ->
     value = parseFloat e.target.value
-    @props.sequence.update (sequence) -> sequence.set 'loopSize', value
+    @props.sequence.set 'loopSize', value
     @setState xScale: value
 
   updateQuantization: (e) ->
@@ -318,12 +318,9 @@ module.exports = React.createClass
     @draggableOnMouseDown e
 
     # cache original values of selected notes
-    @originalValue = @props.sequence.get('notes')
-      .filter (note, id) ->
-        selectedNotes.indexOf(id) >= 0
-      .toJS()
+    @originalValue = @props.sequence.get('notes').filter (note, id) -> selectedNotes.indexOf(id) >= 0
 
-    @dragOrigin = @props.sequence.getIn(['notes', id]).toJS()
+    @dragOrigin = @props.sequence.getIn(['notes', id]).deref()
 
     handleSize = Math.max 0, Math.min @state.resizeHandleWidth, (position.width - @state.resizeHandleWidth) / 2
 

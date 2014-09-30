@@ -1,7 +1,6 @@
 # @cjsx React.DOM
 
 React = require 'react/addons'
-Modelable = require './mixins/modelable'
 Knob = require './knob'
 Chooser = require './chooser'
 Slider = require './slider'
@@ -16,19 +15,15 @@ module.exports = React.createClass
   getInitialState: ->
     buffer: null
 
-  mixins: [Modelable]
-
   setStart: (value) ->
-    @props.instrument.update (instrument) =>
-      instrument.merge
-        start: value
-        loop: Math.max value, instrument.get 'loop'
+    @props.instrument.merge
+      start: value
+      loop: Math.max value, @props.instrument.get 'loop'
 
   setLoop: (value) ->
-    @props.instrument.update (instrument) =>
-      instrument.merge
-        loop: value
-        start: Math.min value, instrument.get 'start'
+    @props.instrument.merge
+      loop: value
+      start: Math.min value, @props.instrument.get 'start'
 
   render: ->
     instrument = @props.instrument
@@ -41,12 +36,12 @@ module.exports = React.createClass
         <Slider
           label="Level"
           value={instrument.get 'level'}
-          onChange={@updateCursor instrument, 'level'}
+          onChange={instrument.bind 'level'}
         />
         <div className="ui">
           <select
             value={instrument.get 'polyphony'}
-            onChange={@updateCursor instrument, 'polyphony', (e) -> parseInt e.target.value}
+            onChange={instrument.bind 'polyphony', (e) -> parseInt e.target.value}
           >
             {options}
           </select>
@@ -81,7 +76,7 @@ module.exports = React.createClass
           <div className="ui">
             <select
               value={instrument.get 'rootKey'}
-              onChange={@updateCursor instrument, 'rootKey', (e) -> parseInt e.target.value}
+              onChange={instrument.bind 'rootKey', (e) -> parseInt e.target.value}
             >
               {keyOptions()}
             </select>
@@ -90,14 +85,14 @@ module.exports = React.createClass
           <Knob
             label="Tune"
             value={instrument.get 'tune'}
-            onChange={@updateCursor instrument, 'tune'}
+            onChange={instrument.bind 'tune'}
           />
         </div>
         <div className="row sample">
           <Chooser
             options={['loop','off']}
             value={instrument.get 'loopActive'}
-            onChange={@updateCursor instrument, 'loopActive'}
+            onChange={instrument.bind 'loopActive'}
           />
           <Knob
             label="Loop"

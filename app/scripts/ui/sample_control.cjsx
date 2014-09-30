@@ -45,16 +45,14 @@ module.exports = React.createClass
     />
 
   setStart: (value) ->
-    @props.sampler.update (sampler) =>
-      sampler.merge
-        start: value
-        loop: Math.max value, sampler.get 'loop'
+    @props.sampler.merge
+      start: value
+      loop: Math.max value, @props.sampler.get 'loop'
 
   setLoop: (value) ->
-    @props.sampler.update (sampler) =>
-      sampler.merge
-        loop: value
-        start: Math.min value, sampler.get 'start'
+    @props.sampler.merge
+      loop: value
+      start: Math.min value, @props.sampler.get 'start'
 
   render: ->
     sampler = @props.sampler

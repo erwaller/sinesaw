@@ -80,7 +80,7 @@ module.exports = React.createClass
         )
 
     # notes
-    for id, note of @props.notes.toJS()
+    for id, note of @props.notes
       continue unless @noteOnScreen note
 
       x = (note.start - @props.xScroll) * squareWidth * @props.quantization + lineWidth / 2

@@ -3,7 +3,6 @@
 React = require 'react/addons'
 Sortable = require './mixins/sortable'
 Updatable = require './mixins/updatable'
-Modelable = require './mixins/modelable'
 Draggable = require './mixins/draggable'
 SizeMeasurable = require './mixins/size_measurable'
 Knob = require './knob'
@@ -20,7 +19,7 @@ ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 TrackRow = React.createClass
 
-  mixins: [Sortable, Modelable]
+  mixins: [Sortable]
   
   render: ->
     track = @props.track
@@ -43,7 +42,7 @@ TrackRow = React.createClass
       <Knob
         label="Level"
         value={instrument.get 'level'}
-        onChange={@updateCursor instrument, 'level'}
+        onChange={instrument.bind 'level'}
       />
       <Meter track={track}/>
     </div>
@@ -51,7 +50,7 @@ TrackRow = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Updatable, Modelable]
+  mixins: [Updatable]
 
   trackTypes:
     'Drum Sampler': DrumSampler
@@ -79,32 +78,35 @@ module.exports = React.createClass
 
   addTrack: (name) ->
     track = Track.build {name, instrument: @trackTypes[name].build()}
+    index = @props.tracks.get().length
 
-    index = @props.tracks.length
-
-    @props.tracks.update (tracks) -> tracks.set index, track
+    @props.tracks.set [index], track
     @props.selectTrack index
     @setState menuOpen: false
 
   removeTrack: ->
-    @props.tracks.update (tracks) => tracks.splice(@props.selectedTrack, 1).toVector()
-    @props.selectTrack Math.max 0, Math.min @props.selectedTrack, @props.tracks.length - 2
+    tracks = @props.tracks.get().slice 0
+    tracks.splice @props.selectedTrack, 1
+    index = Math.max 0, Math.min @props.selectedTrack, tracks.length - 1
+
+    @props.selectTrack index
+    @props.tracks.set [], tracks
 
   render: ->
     trackRows = @props.tracks
+      .get()
       .map (track, i) =>
         if track
           <TrackRow
-            key={track.get '_id'}
+            key={track._id}
             index={i}
-            track={track}
+            track={@props.tracks.cursor i}
             selected={@props.selectedTrack == i}
             selectTrack={=> @props.selectTrack i}
             dragging={@state.dragging}
             updateDragging={@update 'dragging'}
             items={@props.tracks}
           />
-      .toArray()
 
     <div className='ui track-selection'>
       <div className="tracks">

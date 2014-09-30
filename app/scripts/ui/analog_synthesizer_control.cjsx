@@ -1,7 +1,6 @@
 # @cjsx React.DOM
 
 React = require 'react'
-Modelable = require './mixins/modelable'
 Slider = require './slider'
 Envelope = require './envelope'
 Filter = require './filter'
@@ -9,8 +8,6 @@ Oscillator = require './oscillator'
 
 
 module.exports = React.createClass
-
-  mixins: [Modelable]
 
   render: ->
     instrument = @props.instrument
@@ -23,11 +20,11 @@ module.exports = React.createClass
         <Slider
           label="Level"
           value={instrument.get 'level'}
-          onChange={@updateCursor instrument, 'level'}
+          onChange={instrument.bind 'level'}
         />
         <div className="ui">
           <select
-            onChange={@updateCursor instrument, 'level', (e) -> parseInt e.target.value}
+            onChange={instrument.bind 'polyphony', (e) -> parseInt e.target.value}
             value={instrument.get 'polyphony'}
           >
             {options}

@@ -25,13 +25,10 @@ module.exports =
 
     return if from == to
 
-    items = @props.items.deref()
+    items = @props.items.get().slice 0
+    items.splice to, 0, items.splice(from, 1)[0]
 
-    @props.items.update (items) ->
-      item = items.get from
-      items = items.splice from, 1
-      items = items.splice to, 0, item
-      items.toVector()
+    @props.items.set [], items
 
     @props.updateDragging to
     @props.selectTrack to

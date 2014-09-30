@@ -25,22 +25,22 @@ module.exports = class DrumSampler extends Instrument
       }
     ]
 
-  # defaultDrum: ->
-  #   name: "Drum #{@state.drums.length + 1}"
-  #   sampleData: null
-  #   sampleName: ''
-  #   transpose: 0
-  #   level: 1
-  #   start: 0
-  #   key: do =>
-  #     key = 0
-  #     key += 1 while @state.drums.some (drum) -> drum.key == key
-  #     key
-  #   volumeEnv:
-  #     a: 0
-  #     d: 1
-  #     s: 1
-  #     r: 1
+  @defaultDrum: (drums) ->
+    name: "Drum #{drums.length + 1}"
+    sampleData: null
+    sampleName: ''
+    transpose: 0
+    level: 1
+    start: 0
+    key: do =>
+      key = 0
+      key += 1 while drums.some (drum) -> drum.key == key
+      key
+    volumeEnv:
+      a: 0
+      d: 1
+      s: 1
+      r: 1
 
   # constructor: ->
   #   super

@@ -2,7 +2,6 @@
 
 React = require 'react/addons'
 Updatable = require './ui/mixins/updatable'
-Modelable = require './ui/mixins/modelable'
 Song = require './models/song'
 Track = require './models/track'
 DrumkitSynthesizer = require './models/drumkit_synthesizer'
@@ -23,14 +22,14 @@ ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 module.exports = React.createClass
 
-  mixins: [Modelable, Updatable]
+  mixins: [Updatable]
 
   getInitialState: ->
     selectedTrack: 0
     modalContent: null
 
   launchModal: (modalContent) ->
-    @props.song.update (song) -> song.set 'playing', false
+    @props.song.set 'playing', false
     @setState {modalContent}
 
   dismissModal: ->

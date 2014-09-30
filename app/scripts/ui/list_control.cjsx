@@ -46,14 +46,13 @@ module.exports = React.createClass
       .map (option, i) =>
         <ListOption
           key={i}
-          name={option.get 'name'}
+          name={option.name}
           selected={i == @props.selectedIndex}
           selectOption={=> @props.onSelect i}
           sort={@sort}
           items={@props.options}
           dragging={@state.dragging}
         />
-      .toArray()
 
     <div className="ui list-control">
       <div className="list">
