@@ -3,9 +3,9 @@ actions = {}
 
 apply = ->
   max = null
-  
+
   for id, action of actions
-    max = id if !max? or action.priority > actions[max].priority 
+    max = id if !max? or action.priority > actions[max].priority
 
   document.body.style.cursor = if max then actions[max].value else 'default'
 

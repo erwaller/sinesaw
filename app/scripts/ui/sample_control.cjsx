@@ -1,5 +1,4 @@
 React = require 'react/addons'
-Modelable = require './mixins/modelable'
 Recording = require '../models/recording'
 Waveform = require './waveform'
 RecordControl = require './record_control'
@@ -10,8 +9,6 @@ module.exports = React.createClass
   # range in pixels for vertical drag to zoom
   range: 300
   dragTypeDistance: 10
-
-  mixins: [Modelable]
 
   getDefaultProps: ->
     sampleStart: 0

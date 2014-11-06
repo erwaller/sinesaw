@@ -17,25 +17,22 @@ module.exports = class Track extends Model
     name: 'Track'
     meterLevel: 0
     sequence: Sequence.build()
+    effects: []
 
-  # @out: (data, time, i) ->
-  #   sample = @effects.reduce((sample, e) ->
-  #     e.out time, i, sample
-  #   , @instrument.out time, i)
+  @out: (data, time, i) ->
+    sample = data.effects.reduce((sample, effect) ->
+      Effect.out effect, time, i, sample
+    , @instrument.out time, i)
 
-  #   if sample > @meterLevel
-  #     @meterLevel = sample
-  #   else if @meterLevel > 0
-  #     @meterLevel -= meterDecay
+    if sample > @meterLevel
+      @meterLevel = sample
+    else if @meterLevel > 0
+      @meterLevel -= meterDecay
 
-  #   sample
+    sample
 
-  # @tick: (data, time, i, beat, bps) ->
-  #   notesOn = @sequence.notesOn beat
-  #   @instrument.tick time, i, beat, bps, notesOn
-  #   @effects.forEach (e) -> e.tick time, beat, bps
-  #   @set {@meterLevel}
-
-  # @reset: ->
-  #   @instrument.reset()
-  #   effect.reset() for effect in @effects
+  @tick: (data, time, i, beat, bps) ->
+    notesOn = @sequence.notesOn beat
+    @instrument.tick time, i, beat, bps, notesOn
+    @effects.forEach (e) -> e.tick time, beat, bps
+    @set {@meterLevel}

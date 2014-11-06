@@ -45,6 +45,7 @@ async.parallel
             _id: cuid()
             loopSize: 4
             notes: {}
+          effects: []
           instrument:
             _id: cuid()
             _type: 'DrumSampler'
@@ -100,6 +101,7 @@ async.parallel
             _id: cuid()
             loopSize: 4
             notes: {}
+          effects: []
           instrument:
             _id: cuid()
             _type: 'AnalogSynthesizer'
@@ -139,6 +141,7 @@ async.parallel
             _id: cuid()
             loopSize: 4
             notes: {}
+          effects: []
           instrument:
             _id: cuid()
             _type: 'BasicSampler'

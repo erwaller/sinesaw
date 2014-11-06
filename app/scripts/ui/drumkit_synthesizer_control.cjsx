@@ -1,7 +1,6 @@
 # @cjsx React.DOM
 
 React = require 'react'
-Modelable = require './mixins/modelable'
 Updatable = require './mixins/updatable'
 Knob = require './knob'
 Slider = require './slider'
@@ -87,7 +86,7 @@ Drum = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Modelable, Updatable]
+  mixins: [Updatable]
 
   getInitialState: ->
     activeDrum: 0

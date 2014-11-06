@@ -1,19 +1,97 @@
+deepFreeze = require './deep_freeze'
 deepMerge = require './deep_merge'
-isArray = Array.isArray
 
-module.exports = 
+
+
+# return true if an object has no properites, false otherwise
+isEmpty = (o) ->
+  for k, v of o
+    return false if o.hasOwnProperty k
+  true
+
+
+class Cache
+
+  constructor: ->
+    @root = children: {}
+
+  get: (path) ->
+    target = @root
+    for key in path
+      target = target.children[key]
+      return undefined unless target?
+    target.cursor
+
+  store: (cursor) ->
+    target = @root
+    for key in cursor.path
+      target.children[key] ||= children: {}
+      target = target.children[key]
+    target.cursor = cursor
+
+  clearPath: (path) ->
+    target = @root
+    nodes = []
+
+    # clear cached cursors along path
+    for key, i in path
+      break unless target.children[key]?
+      target = target.children[key]
+      nodes.push target
+      delete target.cursor
+
+    # prune empty nodes along path starting at leaves
+    # for i in [nodes.length - 1 ... 0]
+    #   node = nodes[i]
+    #   if isEmpty node.children
+    #     delete nodes[i - 1].children[path[i]]
+    #   else
+    #     break
+
+    @root
+
+  # recursively clear changes made by merge
+
+  clearObject = (node, changes) ->
+    for k of changes
+      if (child = node.children[k])?
+        delete child.cursor
+        clearObject child, changes[k]
+    node
+
+  clearObject: (path, obj) ->
+    target = @root
+    for key in path
+      target = target.children[key]
+      return unless target?
+
+    clearObject target, obj
+
+
+
+module.exports =
 
   create: (inputData, onChange, historySize = 100) ->
-    data = inputData
+    cache = new Cache
+    data = deepFreeze inputData
+    batched = false
     undos = []
     redos = []
 
+
+    # declare cursor class w/ access to mutable reference to data in closure
     class Cursor
 
       constructor: (@path = []) ->
 
       cursor: (path = []) ->
-        new Cursor @path.concat path
+        fullPath = @path.concat path
+
+        return cached if (cached = cache.get fullPath)?
+
+        cursor = new Cursor fullPath
+        cache.store cursor
+        cursor
 
       get: (path = []) ->
         target = data
@@ -22,26 +100,65 @@ module.exports =
           return undefined unless target?
         target
 
-      set: (path, value, silent = false) ->
+      modifyAt: (path, modifier, silent) ->
         fullPath = @path.concat path
+
         newData = target = {}
         target[k] = v for k, v of data
 
         for key in fullPath.slice 0, -1
-          updated = if isArray target[key] then [] else {}
+          updated = if Array.isArray target[key] then [] else {}
           updated[k] = v for k, v of target[key]
-          target = target[key] = updated
+          target[key] = updated
+          Object.freeze target
+          target = target[key]
 
-        target[fullPath.slice -1] = value
+        modifier target, fullPath.slice -1
+        Object.freeze target
 
+        cache.clearPath fullPath
         update newData, silent
 
-      merge: (data, silent) ->
-        @set [], deepMerge(@get(), data), silent
+      set: (path, value, silent = false) ->
+        if @path.length > 0 or path.length > 0
+          @modifyAt path, (target, key) ->
+            target[key] = deepFreeze value
+          , silent
+        else
+          update value, silent
+
+      delete: (path, silent = false) ->
+        if @path.length > 0 or path.length > 0
+          @modifyAt path, (target, key) ->
+            delete target[key]
+          , silent
+        else
+          update undefined, silent
+
+      merge: (newData, silent = false) ->
+        cache.clearObject @path, newData
+        @set [], deepMerge(@get(), deepFreeze newData), silent
 
       bind: (path, pre) ->
         (v, silent) => @set path, (if pre then pre(v) else v), silent
 
+      has: (path) ->
+        @get(path)?
+
+      batched: (cb, silent = false) ->
+        batched = true
+        cb()
+        batched = false
+        update data, silent
+
+
+    update = (newData, silent = false) ->
+      unless silent or batched
+        undos.push data
+        undos.shift() if undos.length > historySize
+
+      data = newData
+      onChange new Cursor(), undo, redo unless batched
 
     undo = ->
       return unless undos.length > 0
@@ -57,13 +174,7 @@ module.exports =
       data = redos.pop()
       onChange new Cursor(), undo, redo
 
-    update = (newData, silent = false) ->
-      unless silent
-        undos.push data
-        undos.shift() if undos.length > historySize
 
-      data = newData
-      onChange new Cursor(), undo, redo
 
     # perform callback one time to start
     onChange new Cursor(), undo, redo

@@ -16,17 +16,13 @@ module.exports = React.createClass
 
   onSpaceKey: (e) ->
     e.preventDefault()
-
-    if @props.song.get 'playing'
-      @props.song.update (song) -> song.set 'playing', false
-    else
-      @props.song.update (song) -> song.set 'playing', true
+    @props.song.set 'playing', not @props.song.get 'playing'
 
   render: ->
     song = @props.song
 
     playClassName = 'icon icon-play' + if song.get('playing') then ' active' else ''
-    
+
     bpmOptions = (<option key={i} value={i}>{i} bpm</option> for i in [200..20])
 
     <div className="ui playback-control">

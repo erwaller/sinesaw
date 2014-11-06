@@ -1,6 +1,6 @@
 isObject = (o) -> o? and toString.call(o) is '[object Object]'
 
-module.exports = (src, data) ->
+module.exports = deepMerge = (src, data) ->
 
   dst = if Array.isArray src then [] else {}
 

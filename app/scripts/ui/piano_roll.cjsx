@@ -1,13 +1,12 @@
 # @cjsx React.DOM
 
 React = require 'react'
-Immutable = require 'immutable'
 Keyboard = require 'keyboardjs'
 SizeMeasurable = require './mixins/size_measurable'
 Updatable = require './mixins/updatable'
 Draggable = require './mixins/draggable'
 ScaleHandle = require './scale_handle'
-Cursor = require '../util/cursor'
+Pointer = require '../util/pointer'
 
 Keys = require './piano_roll/keys'
 GridLines = require './piano_roll/grid_lines'
@@ -19,20 +18,20 @@ cuid = require 'cuid'
 
 
 module.exports = React.createClass
-  
+
   mixins: [SizeMeasurable, Updatable, Draggable]
 
   getInitialState: ->
     # x scale and scroll values are in beats
     # y scale and scroll values are in half steps
-    
+
     # x and y scale and scroll are set after component mounts based on
     # sequence property and size of element on screen
     xScale: 1
     yScale: 12
     xScroll: 0
     yScroll: 0
-    
+
     # min and max scales of viewport
     minXScale: 1
     maxXScale: 64
@@ -66,7 +65,7 @@ module.exports = React.createClass
 
   componentDidMount: ->
     el = @refs.container.getDOMNode()
-    
+
     setTimeout =>
       el.scrollTop = @state.scrollPadding
       el.scrollLeft = @state.scrollPadding
@@ -100,10 +99,10 @@ module.exports = React.createClass
     # update scroll deltas
     @scrollDeltaX += el.scrollLeft - @state.scrollPadding
     @scrollDeltaY += @state.scrollPadding - el.scrollTop
-    
+
     # prevent scroll
     el.scrollTop = el.scrollLeft = @state.scrollPadding
-    
+
     # get updated scroll state
     if Math.abs(@scrollDeltaX) > xQuantum
       quanta = (if @scrollDeltaX > 0 then Math.floor else Math.ceil)(@scrollDeltaX / xQuantum)
@@ -177,9 +176,9 @@ module.exports = React.createClass
     loopSize = @props.sequence.get 'loopSize'
 
     changedNotes = Object.keys(changes).map (id) =>
-      key: if changes[id].key? then changes[id].key else notes.getIn [id, 'key']
-      start: if changes[id].start? then changes[id].start else notes.getIn [id, 'start']
-      length: if changes[id].length? then changes[id].length else notes.getIn [id, 'length']
+      key: if changes[id].key? then changes[id].key else notes[id].key
+      start: if changes[id].start? then changes[id].start else notes[id].start
+      length: if changes[id].length? then changes[id].length else notes[id].length
 
     keys = changedNotes.map (note) -> note.key
     starts = changedNotes.map (note) -> note.start
@@ -211,7 +210,7 @@ module.exports = React.createClass
     if maxEnd >= @state.xScroll + @state.xScale and minStart > @state.xScroll
       stateChanges.xScroll = maxEnd - @state.xScale
 
-    @props.sequence.update (sequence) -> sequence.mergeDeep notes: changes
+    @props.sequence.merge notes: changes
     @setState stateChanges
 
   getRelativePosition: ({x,y}) ->
@@ -226,12 +225,9 @@ module.exports = React.createClass
 
   onBackspaceKey: (e) ->
     e.preventDefault()
-
-    @props.sequence.update (sequence) =>
-      notes = sequence.get('notes').withMutations (notes) =>
-        notes.delete id for id in @state.selectedNotes
-        notes
-      sequence.set 'notes', notes
+    @props.sequence.batched =>
+      for id in @state.selectedNotes
+        @props.sequence.delete ['notes', id]
 
   notesSelectedBy: (from, to) ->
     minKey = Math.min from.key, to.key
@@ -240,12 +236,8 @@ module.exports = React.createClass
     maxStart = Math.max from.start, to.start
 
     notes = []
-    
-    @props.sequence.get('notes').forEach (note, id) ->
-      
-      key = note.get 'key'
-      start = note.get 'start'
-      length = note.get 'length'
+
+    for id, {key, start, length} of @props.sequence.get 'notes'
 
       notes.push id if (
         key >= minKey and
@@ -263,7 +255,7 @@ module.exports = React.createClass
   onMouseDownGrid: (e) ->
     @setState selectedNotes: [] unless 'shift' in Keyboard.activeKeys()
 
-    # handle drag start 
+    # handle drag start
     @draggableOnMouseDown e
     @setState selectionOrigin: @getRelativePosition {x: e.clientX, y: e.clientY}
 
@@ -273,10 +265,10 @@ module.exports = React.createClass
     id = cuid()
 
     changes = {}
-    changes[id] = Immutable.Map {id, key, start, length: 1 / @state.quantization}
+    changes[id] = {id, key, start, length: 1 / @state.quantization}
 
-    @props.sequence.update (sequence) ->
-      sequence.mergeDeep notes: changes
+    notes = @props.sequence
+    @props.sequence.merge notes: changes
 
   # change cursor to indicate possible action
   onMouseMoveNote: (e) ->
@@ -285,14 +277,14 @@ module.exports = React.createClass
     handleSize = Math.max 0, Math.min @state.resizeHandleWidth, (position.width - @state.resizeHandleWidth) / 2
 
     if position.left > e.clientX - handleSize
-      @noteHoverCursor = Cursor.set 'w-resize', 1, @noteHoverCursor
+      @noteHoverCursor = Pointer.set 'w-resize', 1, @noteHoverCursor
     else if position.right < e.clientX + handleSize
-      @noteHoverCursor = Cursor.set 'e-resize', 1, @noteHoverCursor
+      @noteHoverCursor = Pointer.set 'e-resize', 1, @noteHoverCursor
     else
-      Cursor.clear @noteHoverCursor
+      Pointer.clear @noteHoverCursor
 
   onMouseOutNote: (e) ->
-    Cursor.clear @noteHoverCursor
+    Pointer.clear @noteHoverCursor
 
   onMouseDownNote: (e) ->
     e.stopPropagation()
@@ -318,9 +310,11 @@ module.exports = React.createClass
     @draggableOnMouseDown e
 
     # cache original values of selected notes
-    @originalValue = @props.sequence.get('notes').filter (note, id) -> selectedNotes.indexOf(id) >= 0
+    @originalValue = {}
+    for id, note of @props.sequence.get 'notes'
+      @originalValue[id] = note if selectedNotes.indexOf(id) >= 0
 
-    @dragOrigin = @props.sequence.getIn(['notes', id]).deref()
+    @dragOrigin = @props.sequence.get ['notes', id]
 
     handleSize = Math.max 0, Math.min @state.resizeHandleWidth, (position.width - @state.resizeHandleWidth) / 2
 
@@ -328,15 +322,15 @@ module.exports = React.createClass
     if position.left > e.clientX - handleSize
       stateChanges.resizeTarget = id
       stateChanges.resizeDirection = 'left'
-      @dragActionCursor = Cursor.set 'w-resize', 2, @dragActionCursor
+      @dragActionCursor = Pointer.set 'w-resize', 2, @dragActionCursor
     else if position.right < e.clientX + handleSize
       stateChanges.resizeTarget = id
       stateChanges.resizeDirection = 'right'
-      @dragActionCursor = Cursor.set 'e-resize', 2, @dragActionCursor
+      @dragActionCursor = Pointer.set 'e-resize', 2, @dragActionCursor
     # handle translate
-    else 
+    else
       stateChanges.translateTarget = id
-      @dragActionCursor = Cursor.set 'move', 2, @dragActionCursor
+      @dragActionCursor = Pointer.set 'move', 2, @dragActionCursor
 
     # apply state changes
     @setState stateChanges
@@ -344,9 +338,7 @@ module.exports = React.createClass
   # remove the double clicked note
   onDoubleClickNote: (e) ->
     e.stopPropagation()
-    @props.sequence.update (sequence) =>
-      notes = sequence.get('notes').delete e.target.dataset.id
-      sequence.set 'notes', notes
+    @props.sequence.delete ['notes', e.target.dataset.id]
 
 
   onDrag: (delta, e) ->
@@ -356,8 +348,8 @@ module.exports = React.createClass
     # handle drag selection
     if @state.selectionOrigin?
       @setState selectionPosition: position
-    
-    else 
+
+    else
       keyDelta = position.key - @dragOrigin.key
       startDelta = position.start - @dragOrigin.start
       notes = {}
@@ -392,16 +384,13 @@ module.exports = React.createClass
   onDragEnd: (e) ->
     # if the alt key is held, copy notes
     if @originalValue? and 'alt' in Keyboard.activeKeys()
-      
-      @props.sequence.update (sequence) =>
-        
-        changes = {}
-        for id, note of @originalValue
-          {key, start, length} = note
-          id = cuid()
-          changes[id] = Immutable.Map {id, key, start, length}
 
-        sequence.mergeDeep notes: changes
+      changes = {}
+      for id, {key, start, length} of @originalValue
+        id = cuid()
+        changes[id] = {id, key, start, length}
+
+      @props.sequence.merge notes: changes
 
     stateChanges =
       translateTarget: null
@@ -423,7 +412,7 @@ module.exports = React.createClass
     @originalValue = null
     @dragOrigin = null
 
-    Cursor.clear @dragActionCursor
+    Pointer.clear @dragActionCursor
 
 
   onArrowKey: (e) ->
@@ -433,25 +422,25 @@ module.exports = React.createClass
 
     for id in @state.selectedNotes
 
-      note = @props.sequence.getIn ['notes', id]
+      note = @props.sequence.get ['notes', id]
 
       # left arrow
       if e.keyCode is 37
-        changes[id] = start: note.get('start') - 1 / @state.quantization
+        changes[id] = start: note.start - 1 / @state.quantization
 
       # up arrow
       else if e.keyCode is 38
         distance = if 'shift' in Keyboard.activeKeys() then 12 else 1
-        changes[id] = key: note.get('key') + distance
+        changes[id] = key: note.key + distance
 
       # right arrow
       else if e.keyCode is 39
-        changes[id] = start: note.get('start') + 1 / @state.quantization
+        changes[id] = start: note.start + 1 / @state.quantization
 
       # down arrow
       else if e.keyCode is 40
         distance = if 'shift' in Keyboard.activeKeys() then 12 else 1
-        changes[id] = key: note.get('key') - distance
+        changes[id] = key: note.key - distance
 
     @updateNotes changes
 
@@ -542,7 +531,10 @@ module.exports = React.createClass
       <div className="view-controls">
         <div className="setting">
           <label>Grid</label>
-          <select value={@state.quantization} onChange={@updateQuantization}>
+          <select
+            value={@state.quantization}
+            onChange={@updateQuantization}
+          >
             <option value="1">1</option>
             <option value="2">1/2</option>
             <option value="3">1/3</option>
@@ -555,7 +547,10 @@ module.exports = React.createClass
         </div>
         <div className="setting">
           <label>Length</label>
-          <select value={@props.sequence.get 'loopSize'} onChange={@updateLoopSize}>
+          <select
+            value={@props.sequence.get 'loopSize'}
+            onChange={@updateLoopSize}
+          >
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="4">4</option>
@@ -565,11 +560,21 @@ module.exports = React.createClass
             <option value="64">64</option>
           </select>
         </div>
-        <ScaleHandle min={@state.minYScale} max={@state.maxYScale} value={@state.yScale} onChange={@updateYScale}>
+        <ScaleHandle
+          min={@state.minYScale}
+          max={@state.maxYScale}
+          value={@state.yScale}
+          onChange={@updateYScale}
+        >
           <span className="icon icon-arrow-up"/>
           <span className="icon icon-arrow-down"/>
         </ScaleHandle>
-        <ScaleHandle min={@state.minXScale} max={@state.maxXScale} value={@state.xScale} onChange={@updateXScale}>
+        <ScaleHandle
+          min={@state.minXScale}
+          max={@state.maxXScale}
+          value={@state.xScale}
+          onChange={@updateXScale}
+        >
           <span className="icon icon-arrow-left"/>
           <span className="icon icon-arrow-right"/>
         </ScaleHandle>

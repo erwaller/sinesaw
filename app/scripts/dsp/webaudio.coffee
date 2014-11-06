@@ -28,20 +28,12 @@ module.exports = (context, fn) ->
       output[i] = self.fn self.t, self.i
 
     output
-  
-  self.stop = ->
-    self.disconnect()
-    self.playing = false
-
-  self.play = (opts) ->
-    return if self.playing
-    self.connect self.context.destination
-    self.playing = true
-
-    # this timeout seems to be the thing that keeps the audio from clipping #WTFALERT
-    setTimeout (-> this.node.disconnect()), 100000000000
 
   self.reset = () ->
     self.i = self.t = 0
+
+  # this timeout seems to be the thing that keeps the audio from clipping #WTFALERT
+  setTimeout (-> this.node.disconnect()), 100000000000
+  self.connect self.context.destination
 
   self

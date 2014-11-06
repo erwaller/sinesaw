@@ -29,14 +29,14 @@ module.exports = React.createClass
     modalContent: null
 
   launchModal: (modalContent) ->
-    @props.song.set 'playing', false
+    @props.data.set 'playing', false
     @setState {modalContent}
 
   dismissModal: ->
     @setState modalContent: null
 
   render: ->
-    track = @props.song.cursor ['tracks', @state.selectedTrack]
+    track = @props.data.cursor ['tracks', @state.selectedTrack]
 
     if track
       sequence = track.cursor 'sequence'
@@ -58,19 +58,19 @@ module.exports = React.createClass
 
     <div className="app">
       <div className="row playback">
-        <PlaybackControl song={@props.song}/>
+        <PlaybackControl song={@props.data}/>
       </div>
       <div className="row main">
         <div className="column sidebar">
           <TrackSelection
-            tracks={@props.song.cursor 'tracks'}
+            tracks={@props.data.cursor 'tracks'}
             selectedTrack={@state.selectedTrack}
             selectTrack={@update 'selectedTrack'}
           />
         </div>
         <div className="column main">
           <div className="row sequence">
-            <PianoRoll song={@props.song} sequence={sequence}/>
+            <PianoRoll song={@props.data} sequence={sequence}/>
           </div>
           <div className="row instrument">
             {instrumentControl}

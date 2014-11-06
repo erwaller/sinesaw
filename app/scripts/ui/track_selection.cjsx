@@ -20,7 +20,7 @@ ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 TrackRow = React.createClass
 
   mixins: [Sortable]
-  
+
   render: ->
     track = @props.track
     instrument = track.cursor 'instrument'
@@ -93,29 +93,33 @@ module.exports = React.createClass
     @props.tracks.set [], tracks
 
   render: ->
-    trackRows = @props.tracks
-      .get()
-      .map (track, i) =>
-        if track
-          <TrackRow
-            key={track._id}
-            index={i}
-            track={@props.tracks.cursor i}
-            selected={@props.selectedTrack == i}
-            selectTrack={=> @props.selectTrack i}
-            dragging={@state.dragging}
-            updateDragging={@update 'dragging'}
-            items={@props.tracks}
-          />
+    tracks = @props.tracks.get()
 
     <div className='ui track-selection'>
       <div className="tracks">
         <ReactCSSTransitionGroup transitionName="track">
-          {trackRows}
+          {
+            tracks.map (track, i) =>
+              if track
+                <TrackRow
+                  key={track._id}
+                  index={i}
+                  track={@props.tracks.cursor i}
+                  selected={@props.selectedTrack == i}
+                  selectTrack={=> @props.selectTrack i}
+                  dragging={@state.dragging}
+                  updateDragging={@update 'dragging'}
+                  items={@props.tracks}
+                />
+          }
         </ReactCSSTransitionGroup>
       </div>
       <div className="controls">
-        <Menu options={Object.keys @trackTypes} onSelect={@addTrack} open={@state.menuOpen}/>
+        <Menu
+          options={Object.keys @trackTypes}
+          onSelect={@addTrack}
+          open={@state.menuOpen}
+        />
         <div className="icon icon-plus pull-right" onClick={@toggleMenu}></div>
         <div className="icon icon-minus pull-left" onClick={@removeTrack}></div>
       </div>

@@ -3,8 +3,6 @@ pre launch:
 - ability to save
   - song model exports to json object (add toJSON on child models)
   - song model rehydrates from a json object
-  - keep an array of these for undo
-  - write node server serving static assets in dev envt
   - backend (cors so site can be hosted on s3)
     - postgres on amazon rds
     - /account POST PUT
@@ -26,7 +24,7 @@ pre launch:
 
 post launch:
 
-- renamable tracks and items in list view 
+- renamable tracks and items in list view
 
 - add swing to grid in piano roll
 
@@ -71,3 +69,5 @@ post launch:
 - add fm synth
 
 - rethink ui: 'live' view? arrange view?
+
+

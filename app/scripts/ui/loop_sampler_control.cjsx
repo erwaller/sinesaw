@@ -1,15 +1,12 @@
 # @cjsx React.DOM
 
 React = require 'react'
-Modelable = require './mixins/modelable'
 Knob = require './knob'
 Slider = require './slider'
 SampleControl = require './sample_control'
 Envelope = require './envelope'
 
 module.exports = React.createClass
-
-  mixins: [Modelable]
 
   setPolyphony: (e) ->
     @props.instrument.setPolyphony parseInt e.target.value

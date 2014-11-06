@@ -1,14 +1,11 @@
 # @cjsx React.DOM
 
 React = require 'react/addons'
-Modelable = require './mixins/modelable'
 Recording = require '../models/recording'
 Waveform = require './waveform'
 Meter = require './meter'
 
 module.exports = React.createClass
-
-  mixins: [Modelable]
 
   onClick: ->
     if @state.active
@@ -34,7 +31,7 @@ module.exports = React.createClass
     ]
 
     if @state.sampleData?
-      
+
       waveform = <Waveform
         sampleData={@state.sampleData}
         selectionStart={@state.cropStart}

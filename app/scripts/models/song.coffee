@@ -1,6 +1,6 @@
-Model = require './model'
 webaudio = require '../dsp/webaudio'
 context = require '../dsp/global_context'
+Track = require './track'
 
 module.exports = class Song
 
@@ -12,21 +12,17 @@ module.exports = class Song
   constructor: ->
     @audio = webaudio context, @out
 
-  addTrack: (track) =>
-    tracks = @state.tracks.slice 0
-    tracks.push track
-    @set {tracks}
-
-  removeTrack: (index) =>
-    tracks = @state.tracks.slice 0
-    tracks.splice index, 1
-    @set {tracks}
+  update: (cursor) ->
+    @cursor = cursor
+    @data = cursor.get()
 
   out: (time, i) =>
+    return 0 unless @data?.playing
+
     @tick time, i if i % clockRatio is 0
 
-    clip @state.tracks.reduce((sample, t) ->
-      sample + t.out time, i
+    clip @data.tracks.reduce((sample, track) ->
+      sample + Track.out track, time, i
     , 0)
 
   tick: (time, i) ->
@@ -35,28 +31,7 @@ module.exports = class Song
 
     # update ui state on 1/4th notes
     b = Math.floor(beat * 4) / 4
-    @set position: b if b > @state.position 
+    @cursor.set 'position', b if b > @state.position
 
-    track.tick time, i, beat, bps for track in @state.tracks 
-
-  play: =>
-    @set playing: true
-    @audio.play()
-
-  pause: =>
-    @set playing: false
-    @audio.stop()
-
-  record: =>
-    @set recording: !@state.recording
-
-  stop: =>
-    @audio.stop()
-    @audio.reset()
-    track.reset() for track in @state.tracks
-    @set playing: false, recording: false, position: 0
-
-  toJSON: ->
-    result = bpm: @state.bpm
-    result.tracks = @state.tracks.map (t) -> t.toJSON()
-    result
+    @data.tracks.forEach (track) ->
+      Track.tick data, time, i, beat, bps
