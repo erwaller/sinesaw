@@ -1,5 +1,4 @@
 React = require 'react/addons'
-Recording = require '../models/recording'
 Waveform = require './waveform'
 RecordControl = require './record_control'
 decoder = require '../dsp/global_context'
@@ -32,7 +31,6 @@ module.exports = React.createClass
 
   recordSample: ->
     @props.app.launchModal <RecordControl
-      recording={new Recording}
       onCancel={@props.app.dismissModal}
       onConfirm={
         (sampleData) =>

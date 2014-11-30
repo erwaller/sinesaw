@@ -1,8 +1,10 @@
 pre launch:
 
+- conversion to custom cursor lib
+  - issue dragging multiple notes (snaps to center on wrong note when drag starts)
+  - finish audio conversion
+
 - ability to save
-  - song model exports to json object (add toJSON on child models)
-  - song model rehydrates from a json object
   - backend (cors so site can be hosted on s3)
     - postgres on amazon rds
     - /account POST PUT

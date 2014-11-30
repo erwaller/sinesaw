@@ -11,6 +11,7 @@ module.exports = class Song
 
   constructor: ->
     @audio = webaudio context, @out
+    @lastBeat = 0
 
   update: (cursor) ->
     @cursor = cursor
@@ -34,4 +35,6 @@ module.exports = class Song
     @cursor.set 'position', b if b > @state.position
 
     @data.tracks.forEach (track) ->
-      Track.tick data, time, i, beat, bps
+      Track.tick track, time, i, beat, @lastBeat, bps
+
+    @lastBeat = beat

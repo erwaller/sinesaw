@@ -26,11 +26,8 @@ setTimeout ->
 
   require('./default_song') (songData) ->
 
-    song = new Song
+    window.song = new Song
 
     ImmutableData.create songData, (data, undo, redo) ->
-
       song.update data
       React.renderComponent App({data, undo, redo}), document.body
-
-      window.data = song
