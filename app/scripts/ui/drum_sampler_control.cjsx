@@ -1,4 +1,4 @@
-# @cjsx React.DOM
+# UI for drum sampler instrument
 
 React = require 'react/addons'
 Updatable = require './mixins/updatable'

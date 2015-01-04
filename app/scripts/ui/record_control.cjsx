@@ -1,4 +1,4 @@
-# @cjsx React.DOM
+# A modal audio recording interface
 
 React = require 'react/addons'
 Waveform = require './waveform'

@@ -2,6 +2,9 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 source = require 'vinyl-source-stream'
 browserify = require 'browserify'
+coffeeReactify = require 'coffee-reactify'
+envify = require 'envify/custom'
+brfs = require 'brfs'
 connect = require 'gulp-connect'
 stylus = require 'gulp-stylus'
 autoprefixer = require 'autoprefixer-stylus'
@@ -22,20 +25,27 @@ gulp.task 'server', ->
 
 gulp.task 'js', ->
 
+  errorEmitted = false
+
   statusServer.send 'building'
   browserify(
     entries: ['./app/scripts/index.coffee']
     extensions: ['.coffee', '.cjsx']
     debug: true
   )
+    .transform(coffeeReactify)
+    .transform(envify NODE_ENV: 'development')
+    .transform(brfs)
     .bundle()
       .on 'error', (e) ->
+        errorEmitted = true
         statusServer.send 'error'
         gutil.log "#{e}"
+        @emit 'end'
       .pipe source 'index.js'
       .pipe gulp.dest './public'
       .on 'end', ->
-        statusServer.send 'done'
+        statusServer.send 'done' unless errorEmitted
 
 
 gulp.task 'watch-js', ['js'], ->

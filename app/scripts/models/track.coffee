@@ -22,7 +22,8 @@ module.exports = class Track extends Model
   @meterLevels: {}
 
   @out: (track, time, i) ->
-    sample = Instrument.out track.instrument, time, i
+    instrument = instrumentTypes[track.instrument._type]
+    sample = instrument.out track.instrument, time, i
 
     sample = track.effects.reduce((sample, effect) ->
       Effect.out effect, time, i, sample

@@ -1,4 +1,4 @@
-# @cjsx React.DOM
+# ui for a sortable selectable list of items
 
 React = require 'react/addons'
 Sortable = require './mixins/sortable'

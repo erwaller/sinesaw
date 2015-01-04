@@ -1,4 +1,4 @@
-# @cjsx React.DOM
+# UI for drumkit synthesizer instrument
 
 React = require 'react'
 Updatable = require './mixins/updatable'

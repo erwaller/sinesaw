@@ -1,4 +1,5 @@
-# @cjsx React.DOM
+# ui for the loop sampler instrument
+# incomplete
 
 React = require 'react'
 Knob = require './knob'

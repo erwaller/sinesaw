@@ -10,7 +10,7 @@ module.exports = React.createClass
     radius: 0
 
   propTypes:
-    notes: React.PropTypes.object.isRequired
+    notes: React.PropTypes.array.isRequired
     selectedNotes: React.PropTypes.array.isRequired
     dragOriginalValue: React.PropTypes.object
     translateTarget: React.PropTypes.string
@@ -51,7 +51,7 @@ module.exports = React.createClass
     minRow = @props.yScroll
     maxRow = minRow + @props.yScale
     rows = [minRow...maxRow]
-    
+
     minCol = @props.xScroll * quantization
     maxCol = minCol + @props.xScale * quantization
     cols = [minCol...maxCol]

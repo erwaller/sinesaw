@@ -1,4 +1,4 @@
-# @cjsx React.DOM
+# UI for the analog synthesizer instrument
 
 React = require 'react'
 Slider = require './slider'

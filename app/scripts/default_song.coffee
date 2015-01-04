@@ -55,7 +55,7 @@ async.parallel
           sequence:
             _id: cuid()
             loopSize: 4
-            notes: {}
+            notes: require('./sequences').beat
           effects: []
           instrument:
             _id: cuid()
@@ -104,84 +104,86 @@ async.parallel
                   r: 1
               }
             ]
-        }, {
-          _id: cuid()
-          name: 'Analog Synth'
-          meterLevel: 0
-          sequence:
-            _id: cuid()
-            loopSize: 4
-            notes: {}
-          effects: []
-          instrument:
-            _id: cuid()
-            _type: 'AnalogSynthesizer'
-            level: 0.5
-            pan: 0.5
-            polyphony: 3
-            volumeEnv:
-              a: 0
-              d: 0.25
-              s: 0
-              r: 0.5
-            filterEnv:
-              a: 0
-              d: 0.25
-              s: 0.2
-              r: 0.5
-            filter:
-              type: 'LP'
-              freq: 0.27
-              res: 0.05
-              env: 0.45
-            osc1:
-              waveform: 'saw'
-              level: 0.5
-              pitch: 0.5
-              tune: 0.5
-            osc2:
-              waveform: 'saw'
-              level: 0.5
-              pitch: 0.5
-              tune: 0.5
-        }, {
-          _id: cuid()
-          name: 'Basic Sampler'
-          meterLevel: 0
-          sequence:
-            _id: cuid()
-            loopSize: 4
-            notes: {}
-          effects: []
-          instrument:
-            _id: cuid()
-            _type: 'BasicSampler'
-            level: 0.5
-            pan: 0.5
-            polyphony: 1
-            rootKey: 60
-            sampleData: results.bass.getChannelData 0
-            sampleName: 'bass.wav'
-            start: 0.3
-            loopActive: 'loop'
-            loop: 0.7
-            tune: 0.5
-            volumeEnv:
-              a: 0
-              d: 0.25
-              s: 1
-              r: 0.5
-            filterEnv:
-              a: 0
-              d: 0.25
-              s: 1
-              r: 0.5
-            filter:
-              type: 'none'
-              freq: 0.27
-              res: 0.05
-              env: 0.45
-        }
+        },
+        # {
+        #   _id: cuid()
+        #   name: 'Analog Synth'
+        #   meterLevel: 0
+        #   sequence:
+        #     _id: cuid()
+        #     loopSize: 4
+        #     notes: {}
+        #   effects: []
+        #   instrument:
+        #     _id: cuid()
+        #     _type: 'AnalogSynthesizer'
+        #     level: 0.5
+        #     pan: 0.5
+        #     polyphony: 3
+        #     volumeEnv:
+        #       a: 0
+        #       d: 0.25
+        #       s: 0
+        #       r: 0.5
+        #     filterEnv:
+        #       a: 0
+        #       d: 0.25
+        #       s: 0.2
+        #       r: 0.5
+        #     filter:
+        #       type: 'LP'
+        #       freq: 0.27
+        #       res: 0.05
+        #       env: 0.45
+        #     osc1:
+        #       waveform: 'saw'
+        #       level: 0.5
+        #       pitch: 0.5
+        #       tune: 0.5
+        #     osc2:
+        #       waveform: 'saw'
+        #       level: 0.5
+        #       pitch: 0.5
+        #       tune: 0.5
+        # },
+        # {
+        #   _id: cuid()
+        #   name: 'Basic Sampler'
+        #   meterLevel: 0
+        #   sequence:
+        #     _id: cuid()
+        #     loopSize: 4
+        #     notes: {}
+        #   effects: []
+        #   instrument:
+        #     _id: cuid()
+        #     _type: 'BasicSampler'
+        #     level: 0.5
+        #     pan: 0.5
+        #     polyphony: 1
+        #     rootKey: 60
+        #     sampleData: results.bass.getChannelData 0
+        #     sampleName: 'bass.wav'
+        #     start: 0.3
+        #     loopActive: 'loop'
+        #     loop: 0.7
+        #     tune: 0.5
+        #     volumeEnv:
+        #       a: 0
+        #       d: 0.25
+        #       s: 1
+        #       r: 0.5
+        #     filterEnv:
+        #       a: 0
+        #       d: 0.25
+        #       s: 1
+        #       r: 0.5
+        #     filter:
+        #       type: 'none'
+        #       freq: 0.27
+        #       res: 0.05
+        #       env: 0.45
+        # }
       ]
 
     cb data for cb in callbacks

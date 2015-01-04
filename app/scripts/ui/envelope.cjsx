@@ -1,4 +1,6 @@
-# @cjsx React.DOM
+# UI for an envelope control with attack, decay, sustain, and release.
+# includes 4 knobs and an interactive visualization of the envelope using SVG.
+# expects to receive a cursor to an evelope object {a,d,s,r} as a 'env' prop.
 
 React = require 'react'
 SizeMeasurable = require './mixins/size_measurable'
@@ -7,7 +9,16 @@ Knob = require './knob'
 
 module.exports = React.createClass
 
-  mixins: [SizeMeasurable, Draggable]
+  mixins: [
+    SizeMeasurable
+    Draggable
+  ]
+
+  propTypes:
+    label: React.PropTypes.string.isRequired
+    env: React.PropTypes.object.isRequired
+    dotRadius: React.PropTypes.number
+    margin: React.PropTypes.number
 
   getInitialState: ->
     dragTarget: null
@@ -27,19 +38,19 @@ module.exports = React.createClass
     p1 =
       x: 0
       y: h
-    
+
     p2 =
       x: w / 3 * env.a
       y: 0
-    
+
     p3 =
       x: p2.x + w / 3 * env.d
       y: h * (1 - env.s)
-    
+
     p4 =
       x: w * 2 / 3
       y: h * (1 - env.s)
-    
+
     p5 =
       x: w * (2 + env.r) / 3
       y: h

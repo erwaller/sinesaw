@@ -1,10 +1,8 @@
-# @cjsx React.DOM
+# A volume slider and pan knob, arranged like channel on a mixing board
 
 React = require 'react'
 
 module.exports = React.createClass
-
-  mixins: [Updatable]
 
   getInitialState: ->
     level: 1
@@ -12,6 +10,14 @@ module.exports = React.createClass
 
   render: ->
     <div className="ui channel">
-      <Slider label="Level" value={@state.level} onChange={@update('level')}/>
-      <Knob label="Pan" value={@state.pan} onChange={@update('pan')}/>
+      <Slider
+        label="Level"
+        value={@state.level}
+        onChange={(level) => @setState {level}}
+      />
+      <Knob
+        label="Pan"
+        value={@state.pan}
+        onChange={(pan) => @setState {pan}}
+      />
     </div>

@@ -1,4 +1,9 @@
-# @cjsx React.DOM
+# a mouse interactive rotary knob - expects to receive two props, value, the
+# current position of the knob as a number between 0 and 1, and onChange, a
+# callback which will get passed the new values on changes.
+#
+# Also can receive an optional prop 'disabled' which if true will prevent
+# interaction.
 
 React = require 'react'
 Draggable = require './mixins/draggable'
@@ -9,11 +14,17 @@ module.exports = React.createClass
 
   mixins: [Draggable]
 
+  propTypes:
+    value: React.PropTypes.number.isRequired
+    onChange: React.PropTypes.func.isRequired
+    disabled: React.PropTypes.bool
+
   getInitialState: ->
     active: false
 
   getDefaultProps: ->
     value: 0.5
+    disabled: false
 
   onDragStart: ->
     @initalValue = @props.value
@@ -42,7 +53,7 @@ module.exports = React.createClass
 
   render: ->
     style = '-webkit-transform': "rotate(#{(@props.value - 0.5) * 300}deg)"
-    
+
     className = 'ui knob'
     className += ' active' if @state.active
     className += ' disabled' if @props.disabled

@@ -1,4 +1,4 @@
-# @cjsx React.DOM
+# UI for the basic sampler instrument
 
 React = require 'react/addons'
 Knob = require './knob'

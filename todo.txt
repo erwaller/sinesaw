@@ -1,9 +1,8 @@
 pre launch:
 
-- issue dragging multiple notes (snaps to center on wrong note on drag start)
-- fix bug when you hit checkmark after recording a sample
 - finish audio conversion to be purely functional
 - fix playback marker to show current time independent of buffering
+- fix bug when you hit checkmark after recording a sample
 
 - ability to save
   - backend (cors so site can be hosted on s3)

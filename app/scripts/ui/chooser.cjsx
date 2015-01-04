@@ -1,18 +1,30 @@
-# @cjsx React.DOM
+# vertically stacked buttons for choosing one of a set of values
+# expects three props - options, an array of string options, value, the
+# currently selected option, and an onChange callback which will be passed the
+# new value on selection.
 
 React = require 'react'
 
 module.exports = React.createClass
 
-  onClickValue: (e) ->
+  propTypes:
+    onChange: React.PropTypes.func.isRequired
+    options: React.PropTypes.array.isRequired
+    value: React.PropTypes.string.isRequired
+
+  onClickValue: (value) ->
     @props.onChange e.target.dataset.value
 
   render: ->
-    options = for v, i in @props.options
-      className = 'option'
-      className += ' selected' if v == @props.value
-      <div key={i} className={className} onClick={@onClickValue} data-value={v}>{v}</div>
-
     <div className="ui chooser">
-      {options}
+      {
+        @props.options.map (v, i) =>
+          <div
+            key={'option' + if v is @props.value then ' selected' else ''}
+            className={className}
+            onClick={@props.onChange v}
+          >
+            {v}
+          </div>
+      }
     </div>
