@@ -1,18 +1,23 @@
+# This file defines data for a default song, and serves as a good reference for
+# the data structure of a song.
+#
+# Right now audio data is inlined using brfs for easier development, eventually
+# files should be loaded independently for better caching.
+#
+# Because decoding audio data into a typed array is async, and because this will
+# eventually asynchronously load remote audio files, this exports a function
+# that passes the decoded data to a callback.
+
+
 async = require 'async'
 fs = require 'fs'
 b2a = require 'base64-arraybuffer'
 cuid = require 'cuid'
 decoder = require './dsp/global_context'
 
-bass = b2a.decode fs.readFileSync "#{__dirname}/../audio/bass.wav", 'base64'
-kick = b2a.decode fs.readFileSync "#{__dirname}/../audio/kick.wav", 'base64'
-snare = b2a.decode fs.readFileSync "#{__dirname}/../audio/snare.wav", 'base64'
-hat = b2a.decode fs.readFileSync "#{__dirname}/../audio/hat.wav", 'base64'
-
 loaded = false
 data = null
 callbacks = []
-
 
 module.exports = (cb) ->
   if loaded
@@ -20,6 +25,12 @@ module.exports = (cb) ->
   else
     callbacks.push cb
 
+
+# inline audio files as base64 strings using brfs
+bass = b2a.decode fs.readFileSync "#{__dirname}/../audio/bass.wav", 'base64'
+kick = b2a.decode fs.readFileSync "#{__dirname}/../audio/kick.wav", 'base64'
+snare = b2a.decode fs.readFileSync "#{__dirname}/../audio/snare.wav", 'base64'
+hat = b2a.decode fs.readFileSync "#{__dirname}/../audio/hat.wav", 'base64'
 
 # load sample data
 async.parallel

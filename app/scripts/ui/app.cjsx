@@ -1,28 +1,23 @@
-# @cjsx React.DOM
+# this is the top level react component - it handles window layout, track
+# selection, and modal state.  It expects only one prop, 'data', a root cursor
+# to a song object.
 
 React = require 'react/addons'
-Updatable = require './ui/mixins/updatable'
-Song = require './models/song'
-Track = require './models/track'
-DrumkitSynthesizer = require './models/drumkit_synthesizer'
-AnalogSynthesizer = require './models/analog_synthesizer'
-BasicSampler = require './models/basic_sampler'
-LoopSampler = require './models/loop_sampler'
-DrumSampler = require './models/drum_sampler'
-PlaybackControl = require './ui/playback_control'
-TrackSelection = require './ui/track_selection'
-PianoRoll = require './ui/piano_roll'
-AnalogSynthesizerControl = require './ui/analog_synthesizer_control'
-DrumkitSynthesizerControl = require './ui/drumkit_synthesizer_control'
-BasicSamplerControl = require './ui/basic_sampler_control'
-DrumSamplerControl = require './ui/drum_sampler_control'
-LoopSamplerControl = require './ui/loop_sampler_control'
-Modal = require './ui/modal'
+PlaybackControl = require './playback_control'
+TrackSelection = require './track_selection'
+PianoRoll = require './piano_roll'
+BasicSamplerControl = require './basic_sampler_control'
+AnalogSynthesizerControl = require './analog_synthesizer_control'
+DrumkitSynthesizerControl = require './drumkit_synthesizer_control'
+DrumSamplerControl = require './drum_sampler_control'
+LoopSamplerControl = require './loop_sampler_control'
+Modal = require './modal'
 ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 module.exports = React.createClass
 
-  mixins: [Updatable]
+  propTypes:
+    data: React.PropTypes.object.isRequired
 
   getInitialState: ->
     selectedTrack: 0
@@ -51,7 +46,12 @@ module.exports = React.createClass
         else null
 
       if controlClass?
-        instrumentControl = <controlClass key={track.get '_id'} instrument={instrument} app={this}/>
+        instrumentControl =
+          <controlClass
+            key={track.get '_id'}
+            instrument={instrument}
+            app={this}
+          />
 
     if @state.modalContent?
       modal = <Modal key='m'>{@state.modalContent}</Modal>
@@ -65,7 +65,7 @@ module.exports = React.createClass
           <TrackSelection
             tracks={@props.data.cursor 'tracks'}
             selectedTrack={@state.selectedTrack}
-            selectTrack={@update 'selectedTrack'}
+            selectTrack={(selectedTrack) => @setState {selectedTrack}}
           />
         </div>
         <div className="column main">

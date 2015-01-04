@@ -1,10 +1,12 @@
-# @cjsx React.DOM
+# React component represeting track selection UI - allows for track selection,
+# creation, deletion, and ordering
+#
+# TrackSelection requires three props - 'tracks', a cursor to an array of track
+# objects, 'selectedTrack', the index of the currently selected track, and
+# 'selectTrack', a callback to set the currently selected track.
 
 React = require 'react/addons'
 Sortable = require './mixins/sortable'
-Updatable = require './mixins/updatable'
-Draggable = require './mixins/draggable'
-SizeMeasurable = require './mixins/size_measurable'
 Knob = require './knob'
 Meter = require './meter'
 Menu = require './menu'
@@ -16,6 +18,8 @@ DrumkitSynthesizer = require '../models/drumkit_synthesizer'
 Track = require '../models/track'
 ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
+
+# define a private component representing a single track
 
 TrackRow = React.createClass
 
@@ -50,7 +54,10 @@ TrackRow = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Updatable]
+  propTypes:
+    tracks: React.PropTypes.object.isRequired
+    selectedTrack: React.PropTypes.number.isRequired
+    selectTrack: React.PropTypes.func.isRequired
 
   trackTypes:
     'Drum Sampler': DrumSampler
@@ -108,7 +115,7 @@ module.exports = React.createClass
                   selected={@props.selectedTrack == i}
                   selectTrack={=> @props.selectTrack i}
                   dragging={@state.dragging}
-                  updateDragging={@update 'dragging'}
+                  updateDragging={(dragging) => @setState {dragging}}
                   items={@props.tracks}
                 />
           }

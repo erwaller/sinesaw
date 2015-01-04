@@ -1,8 +1,9 @@
 pre launch:
 
-- conversion to custom cursor lib
-  - issue dragging multiple notes (snaps to center on wrong note when drag starts)
-  - finish audio conversion
+- issue dragging multiple notes (snaps to center on wrong note on drag start)
+- fix bug when you hit checkmark after recording a sample
+- finish audio conversion to be purely functional
+- fix playback marker to show current time independent of buffering
 
 - ability to save
   - backend (cors so site can be hosted on s3)
@@ -14,17 +15,20 @@ pre launch:
     - /samples POST DELETE
   - sample storage limit
     - identify files by digest
-    - join files to users
-
-- test current approach vs using web audio nodes
-  - each note adds a new node w/ scheduled playback, param changes
-  - if not going w/ multiple nodes approach, fix playback marker to show time independent of buffering
-
-- look at using webmidi (would need to update instruments to work w/ note on / note off instead of note recieveing length at start)
-
+    - conect files to users w/ join model
 
 
 post launch:
+
+- piano roll
+  - when a note is placed on top of another note they should merge
+  - fix note positions when mouse is dragged past edge of piano roll and piano
+    roll autoscrolls
+  - show loop size like ableton, make view size independtent of loop size, make
+    dragging notes expand view size
+  - try to reproduce / fix bug where option key is stuck on
+  - try to reproduce / fix bug where cursor gets stuck on
+  - copy / paste
 
 - renamable tracks and items in list view
 
@@ -32,12 +36,20 @@ post launch:
 
 - add 'off' to quantization options
 
-- add instrument keyMap() function to drum sampler and loop sampler, pass to piano roll to display rows only for mapped drums (piano roll has toggle button for this, if this is not available piano roll has 2 selects to choose root note and scale, can fold into those)
+- look at using webmidi (need to update instruments to work w/ note on / note
+  off instead of note recieveing length at start)
+
+- add instrument keyMap() function to drum sampler and loop sampler, pass to
+  piano roll to display rows only for mapped drums (piano roll has toggle button
+  for this, if this is not available piano roll has 2 selects to choose root
+  note and scale, can fold into those)
 
 - automation
   - velocity
-  - make some way to have props on models calculated including automation
-  - add automation ui.. experiment w/ sweep / lfo generators
+  - make some standard way to have props on models calculated including
+    automation / midi
+  - add automation ui.. experiment w/ sweep / lfo generators.  this is an area
+    where this room for improvement over ableton
 
 - add loop slicing sampler
   - global pitch / volume envelope
@@ -45,17 +57,9 @@ post launch:
   - waveform slicing ui w/ zoom
 
 - update analog synth
-  - filter lfo
+  - mappable lfo
 
-- plugin format / plugin import from github
-
-- piano roll
-  - when a note is placed on top of another note they should merge
-  - fix note positions when mouse is dragged past edge of piano roll and piano roll autoscrolls
-  - show loop size like ableton, make view size independtent of loop size, make dragging notes expand view size
-  - try to reproduce / fix bug where option key is stuck on
-  - try to reproduce / fix bug where cursor gets stuck on
-  - copy / paste
+- plugin format for instruments and effects + plugin import from github
 
 - effects
   - add effects busses
@@ -70,6 +74,4 @@ post launch:
 
 - add fm synth
 
-- rethink ui: 'live' view? arrange view?
-
-
+- rethink ui: add live style clip view? add logic style arrange view?

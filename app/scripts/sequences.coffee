@@ -1,10 +1,14 @@
+# some basic sequences for easy use in development / testing
+
 module.exports =
+
   fourfour: [
     {key: 72, start: 0, length: 1/4}
     {key: 72, start: 1, length: 1/4}
     {key: 72, start: 2, length: 1/4}
     {key: 72, start: 3, length: 1/4}
   ]
+
   beat: [
     {key: 0, start: 0, length: 1/4}
     {key: 0, start: 1, length: 1/4}
@@ -19,6 +23,7 @@ module.exports =
     {key: 4, start: 11/4, length: 1/4}
     {key: 4, start: 15/4, length: 1/4}
   ]
+
   chords: [
     {key: 60, start: 0, length: 1/4}
     {key: 63, start: 0, length: 1/4}
@@ -27,6 +32,7 @@ module.exports =
     {key: 63, start: 1/2, length: 1/4}
     {key: 67, start: 1/2, length: 1/4}
   ]
+
   simple: [
     {key: 60, start: 0, length: 1/4}
     {key: 63, start: 1/2, length: 1/4}
@@ -37,6 +43,7 @@ module.exports =
     {key: 70, start: 6/2, length: 1/4}
     {key: 65, start: 7/2, length: 1/4}
   ]
+
   bass: [
     {key: 48, start: 2/4, length: 1/4}
     {key: 48, start: 3/4, length: 1/4}
@@ -47,6 +54,7 @@ module.exports =
     {key: 51, start: 14/4, length: 1/4}
     {key: 51, start: 15/4, length: 1/4}
   ]
+
   terje: [
     {key: 45, start: 0/4, length: 1/4}
     {key: 62, start: 1/4, length: 1/4}

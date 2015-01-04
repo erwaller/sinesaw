@@ -1,8 +1,7 @@
+# set these on window for debugging / react dev tools chrome extension
 window.React = require 'react'
-window.App = require './app'
+window.App = require './ui/app'
 window.Song = require './models/song'
-
-# export these for better error messages
 window.TrackSelection = require './ui/track_selection'
 window.Meter = require './ui/meter'
 window.PianoRoll = require './ui/piano_roll'
@@ -18,16 +17,14 @@ ImmutableData = require './util/immutable_data'
 # setup gulp build status / autoreload
 (require 'build-status').client()
 
-
-# # inject request animation frame batching strategy into
+# # inject request animation frame batching strategy into react
 # require('react-raf-batching').inject()
 
-setTimeout ->
+# load default song, setup immutable data, and render app
+require('./default_song') (songData) ->
 
-  require('./default_song') (songData) ->
+  window.song = new Song
 
-    window.song = new Song
-
-    ImmutableData.create songData, (data, undo, redo) ->
-      song.update data
-      React.renderComponent App({data, undo, redo}), document.body
+  ImmutableData.create songData, (data, undo, redo) ->
+    song.update data
+    React.renderComponent App({data, undo, redo}), document.body

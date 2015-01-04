@@ -1,4 +1,5 @@
-# @cjsx React.DOM
+# this renders the top bar of the application with playback and temp controls.
+# PlaybackController accepts one property - a song cursor
 
 React = require 'react'
 ScaleHandle = require './scale_handle'
@@ -11,6 +12,9 @@ module.exports = React.createClass
       Keyboard.on 'space', @onSpaceKey
     ]
 
+  propTypes:
+    song: React.PropTypes.object.isRequired
+
   componentWillUnmount: ->
     binding.clear() for binding in @keyBindings
 
@@ -20,19 +24,27 @@ module.exports = React.createClass
 
   render: ->
     song = @props.song
-
-    playClassName = 'icon icon-play' + if song.get('playing') then ' active' else ''
-
-    bpmOptions = (<option key={i} value={i}>{i} bpm</option> for i in [200..20])
+    playing = song.get 'playing'
 
     <div className="ui playback-control">
       <div className="group playback">
-        <div className={playClassName} onClick={song.bind 'playing', -> not song.get 'playing'}/>
+        <div
+          className={"icon icon-play#{if playing then ' active' else ''}"}
+          onClick={song.bind 'playing', -> not song.get 'playing'}
+        />
         <div className="icon icon-record"/>
         <div className="icon icon-stop" onClick={song.bind 'playing', -> false}/>
       </div>
       <div className="group tempo">
-        <select value={song.get 'bpm'} onChange={song.bind 'bpm', (e) -> parseInt e.target.value}>{bpmOptions}</select>
+        <select
+          value={song.get 'bpm'}
+          onChange={song.bind 'bpm', (e) -> parseInt e.target.value}
+        >
+          {
+            for i in [200..20]
+              <option key={i} value={i}>{i} bpm</option>
+          }
+        </select>
       </div>
       <div className="logo">sinesaw</div>
       <div className="group menu">

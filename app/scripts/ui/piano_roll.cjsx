@@ -1,4 +1,16 @@
-# @cjsx React.DOM
+# This component represents a piano roll style sequence editor, rendered using
+# SVG.  It requires two props - 'song', a cursor to the root song object, and
+# 'sequence', a second cursor to sequence it will edit.
+#
+# User input from mouse and keyboard is handled here, but rendering is split
+# into multiple subcomponents, GridLines, Keys, Notes, PlaybackMarker, and
+# Selection
+#
+# The PianoRoll watches and prevents default on scroll events, instead keeping
+# scroll position in its state - this allows it to quantize scrolling to a whole
+# number of notes and beat positions, and to render only elements visible on
+# screen.
+
 
 React = require 'react'
 Keyboard = require 'keyboardjs'
@@ -8,8 +20,8 @@ Draggable = require './mixins/draggable'
 ScaleHandle = require './scale_handle'
 Pointer = require '../util/pointer'
 
-Keys = require './piano_roll/keys'
 GridLines = require './piano_roll/grid_lines'
+Keys = require './piano_roll/keys'
 Notes = require './piano_roll/notes'
 PlaybackMarker = require './piano_roll/playback_marker'
 Selection = require './piano_roll/selection'
@@ -20,6 +32,10 @@ cuid = require 'cuid'
 module.exports = React.createClass
 
   mixins: [SizeMeasurable, Updatable, Draggable]
+
+  propTypes:
+    song: React.PropTypes.object.isRequired
+    sequence: React.PropTypes.object.isRequired
 
   getInitialState: ->
     # x scale and scroll values are in beats
@@ -128,9 +144,8 @@ module.exports = React.createClass
 
     for id, note of sequence.get 'notes'
       return unless note
-      key = note.get 'key'
-      minKey = key if key < minKey
-      maxKey = key if key > maxKey
+      minKey = note.key if note.key < minKey
+      maxKey = note.key if note.key > maxKey
 
     size = Math.max(@state.minYScale, maxKey - minKey) + 12
 
