@@ -5,9 +5,10 @@ Keyboard = require 'keyboardjs'
 module.exports =
 
   componentDidMount: ->
+    console.log 'binding keys'
     @keyBindings = [
       Keyboard.on 'space', @onSpaceKey
-      Keyboard.on 'ctrl + z', @undo
+      Keyboard.on 'z', @undo
       Keyboard.on 'ctrl + shift + z', @redo
     ]
 
@@ -23,6 +24,7 @@ module.exports =
       @props.song.play()
 
   undo: ->
+    console.log 'undo'
     @props.undo()
 
   redo: ->

@@ -1,5 +1,7 @@
 pre launch:
-- click grid to move playback marker
+
+- click grid to move playback marker - need to add a delay to distinguish single
+  clicks from double clicks, floor to current quantization
 - better handling of deallocation of objs for notes / filters in instruments
   when tracks are removed (maybe move playback state from Instrument class to
   a requirable global obj and do it in Song)

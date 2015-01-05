@@ -55,6 +55,10 @@ module.exports = class Song
       @cursor.set 'playing', false
       @cursor.set 'position', 0
 
+  seek: (beat) ->
+    @cursor.set 'position', beat
+    @audio.seek beat * 60 / @data.bpm
+
   # called for every sample of audio
   sample: (time, i) =>
     return 0 unless @data?.playing

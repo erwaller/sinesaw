@@ -42,7 +42,7 @@ module.exports = (context, fn) ->
   self.seek = (time) ->
     bufferStartAbsolute = null
     bufferStartRelative = null
-    self.i = Math.floor(time * rate)
+    self.i = Math.floor(time * self.rate)
     self.t = self.i / self.rate
 
   self.play = (opts) ->

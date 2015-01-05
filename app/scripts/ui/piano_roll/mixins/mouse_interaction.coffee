@@ -63,7 +63,8 @@ module.exports =
     @setState selectionOrigin: @getRelativePosition {x: e.clientX, y: e.clientY}
 
   # move playback position
-  onClickGrid: ->
+  onClickGrid: (e) ->
+    # @props.song.seek @getRelativePosition(x: e.clientX, y: e.clientY).start
 
   # add a new note
   onDoubleClickGrid: (e) ->
