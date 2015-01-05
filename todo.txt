@@ -1,18 +1,26 @@
-pre launch:
+started and in the middel of:
 
 - click grid to move playback marker - need to add a delay to distinguish single
   clicks from double clicks, floor to current quantization
+
+line 67 in mouse_interaction.coffee is commented out.
+
+
+
+- undo / redo (switch 'silent' arg on cursor methods to 'historic' - only
+  add events to undo history when this is passed true, start out w/ only changes
+  to notes in piano roll)
 - better handling of deallocation of objs for notes / filters in instruments
   when tracks are removed (maybe move playback state from Instrument class to
   a requirable global obj and do it in Song)
-- undo / redo
-- try doing processing in background thread, passing buffers
 - look at using webmidi (need to update instruments to work w/ note on / note
   off instead of note recieveing length at start)
+- try doing processing in background thread, passing buffers
 - move sample data out of cursor structure into some global library so that
   samples can be shared w/o data being duplicated
 
 - ability to save
+  - ui to sign up, manage tracks, manage account
   - backend (cors so site can be hosted on s3)
     - postgres on amazon rds
     - /account POST PUT
@@ -23,7 +31,6 @@ pre launch:
   - sample storage limit
     - identify files by digest
     - conect files to users w/ join model
-  - ui to sign up, manage tracks, manage account,
 
 - piano roll
   - when a note is placed on top of another note they should merge
@@ -32,10 +39,8 @@ pre launch:
   - show loop size like ableton, make view size independtent of loop size, make
     dragging notes expand view size
   - try to reproduce / fix bug where option key is stuck on
-  - try to reproduce / fix bug where cursor gets stuck on
+  - try to reproduce / fix bug where cursor gets stuck
   - copy / paste
-
-post launch:
 
 - renamable tracks and items in list view
 
