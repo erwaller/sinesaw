@@ -41,7 +41,7 @@ module.exports = React.createClass
   ]
 
   propTypes:
-    song: React.PropTypes.object.isRequired
+    data: React.PropTypes.object.isRequired
     sequence: React.PropTypes.object.isRequired
 
   getInitialState: ->
@@ -177,8 +177,18 @@ module.exports = React.createClass
                 height={@state.height}
                 onMouseDown={@onMouseDownGrid}
                 onMouseUp={@onMouseUpGrid}
+                onClick={@onClickGrid}
                 onDoubleClick={@onDoubleClickGrid}
               >
+                <PlaybackMarker
+                  position={@props.data.get 'position'}
+                  loopSize={@props.sequence.get 'loopSize'}
+                  width={gridWidth}
+                  height={@state.height}
+                  xScroll={@state.xScroll}
+                  xScale={@state.xScale}
+                  quantization={@state.quantization}
+                />
                 <GridLines
                   width={gridWidth}
                   height={@state.height}
@@ -186,15 +196,6 @@ module.exports = React.createClass
                   xScale={@state.xScale}
                   yScroll={@state.yScroll}
                   xScroll={@state.xScroll}
-                  quantization={@state.quantization}
-                />
-                <PlaybackMarker
-                  position={@props.song.get 'position'}
-                  loopSize={@props.sequence.get 'loopSize'}
-                  width={gridWidth}
-                  height={@state.height}
-                  xScroll={@state.xScroll}
-                  xScale={@state.xScale}
                   quantization={@state.quantization}
                 />
                 <Selection

@@ -14,13 +14,17 @@ module.exports = (context, fn) ->
   self.i = self.t = 0
   window._SAMPLERATE = self.sampleRate = self.rate = context.sampleRate
   self.duration = Infinity
+  self.playing = false
+
+  bufferStartAbsolute = null
+  bufferStartRelative = null
 
   self.onaudioprocess = (e) ->
-    output = e.outputBuffer.getChannelData 0
-    self.tick output
+    bufferStartAbsolute = new Date
+    bufferStartRelative = self.t
 
-  # a fill-a-buffer function
-  self.tick = (output) ->
+    output = e.outputBuffer.getChannelData 0
+
     for i in [0...bufferSize]
       self.t = self.i / self.rate
       self.i += 1
@@ -29,11 +33,33 @@ module.exports = (context, fn) ->
 
     output
 
-  self.reset = () ->
-    self.i = self.t = 0
+  self.getTime = ->
+    if bufferStartRelative?
+      bufferStartRelative + (new Date - bufferStartAbsolute) / 1000
+    else
+      self.t
 
-  # this timeout seems to be the thing that keeps the audio from clipping #WTFALERT
-  setTimeout (-> this.node.disconnect()), 100000000000
-  self.connect self.context.destination
+  self.seek = (time) ->
+    bufferStartAbsolute = null
+    bufferStartRelative = null
+    self.i = Math.floor(time * rate)
+    self.t = self.i / self.rate
+
+  self.play = (opts) ->
+    return if self.playing
+    self.connect self.context.destination
+    self.playing = true
+
+    # this timeout seems to be the thing that keeps the audio from clipping #WTFALERT
+    setTimeout (-> this.node.disconnect()), 100000000000
+
+  self.stop = ->
+    bufferStartAbsolute = null
+    bufferStartRelative = null
+    self.playing = false
+    self.disconnect()
+
+  self.reset = ->
+    self.i = self.t = 0
 
   self

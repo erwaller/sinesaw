@@ -25,7 +25,13 @@ module.exports = React.createClass
 
     if position >= @props.xScroll and position <= @props.xScroll + @props.xScale
       x = Math.floor(position * @props.quantization) * squareWidth
-      unless x <= 0
-        el = <line key='pb' x1={x} y1={0} x2={x} y2={height}/>
+      el = <rect
+        className="playback"
+        key='pb'
+        x={x}
+        y={0}
+        width={squareWidth}
+        height={height}
+      />
 
-    <g className="playback">{el}</g>
+    <g>{el}</g>

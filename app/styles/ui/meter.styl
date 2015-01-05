@@ -24,8 +24,8 @@ count = 6
 
       for i in (1..(count - 1))
         &:nth-child({i})
-          amt = 1 - 1.0 * i / (count - 1)
-          color = desaturate(darken(c3, amt * 30%), amt * 60%)
+          amt = 0.2 + 0.8 * i / (count - 1)
+          color = blend(rgba(c3, amt), c4)
           background-color color
           box-shadow 0 0 glow-size color
 

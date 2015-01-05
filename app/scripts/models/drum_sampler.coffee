@@ -48,7 +48,7 @@ module.exports = class DrumSampler extends Instrument
   @createState: (instrument) ->
     @state[instrument._id] = notes: {}
 
-  @out: (instrument, time, i) ->
+  @sample: (instrument, time, i) ->
     return 0 if instrument.level == 0
     return 0 unless @state[instrument._id]?
 

@@ -1,16 +1,14 @@
 pre launch:
-
-I am in the middle of adding filters to the basic sampler instrument, then planning
-on converting the analog synthesizer instrument
-
-- keep track of time that play was pressed so that playback starts in the right
-  place, click once on piano roll to move playback marker (need play, pause,
-  stop methdods on Song)
-- turn tracks back into an array
-- better handling of allocation / deallocation of objs for notes / filters in
-  instruments when tracks are added / removed
+- click grid to move playback marker
+- better handling of deallocation of objs for notes / filters in instruments
+  when tracks are removed (maybe move playback state from Instrument class to
+  a requirable global obj and do it in Song)
+- undo / redo
 - try doing processing in background thread, passing buffers
-- move sample data out of cursor structure
+- look at using webmidi (need to update instruments to work w/ note on / note
+  off instead of note recieveing length at start)
+- move sample data out of cursor structure into some global library so that
+  samples can be shared w/o data being duplicated
 
 - ability to save
   - backend (cors so site can be hosted on s3)
@@ -23,8 +21,7 @@ on converting the analog synthesizer instrument
   - sample storage limit
     - identify files by digest
     - conect files to users w/ join model
-
-post launch:
+  - ui to sign up, manage tracks, manage account,
 
 - piano roll
   - when a note is placed on top of another note they should merge
@@ -36,14 +33,13 @@ post launch:
   - try to reproduce / fix bug where cursor gets stuck on
   - copy / paste
 
+post launch:
+
 - renamable tracks and items in list view
 
 - add swing to grid in piano roll
 
 - add 'off' to quantization options
-
-- look at using webmidi (need to update instruments to work w/ note on / note
-  off instead of note recieveing length at start)
 
 - add instrument keyMap() function to drum sampler and loop sampler, pass to
   piano roll to display rows only for mapped drums (piano roll has toggle button

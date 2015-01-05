@@ -62,6 +62,9 @@ module.exports =
     @draggableOnMouseDown e
     @setState selectionOrigin: @getRelativePosition {x: e.clientX, y: e.clientY}
 
+  # move playback position
+  onClickGrid: ->
+
   # add a new note
   onDoubleClickGrid: (e) ->
     {key, start} = @getRelativePosition x: e.clientX, y: e.clientY

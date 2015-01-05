@@ -23,14 +23,14 @@ module.exports = class Track extends Model
   # reasons because levels are updated on every sample
   @meterLevels: {}
 
-  @out: (track, time, i) ->
+  @sample: (track, time, i) ->
     # get instrument output
     Instrument = instrumentTypes[track.instrument._type]
-    sample = Instrument.out track.instrument, time, i
+    sample = Instrument.sample track.instrument, time, i
 
     # apply effects
     sample = track.effects.reduce((sample, effect) ->
-      Effect.out effect, time, i, sample
+      Effect.sample effect, time, i, sample
     , sample)
 
     # update meter levels

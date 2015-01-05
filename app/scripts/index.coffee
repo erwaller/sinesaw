@@ -35,8 +35,8 @@ if process.env.NODE_ENV is 'development'
 # load default song, setup immutable data, and render app
 require('./default_song') (songData) ->
 
-  window.song = new Song
+  song = new Song
 
   ImmutableData.create songData, (data, undo, redo) ->
     song.update data
-    React.renderComponent App({data, undo, redo}), document.body
+    React.renderComponent App({song, data, undo, redo}), document.body

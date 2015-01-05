@@ -25,16 +25,18 @@ existence.
 
 Sinesaw plays audio through through a single scriptProcessor audio node - the
 audio output is a pure function of the song state and the current time.  This
-single function is called for each sample of audio.
+single function is called for every sample of audio.
 
 Sinesaw uses React.js for the user interface, and the Cursor library for
 immutable data modeling.. Song state is kept in a single object shared between
-the ui and the audio processing code.  The advantages of using immutable data
-is that React can quickly diff the objects to determine what has changed and
-allows us to re-render only the absolute minimum number of ui elements when
+the ui and the audio processing code.
+
+The advantage of using immutable data is that React can quickly diff the objects
+to determine what has changed, so that we can always render the ui from the top,
+while still updating only the absolute minimum number of ui elements when
 data changes.
 
-We cam use this same method to easily track changes and keep state in sync
+We can use this same method to easily identify changes and keep state in sync
 between multiple threads doing audio processing, multiple concurrent clients,
 and a persistent document on the server.
 

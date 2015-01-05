@@ -12,9 +12,14 @@ DrumSynthesizerControl = require './drum_synthesizer_control'
 DrumSamplerControl = require './drum_sampler_control'
 LoopSamplerControl = require './loop_sampler_control'
 Modal = require './modal'
+KeyboardInteraction = require './mixins/keyboard_interaction'
 ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 module.exports = React.createClass
+
+  mixins: [
+    KeyboardInteraction
+  ]
 
   propTypes:
     data: React.PropTypes.object.isRequired
@@ -58,7 +63,7 @@ module.exports = React.createClass
 
     <div className="app">
       <div className="row playback">
-        <PlaybackControl song={@props.data}/>
+        <PlaybackControl data={@props.data} song={@props.song}/>
       </div>
       <div className="row main">
         <div className="column sidebar">
@@ -70,7 +75,11 @@ module.exports = React.createClass
         </div>
         <div className="column main">
           <div className="row sequence">
-            <PianoRoll song={@props.data} sequence={sequence}/>
+            <PianoRoll
+              data={@props.data}
+              song={@props.song}
+              sequence={sequence}
+            />
           </div>
           <div className="row instrument">
             {instrumentControl}

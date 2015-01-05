@@ -51,7 +51,7 @@ module.exports = class AnalogSynthesizer extends Instrument
   frequency = (key) ->
     tune * Math.pow 2, (key - 69) / 12
 
-  @out: (instrument, time, i) ->
+  @sample: (instrument, time, i) ->
     return 0 if @state.level == 0
     return 0 unless @state[instrument._id]?
 

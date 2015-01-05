@@ -12,7 +12,7 @@ module.exports = class Instrument extends Model
   @releaseState: (instrument) ->
     delete @state[instrument._id]
 
-  @out: (instrument, time, i) ->
+  @sample: (instrument, time, i) ->
     0
 
   @tick: (instrument, time, i, beat, bps, notesOn) ->

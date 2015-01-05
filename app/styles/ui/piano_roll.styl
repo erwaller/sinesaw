@@ -50,22 +50,17 @@ key-width = 40px
       width 0
 
       line
-        stroke grid-shade-color
+        stroke transparentify(grid-shade-color)
         stroke-width line-width * 1.5
 
         &.strong
-          stroke grid-line-color
+          stroke transparentify(grid-line-color)
 
-      g.playback
-        transform translate(line-width * 0.75, 0)
-
-        line
-          stroke lighten(c4, 5)
-          stroke-width line-width * 1.5
-
+      rect.playback
+        fill rgba(c4, 0.05)
 
       rect.shade
-        fill grid-shade-color
+        fill transparentify(grid-shade-color)
 
       rect.note
         fill c1
@@ -81,7 +76,7 @@ key-width = 40px
           opacity 0.8
 
       rect.selection
-        fill transparentify(c4, c4, 0.2)
+        fill rgba(c4, 0.2)
 
     svg
       margin 0

@@ -110,19 +110,17 @@ module.exports = React.createClass
       <div className="tracks">
         <ReactCSSTransitionGroup transitionName="track">
           {
-            for i, track of tracks
-              if track
-                do (i) =>
-                  <TrackRow
-                    key={track._id}
-                    index={i}
-                    track={@props.tracks.cursor i}
-                    selected={parseInt(@props.selectedTrack) == parseInt(i)}
-                    selectTrack={=> @props.selectTrack i}
-                    dragging={@state.dragging}
-                    updateDragging={(dragging) => @setState {dragging}}
-                    items={@props.tracks}
-                  />
+            tracks.map (track, i) =>
+              <TrackRow
+                key={track._id}
+                index={i}
+                track={@props.tracks.cursor i}
+                selected={parseInt(@props.selectedTrack) == parseInt(i)}
+                selectTrack={=> @props.selectTrack i}
+                dragging={@state.dragging}
+                updateDragging={(dragging) => @setState {dragging}}
+                items={@props.tracks}
+              />
           }
         </ReactCSSTransitionGroup>
       </div>

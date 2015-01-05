@@ -4,25 +4,24 @@ Track = require './track'
 
 # there are three time scales that we are concerned with
 #
-# ### sample rate
+# - sample rate
 # runs at 44100 hz, once for each sample of audio we output.  Any code running
 # at this rate has a high cost, so performance is important here
 #
-# ### tick rate
-# Ticks run at 60hz, allowing us to do processing that needs to run
-# frequently, but is too expensive to run for each smaple.  For example, this is
-# the time resolution at which we trigger new notes.
+# - tick rate
+# Ticks run every n samples, defined using the clockRatio variable.  This
+# allows us to do processing that needs to run frequently, but is too expensive
+# to run for each smaple.  For example, this is the time resolution at which
+# we trigger new notes.
 #
-# ### frame rate
-# The frame rate is the speed at which we process UI updates for things like
-# level meters.  This happens to run at the same speed as the tick rate, but
-# they are deliberately handled seperately to preserve the potential for one to
-# change independently of the other in the future.
+# - frame rate
+# The frame rate is the speed at which we trigger GUI updates for things like
+# level meters and playback position.
 
 module.exports = class Song
 
   # number of samples to process between ticks
-  clockRatio = 735
+  clockRatio = 50
 
   # rate at which level meters decay
   meterDecay = 0.05
@@ -41,11 +40,20 @@ module.exports = class Song
     @cursor = cursor
     @data = cursor.get()
 
-  play: ->
+  play: =>
+    @audio.play()
+    @cursor.set 'playing', true
 
-  pause: ->
+  pause: =>
+    @audio.stop()
+    @cursor.set 'playing', false
 
-  stop: ->
+  stop: =>
+    @audio.stop()
+    @audio.reset()
+    @cursor.batched =>
+      @cursor.set 'playing', false
+      @cursor.set 'position', 0
 
   # called for every sample of audio
   sample: (time, i) =>
@@ -53,19 +61,16 @@ module.exports = class Song
 
     @tick time, i if i % clockRatio is 0
 
-    sample = 0
-
-    for trackIndex, track of @data.tracks
-      sample += Track.out track, time, i
-
-    clip sample
+    clip @data.tracks.reduce((memo, track) ->
+      memo + Track.sample track, time, i
+    , 0)
 
   # called for every clockRatio samples
-  tick: (@time, i) ->
+  tick: (time, i) ->
     bps = @data.bpm / 60
     beat = time * bps
 
-    for trackIndex, track of @data.tracks
+    @data.tracks.forEach (track) =>
       Track.tick track, time, i, beat, @lastBeat, bps
 
     @lastBeat = beat
@@ -73,10 +78,12 @@ module.exports = class Song
   # called for every ui animation frame
   frame: =>
     @cursor.batched =>
-      @cursor.set 'position', @time * @data.bpm / 60
       for trackIndex, track of @data.tracks
         meterLevel = Track.meterLevels[track._id] or 0
         @cursor.set ['tracks', trackIndex, 'meterLevel'], (meterLevel || 0)
+
+      @cursor.set 'position', @audio.getTime() * @data.bpm / 60
+
 
     for id, level of Track.meterLevels
       Track.meterLevels[id] = level - meterDecay

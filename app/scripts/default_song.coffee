@@ -48,15 +48,57 @@ async.parallel
       playing: false
       recording: false
       position: 0
-      tracks:
-        0:
+      tracks: [
+        {
+          _id: cuid()
+          name: 'Analog Synth'
+          meterLevel: 0
+          sequence:
+            _id: cuid()
+            loopSize: 8
+            notes: sequences.terje
+          effects: []
+          instrument:
+            _id: cuid()
+            _type: 'AnalogSynthesizer'
+            level: 1
+            pan: 0.5
+            polyphony: 3
+            maxPolyphony: 6
+            volumeEnv:
+              a: 0
+              d: 0.25
+              s: 0
+              r: 0.5
+            filterEnv:
+              a: 0
+              d: 0.25
+              s: 0.2
+              r: 0.5
+            filter:
+              type: 'LP'
+              freq: 0.27
+              res: 0.05
+              env: 0.45
+            osc1:
+              waveform: 'saw'
+              level: 0.5
+              pitch: 0.5
+              tune: 0.5
+            osc2:
+              waveform: 'saw'
+              level: 0.5
+              pitch: 0.5
+              tune: 0.5
+        }
+        {
           _id: cuid()
           name: 'Drum Synthesizer'
           meterLevel: 0
           sequence:
             _id: cuid()
             loopSize: 4
-            notes: sequences.fourfour
+            notes: {}
           effects: []
           instrument:
             _id: cuid()
@@ -118,7 +160,8 @@ async.parallel
                 fmFreq: 0
               }
             ]
-        # 1:
+          }
+        # {
         #   _id: cuid()
         #   name: 'Drum Sampler'
         #   meterLevel: 0
@@ -174,7 +217,8 @@ async.parallel
         #           r: 1
         #       }
         #     ]
-        # 2:
+        # }
+        # {
         #   _id: cuid()
         #   name: 'Basic Sampler'
         #   meterLevel: 0
@@ -212,47 +256,7 @@ async.parallel
         #       freq: 0.27
         #       res: 0.05
         #       env: 0.45
-        1:
-          _id: cuid()
-          name: 'Analog Synth'
-          meterLevel: 0
-          sequence:
-            _id: cuid()
-            loopSize: 8
-            notes: sequences.terje
-          effects: []
-          instrument:
-            _id: cuid()
-            _type: 'AnalogSynthesizer'
-            level: 0.5
-            pan: 0.5
-            polyphony: 3
-            maxPolyphony: 6
-            volumeEnv:
-              a: 0
-              d: 0.25
-              s: 0
-              r: 0.5
-            filterEnv:
-              a: 0
-              d: 0.25
-              s: 0.2
-              r: 0.5
-            filter:
-              type: 'LP'
-              freq: 0.27
-              res: 0.05
-              env: 0.45
-            osc1:
-              waveform: 'saw'
-              level: 0.5
-              pitch: 0.5
-              tune: 0.5
-            osc2:
-              waveform: 'saw'
-              level: 0.5
-              pitch: 0.5
-              tune: 0.5
-
+        # }
+      ]
 
     cb data for cb in callbacks

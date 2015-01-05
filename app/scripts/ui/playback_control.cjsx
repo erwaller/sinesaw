@@ -3,44 +3,34 @@
 
 React = require 'react'
 ScaleHandle = require './scale_handle'
-Keyboard = require 'keyboardjs'
 
 module.exports = React.createClass
 
   mixins: [React.addons.PureRenderMixin]
 
-  componentDidMount: ->
-    @keyBindings = [
-      Keyboard.on 'space', @onSpaceKey
-    ]
-
   propTypes:
+    data: React.PropTypes.object.isRequired
     song: React.PropTypes.object.isRequired
 
-  componentWillUnmount: ->
-    binding.clear() for binding in @keyBindings
-
-  onSpaceKey: (e) ->
-    e.preventDefault()
-    @props.song.set 'playing', not @props.song.get 'playing'
-
   render: ->
-    song = @props.song
-    playing = song.get 'playing'
+    playing = @props.data.get 'playing'
 
     <div className="ui playback-control">
       <div className="group playback">
         <div
           className={"icon icon-play#{if playing then ' active' else ''}"}
-          onClick={song.bind 'playing', -> not song.get 'playing'}
+          onClick={
+            if playing
+            then @props.song.pause
+            else @props.song.play
+          }
         />
-        <div className="icon icon-record"/>
-        <div className="icon icon-stop" onClick={song.bind 'playing', -> false}/>
+        <div className="icon icon-stop" onClick={@props.song.stop}/>
       </div>
       <div className="group tempo">
         <select
-          value={song.get 'bpm'}
-          onChange={song.bind 'bpm', (e) -> parseInt e.target.value}
+          value={@props.data.get 'bpm'}
+          onChange={@props.data.bind 'bpm', (e) -> parseInt e.target.value}
         >
           {
             for i in [200..20]

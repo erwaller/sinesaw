@@ -92,7 +92,7 @@ module.exports = class DrumSynthesizer extends Instrument
         highpassFilter() for i in [0...127]
       )
 
-  @out: (instrument, time, i) ->
+  @sample: (instrument, time, i) ->
     return 0 if instrument.level == 0
     return 0 unless @state[instrument._id]?
 

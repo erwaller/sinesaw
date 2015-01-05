@@ -45,7 +45,7 @@ module.exports = class BasicSampler extends Instrument
       HP: (highpassFilter() for i in [0...instrument.maxPolyphony])
       none: (((sample) -> sample) for i in [0...instrument.maxPolyphony])
 
-  @out: (instrument, time, i) ->
+  @sample: (instrument, time, i) ->
     return 0 if instrument.level == 0
     return 0 unless @state[instrument._id]?
     return 0 unless instrument.sampleData?
