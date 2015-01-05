@@ -1,19 +1,19 @@
 # sinesaw #
 
-Web audio DAW.  Requires Chrome > 39.
+Web audio DAW.  Requires Chrome >= 39.
 
-`npm install` and then `gulp` to run server and watch coffee/styl source files
+`npm install` and then `gulp` to run a server and watch coffee/styl source files
 
 
 ---
 
 
-The idea behind sinesaw is to be an in browser DAW with an interface similar to
-Ableton Live, but allowing concurrent collabarative editing by multiple users.
-In terms of latency and processing power, javascript will never complete with
-native DAWs, but running in browser makes collaboration and sharing so easy that
-I think there is an exciting place for it.  I hope the limitations in processing
-power will inspire creativity more than hold users back.
+The idea behind sinesaw is to create an in browser DAW with an interface similar
+to Ableton Live, but allowing concurrent collabarative editing by multiple
+users.  In terms of latency and processing power, javascript will never complete
+with native DAWs, but running in browser makes collaboration and sharing so easy
+that I think there is an exciting place for it.  I hope the limitations in
+processing power will inspire creativity more than hold users back.
 
 Sinesaw is far from complete - there is no concurrent editing or saving of songs
 yet - but it is complete enough to be fun to use.  As far as I can tell, and for
