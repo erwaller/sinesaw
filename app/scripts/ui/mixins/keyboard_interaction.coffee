@@ -1,19 +1,17 @@
 # global keyboard controls mixin, included by the App component
 
-Keyboard = require 'keyboardjs'
+window.Keyboard = require 'keyboardjs'
 
 module.exports =
 
   componentDidMount: ->
-    console.log 'binding keys'
     @keyBindings = [
       Keyboard.on 'space', @onSpaceKey
       Keyboard.on 'z', @undo
-      Keyboard.on 'ctrl + shift + z', @redo
+      Keyboard.on 'shift + z', @redo
     ]
 
   componentWillUnmount: ->
-    console.log 'unmounting'
     binding.clear() for binding in @keyBindings
 
   onSpaceKey: (e) ->
@@ -23,9 +21,10 @@ module.exports =
     else
       @props.song.play()
 
-  undo: ->
-    console.log 'undo'
-    @props.undo()
+  undo: (e) ->
+    if e.metaKey
+      @props.undo()
 
   redo: ->
-    @props.redo()
+    if e.metaKey
+      @props.redo()
