@@ -8,7 +8,7 @@ TrackSelection = require './track_selection'
 PianoRoll = require './piano_roll'
 BasicSamplerControl = require './basic_sampler_control'
 AnalogSynthesizerControl = require './analog_synthesizer_control'
-DrumkitSynthesizerControl = require './drumkit_synthesizer_control'
+DrumSynthesizerControl = require './drum_synthesizer_control'
 DrumSamplerControl = require './drum_sampler_control'
 LoopSamplerControl = require './loop_sampler_control'
 Modal = require './modal'
@@ -40,7 +40,7 @@ module.exports = React.createClass
       controlClass = switch instrument.get '_type'
         when 'BasicSampler' then BasicSamplerControl
         when 'AnalogSynthesizer' then AnalogSynthesizerControl
-        when 'DrumkitSynthesizer' then DrumkitSynthesizerControl
+        when 'DrumSynthesizer' then DrumSynthesizerControl
         when 'DrumSampler' then DrumSamplerControl
         when 'LoopSampler' then LoopSamplerControl
         else null
@@ -65,7 +65,7 @@ module.exports = React.createClass
           <TrackSelection
             tracks={@props.data.cursor 'tracks'}
             selectedTrack={@state.selectedTrack}
-            selectTrack={(selectedTrack) => @setState {selectedTrack}}
+            selectTrack={(v) => @setState selectedTrack: parseInt v}
           />
         </div>
         <div className="column main">

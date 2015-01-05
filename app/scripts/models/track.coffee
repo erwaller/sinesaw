@@ -1,17 +1,16 @@
 Model = require './model'
 Sequence = require './sequence'
+logSample = require '../util/log_sample'
 
 instrumentTypes =
   AnalogSynthesizer: require './analog_synthesizer'
   BasicSampler: require './basic_sampler'
   DrumSampler: require './drum_sampler'
-  DrumkitSynthesizer: require './drumkit_synthesizer'
+  DrumSynthesizer: require './drum_synthesizer'
   LoopSampler: require './loop_sampler'
 
 
 module.exports = class Track extends Model
-
-  meterDecay = 0.0005
 
   @defaults:
     name: 'Track'
@@ -19,25 +18,30 @@ module.exports = class Track extends Model
     sequence: Sequence.build()
     effects: []
 
+  # keep meter levels here - this will be a map trackId: level
+  # this needs to stay outside the normal cursor structure for performance
+  # reasons because levels are updated on every sample
   @meterLevels: {}
 
   @out: (track, time, i) ->
-    instrument = instrumentTypes[track.instrument._type]
-    sample = instrument.out track.instrument, time, i
+    # get instrument output
+    Instrument = instrumentTypes[track.instrument._type]
+    sample = Instrument.out track.instrument, time, i
 
+    # apply effects
     sample = track.effects.reduce((sample, effect) ->
       Effect.out effect, time, i, sample
     , sample)
 
-    if sample > track.meterLevel
-      @meterLevels[track._id] = sample
-    else if track.meterLevel > 0
-      @meterLevels[track._id] -= meterDecay
+    # update meter levels
+    id = track._id
+    if not @meterLevels[id]? or isNaN(@meterLevels[id]) or sample > @meterLevels[id]
+      @meterLevels[id] = sample
 
     sample
 
   @tick: (track, time, i, beat, lastBeat, bps) ->
+    Instrument = instrumentTypes[track.instrument._type]
     notesOn = Sequence.notesOn track.sequence, beat, lastBeat
     Instrument.tick track.instrument, time, i, beat, bps, notesOn
-    @effects.forEach (e) -> e.tick time, beat, bps
-    @set {@meterLevel}
+    track.effects.forEach (e) -> e.tick time, beat, bps

@@ -37,6 +37,7 @@ module.exports = React.createClass
     OverrideScrolling
     MouseInteraction
     KeyboardInteraction
+    React.addons.PureRenderMixin
   ]
 
   propTypes:

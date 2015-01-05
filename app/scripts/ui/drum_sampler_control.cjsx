@@ -14,7 +14,10 @@ DrumSampler = require '../models/drum_sampler'
 
 Drum = React.createClass
 
-  mixins: [Sortable]
+  mixins: [
+    React.addons.PureRenderMixin
+    Sortable
+  ]
 
   render: ->
     drum = @props.drum
@@ -65,7 +68,9 @@ Drum = React.createClass
 
 module.exports = React.createClass
 
-  mixins: [Updatable]
+  mixins: [
+    React.addons.PureRenderMixin
+  ]
 
   getInitialState: ->
     activeDrum: 0
@@ -86,7 +91,6 @@ module.exports = React.createClass
 
   render: ->
     instrument = @props.instrument
-    activeDrum = instrument.cursor ['drums', @state.activeDrum]
 
     <div className="ui drum-sampler">
       <div className="column channel">
@@ -99,10 +103,13 @@ module.exports = React.createClass
       <ListControl
         options={instrument.get 'drums'}
         selectedIndex={@state.activeDrum}
-        onSelect={@update 'activeDrum'}
+        onSelect={(activeDrum) => @setState {activeDrum}}
         onSort={instrument.bind 'drums'}
         onAdd={@onAddDrum}
         onRemove={@onRemoveDrum}
       />
-      <Drum drum={activeDrum} app={@props.app}/>
+      <Drum
+        drum={instrument.cursor ['drums', @state.activeDrum]}
+        app={@props.app}
+      />
     </div>

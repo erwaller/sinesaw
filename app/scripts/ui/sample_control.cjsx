@@ -34,7 +34,7 @@ module.exports = React.createClass
       onCancel={@props.app.dismissModal}
       onConfirm={
         (sampleData) =>
-          @props.sampler.update (sampler) -> sampler.merge {sampleName: 'recording.wav', sampleData}
+          @props.sampler.merge {sampleName: 'recording.wav', sampleData}
           @props.app.dismissModal()
       }
     />

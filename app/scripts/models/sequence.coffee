@@ -10,7 +10,11 @@ module.exports = class Sequence extends Model
     bar = Math.floor beat / sequence.loopSize
     lastBar = Math.floor lastBeat / sequence.loopSize
     beat = beat % sequence.loopSize
-    lastbeat = lastBeat % sequence.loopSize
+    lastBeat = lastBeat % sequence.loopSize
 
-    sequence.notes.filter (note) ->
-      note.start < beat and (note.start >= lastBeat or bar > lastBar)
+    result = []
+    for id, note of sequence.notes
+      if note.start < beat and (note.start >= lastBeat or bar > lastBar)
+        result.push note
+
+    result

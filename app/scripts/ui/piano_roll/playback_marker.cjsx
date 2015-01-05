@@ -3,7 +3,9 @@ React = require 'react/addons'
 
 module.exports = React.createClass
 
-  mixins: [React.addons.PureRenderMixin]
+  mixins: [
+    React.addons.PureRenderMixin
+  ]
 
   propTypes:
     position: React.PropTypes.number.isRequired
@@ -25,5 +27,5 @@ module.exports = React.createClass
       x = Math.floor(position * @props.quantization) * squareWidth
       unless x <= 0
         el = <line key='pb' x1={x} y1={0} x2={x} y2={height}/>
-    
+
     <g className="playback">{el}</g>

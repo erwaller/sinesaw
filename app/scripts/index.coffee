@@ -1,5 +1,5 @@
 ImmutableData = require './util/immutable_data'
-React = require 'react'
+React = require 'react/addons'
 Song = require './models/song'
 App = require './ui/app'
 
@@ -13,6 +13,10 @@ if process.env.NODE_ENV is 'development'
   # set these on window for debugging / react dev tools chrome extension
   window.React = React
   window.App = App
+  window.Song = Song
+  window.Track = require './models/track'
+  window.DrumSampler = require './models/drum_sampler'
+  window.BasicSampler = require './models/basic_sampler'
   window.TrackSelection = require './ui/track_selection'
   window.Meter = require './ui/meter'
   window.PianoRoll = require './ui/piano_roll'
@@ -27,10 +31,11 @@ if process.env.NODE_ENV is 'development'
 # # inject request animation frame batching strategy into react
 # require('react-raf-batching').inject()
 
+
 # load default song, setup immutable data, and render app
 require('./default_song') (songData) ->
 
-  song = new Song
+  window.song = new Song
 
   ImmutableData.create songData, (data, undo, redo) ->
     song.update data

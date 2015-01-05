@@ -2,8 +2,10 @@ React = require 'react/addons'
 
 
 module.exports = React.createClass
-  
-  mixins: [React.addons.PureRenderMixin]
+
+  mixins: [
+    React.addons.PureRenderMixin
+  ]
 
   propTypes:
     selectionOrigin: React.PropTypes.object

@@ -7,6 +7,8 @@ Keyboard = require 'keyboardjs'
 
 module.exports = React.createClass
 
+  mixins: [React.addons.PureRenderMixin]
+
   componentDidMount: ->
     @keyBindings = [
       Keyboard.on 'space', @onSpaceKey

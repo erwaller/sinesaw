@@ -14,7 +14,7 @@ DrumSampler = require '../models/drum_sampler'
 BasicSampler = require '../models/basic_sampler'
 LoopSampler = require '../models/loop_sampler'
 AnalogSynthesizer = require '../models/analog_synthesizer'
-DrumkitSynthesizer = require '../models/drumkit_synthesizer'
+DrumSynthesizer = require '../models/drum_synthesizer'
 Track = require '../models/track'
 ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
@@ -23,10 +23,14 @@ ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
 
 TrackRow = React.createClass
 
-  mixins: [Sortable]
+  mixins: [
+    React.addons.PureRenderMixin
+    Sortable
+  ]
 
   render: ->
     track = @props.track
+
     instrument = track.cursor 'instrument'
 
     className = 'track'
@@ -48,7 +52,7 @@ TrackRow = React.createClass
         value={instrument.get 'level'}
         onChange={instrument.bind 'level'}
       />
-      <Meter track={track}/>
+      <Meter level={track.get 'meterLevel'}/>
     </div>
 
 
@@ -64,7 +68,7 @@ module.exports = React.createClass
     'Basic Sampler': BasicSampler
     'Loop Sampler': LoopSampler
     'Analog Synth': AnalogSynthesizer
-    'Drum Synth': DrumkitSynthesizer
+    'Drum Synth': DrumSynthesizer
 
   getInitialState: ->
     menuOpen: false
@@ -106,18 +110,19 @@ module.exports = React.createClass
       <div className="tracks">
         <ReactCSSTransitionGroup transitionName="track">
           {
-            tracks.map (track, i) =>
+            for i, track of tracks
               if track
-                <TrackRow
-                  key={track._id}
-                  index={i}
-                  track={@props.tracks.cursor i}
-                  selected={@props.selectedTrack == i}
-                  selectTrack={=> @props.selectTrack i}
-                  dragging={@state.dragging}
-                  updateDragging={(dragging) => @setState {dragging}}
-                  items={@props.tracks}
-                />
+                do (i) =>
+                  <TrackRow
+                    key={track._id}
+                    index={i}
+                    track={@props.tracks.cursor i}
+                    selected={parseInt(@props.selectedTrack) == parseInt(i)}
+                    selectTrack={=> @props.selectTrack i}
+                    dragging={@state.dragging}
+                    updateDragging={(dragging) => @setState {dragging}}
+                    items={@props.tracks}
+                  />
           }
         </ReactCSSTransitionGroup>
       </div>

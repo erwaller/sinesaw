@@ -4,11 +4,15 @@ React = require 'react'
 
 module.exports = React.createClass
 
+  propTypes:
+    level: React.PropTypes.number.isRequired
+    steps: React.PropTypes.number
+
   getDefaultProps: ->
     steps: 6
 
   render: ->
-    level = Math.ceil(@props.track.get('meterLevel') * @props.steps)
+    level = Math.ceil @props.level * @props.steps
 
     steps = for i in [1..@props.steps]
       className = if i <= level then 'on' else ''
@@ -18,5 +22,5 @@ module.exports = React.createClass
       {steps}
     </div>
 
-  shouldComponentUpdate: (nextProps) ->
-    Math.ceil(@props.track.get('meterLevel') * @props.steps) != Math.ceil(nextProps.track.get('meterLevel') * nextProps.steps)
+  # shouldComponentUpdate: (nextProps) ->
+  #   Math.ceil(@props.level * @props.steps) != Math.ceil(nextProps.level * nextProps.steps)

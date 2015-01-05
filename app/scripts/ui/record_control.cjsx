@@ -94,7 +94,7 @@ module.exports = React.createClass
     @setState defaultState
 
   confirm: ->
-    @props.onConfirm @props.recording.croppedSampleData()
+    @props.onConfirm @croppedSampleData()
 
   render: ->
 

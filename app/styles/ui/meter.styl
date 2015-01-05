@@ -1,6 +1,7 @@
 @require "../variables"
 
 size = 5px
+glow-size = 1px
 count = 6
 
 .ui.meter
@@ -24,8 +25,10 @@ count = 6
       for i in (1..(count - 1))
         &:nth-child({i})
           amt = 1 - 1.0 * i / (count - 1)
-          color desaturate(darken(c3, amt * 10%), amt * 60%)
+          color = desaturate(darken(c3, amt * 30%), amt * 60%)
           background-color color
+          box-shadow 0 0 glow-size color
 
       &:last-child
         background-color c1
+        box-shadow 0 0 glow-size c1

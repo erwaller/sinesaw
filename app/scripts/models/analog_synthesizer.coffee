@@ -39,52 +39,42 @@ module.exports = class AnalogSynthesizer extends Instrument
       pitch: 0.5
       tune: 0.5
 
-  # tune = 440
-  # frequency = (key) ->
-  #   tune * Math.pow 2, (key - 69) / 12
+  @createState: (instrument) ->
+    super instrument
 
-  # constructor: ->
-  #   super
-  #   @notes = new RingBuffer @maxPolyphony, Array, @state.polyphony
-  #   @filters =
-  #     LP: (lowpassFilter() for i in [0...@maxPolyphony])
-  #     HP: (highpassFilter() for i in [0...@maxPolyphony])
-  #     none: (((sample) -> sample) for i in [0...@maxPolyphony])
+    @state[instrument._id].filters =
+      LP: (lowpassFilter() for i in [0...instrument.maxPolyphony])
+      HP: (highpassFilter() for i in [0...instrument.maxPolyphony])
+      none: (((sample) -> sample) for i in [0...instrument.maxPolyphony])
 
-  # setPolyphony: (polyphony) ->
-  #   @notes.resize polyphony
-  #   @set {polyphony}
+  tune = 440
+  frequency = (key) ->
+    tune * Math.pow 2, (key - 69) / 12
 
-  # reset: ->
-  #   @notes.reset()
+  @out: (instrument, time, i) ->
+    return 0 if @state.level == 0
+    return 0 unless @state[instrument._id]?
 
-  # out: (time) =>
-  #   return 0 if @state.level == 0
+    # sum all active notes
+    r = Math.max 0.01, instrument.volumeEnv.r
+    instrument.level * @state[instrument._id].notes.reduce((memo, note, index) =>
+      return memo unless note?
+      return memo unless note.len + r > time - note.time
 
-  #   # sum all active notes
-  #   r = Math.max 0.01, @state.volumeEnv.r
-  #   @state.level * @notes.reduce((memo, note, index) =>
-  #     return memo unless note?
-  #     return memo unless note.len + r > time - note.time
+      # sum oscillators and apply volume envelope
+      osc1Freq = frequency note.key + instrument.osc1.tune - 0.5 + Math.round(24 * (instrument.osc1.pitch - 0.5))
+      osc2Freq = frequency note.key + instrument.osc2.tune - 0.5 + Math.round(24 * (instrument.osc2.pitch - 0.5))
+      sample = envelope(instrument.volumeEnv, note, time) * (
+        instrument.osc1.level * oscillators[instrument.osc1.waveform](time, osc1Freq) +
+        instrument.osc2.level * oscillators[instrument.osc2.waveform](time, osc2Freq)
+      )
 
-  #     # sum oscillators and apply volume envelope
-  #     osc1Freq = frequency note.key + @state.osc1.tune - 0.5 + Math.round(24 * (@state.osc1.pitch - 0.5))
-  #     osc2Freq = frequency note.key + @state.osc2.tune - 0.5 + Math.round(24 * (@state.osc2.pitch - 0.5))
-  #     sample = envelope(@state.volumeEnv, note, time) * (
-  #       @state.osc1.level * oscillators[@state.osc1.waveform](time, osc1Freq) +
-  #       @state.osc2.level * oscillators[@state.osc2.waveform](time, osc2Freq)
-  #     )
+      # apply filter with envelope
+      cutoff = Math.min 1, instrument.filter.freq + instrument.filter.env * envelope(instrument.filterEnv, note, time)
+      filter = @state[instrument._id].filters[instrument.filter.type][index]
+      sample = filter sample, cutoff, instrument.filter.res
 
-  #     # apply filter with envelope
-  #     filterCutoff = Math.min 1, @state.filter.freq + @state.filter.env * envelope(@state.filterEnv, note, time)
-  #     sample = @filters[@state.filter.type][index] sample, filterCutoff, @state.filter.res
+      # return result
+      memo + sample
 
-  #     # return result
-  #     memo + sample
-
-  #   , 0)
-
-  # tick: (time, i, beat, bps, notesOn) =>
-  #   # add new notes
-  #   notesOn.forEach (note) =>
-  #     @notes.push {time, key: note.key, len: note.length / bps}
+    , 0)

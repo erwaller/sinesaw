@@ -4,13 +4,15 @@ Keyboard = require 'keyboardjs'
 
 module.exports = React.createClass
 
-  mixins: [React.addons.PureRenderMixin]
+  mixins: [
+    React.addons.PureRenderMixin
+  ]
 
   getDefaultProps: ->
     radius: 0
 
   propTypes:
-    notes: React.PropTypes.array.isRequired
+    notes: React.PropTypes.object.isRequired
     selectedNotes: React.PropTypes.array.isRequired
     dragOriginalValue: React.PropTypes.object
     translateTarget: React.PropTypes.string

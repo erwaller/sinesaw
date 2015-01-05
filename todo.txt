@@ -1,8 +1,17 @@
 pre launch:
 
+I am in the middle of adding filters to the basic sampler instrument, then planning
+on converting the analog synthesizer instrument
+
 - finish audio conversion to be purely functional
-- fix playback marker to show current time independent of buffering
-- fix bug when you hit checkmark after recording a sample
+- keep track of time that play was pressed so that playback starts in the right
+  place, click once on piano roll to move playback marker (need play, pause,
+  stop methdods on Song)
+- turn tracks back into an array
+- better handling of allocation / deallocation of objs for notes / filters in
+  instruments when tracks are added / removed
+- try doing processing in background thread, passing buffers
+- move sample data out of cursor structure
 
 - ability to save
   - backend (cors so site can be hosted on s3)
@@ -15,7 +24,6 @@ pre launch:
   - sample storage limit
     - identify files by digest
     - conect files to users w/ join model
-
 
 post launch:
 

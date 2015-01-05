@@ -20,9 +20,9 @@ module.exports = React.createClass
       {
         @props.options.map (v, i) =>
           <div
-            key={'option' + if v is @props.value then ' selected' else ''}
-            className={className}
-            onClick={@props.onChange v}
+            key={i}
+            className={'option' + if v is @props.value then ' selected' else ''}
+            onClick={=> @props.onChange v}
           >
             {v}
           </div>

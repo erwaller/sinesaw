@@ -4,8 +4,10 @@ keyPattern = [true, false, true, false, true, true, false, true, false, true, fa
 
 
 module.exports = React.createClass
-  
-  mixins: [React.addons.PureRenderMixin]
+
+  mixins: [
+    React.addons.PureRenderMixin
+  ]
 
   propTypes:
     height: React.PropTypes.number.isRequired

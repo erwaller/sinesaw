@@ -5,7 +5,9 @@ keyPattern = [true, false, true, false, true, true, false, true, false, true, fa
 
 module.exports = React.createClass
 
-  mixins: [React.addons.PureRenderMixin]
+  mixins: [
+    React.addons.PureRenderMixin
+  ]
 
   propTypes:
     width: React.PropTypes.number.isRequired
@@ -29,7 +31,7 @@ module.exports = React.createClass
     minRow = @props.yScroll
     maxRow = minRow + @props.yScale
     rows = [minRow...maxRow]
-    
+
     minCol = @props.xScroll * quantization
     maxCol = minCol + @props.xScale * quantization
     cols = [minCol...maxCol]

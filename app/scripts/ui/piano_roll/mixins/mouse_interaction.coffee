@@ -70,7 +70,6 @@ module.exports =
     changes = {}
     changes[id] = {id, key, start, length: 1 / @state.quantization}
 
-    notes = @props.sequence
     @props.sequence.merge notes: changes
 
   # change cursor to indicate possible action
