@@ -1,11 +1,9 @@
-started and in the middel of:
+started and in the middle of:
 
 - click grid to move playback marker - need to add a delay to distinguish single
   clicks from double clicks, floor to current quantization
 
 line 67 in mouse_interaction.coffee is commented out.
-
-
 
 - undo / redo (switch 'silent' arg on cursor methods to 'historic' - only
   add events to undo history when this is passed true, start out w/ only changes

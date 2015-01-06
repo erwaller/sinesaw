@@ -16,9 +16,7 @@ that I think there is an exciting place for it.  I hope the limitations in
 processing power will inspire creativity more than hold users back.
 
 Sinesaw is far from complete - there is no concurrent editing or saving of songs
-yet - but it is complete enough to be fun to use.  As far as I can tell, and for
-what I am interested in doing, Sinesaw is the most advanced javascript DAW in
-existence.
+yet - but it is complete enough to be fun to use.
 
 
 ### architecture
