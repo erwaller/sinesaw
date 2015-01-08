@@ -30,7 +30,7 @@ module.exports = React.createClass
         key='pb'
         x={x}
         y={0}
-        width={squareWidth}
+        width={3}
         height={height}
       />
 

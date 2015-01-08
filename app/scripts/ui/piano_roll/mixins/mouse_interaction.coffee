@@ -5,23 +5,6 @@ Pointer = require '../../../util/pointer'
 cuid = require 'cuid'
 
 
-# function to perform callback only on single clicks
-onSingleClickOnly = (e, callback) ->
-  time = new Date
-  cancelled = false
-
-  cancel = ->
-    cancelled = true
-    window.removeEventListener 'dblclick', cancel
-
-  window.addEventListener 'dblclick', cancel
-
-  setTimeout(->
-    callback e unless cancelled
-    window.removeEventListener 'dblclick', cancel
-  , 200)
-
-
 module.exports =
 
   getInitialState: ->
@@ -73,12 +56,6 @@ module.exports =
   # deselect any selected notes,
   # start drag selection
   onMouseDownGrid: (e) ->
-
-    # unless we are clearing selection, move the playback marker
-    unless @state.selectedNotes.length > 0
-      onSingleClickOnly e.nativeEvent, (e) =>
-        @props.song.seek @getRelativePosition(x: e.clientX, y: e.clientY).start
-
     @setState selectedNotes: [] unless 'shift' in Keyboard.activeKeys()
 
     # handle drag start
@@ -86,9 +63,13 @@ module.exports =
     @setState selectionOrigin: @getRelativePosition {x: e.clientX, y: e.clientY}
 
   # move playback position
+  # we need to have a selected position seperate from actual playback position,
+  # similar to ableton live - setting actual playback positon on click is
+  # problematic because a click is triggered by a click to select a note, begin
+  # drag selection, or by a double click to create a new note
   onClickGrid: (e) ->
-    onSingleClickOnly e.nativeEvent, (e) =>
-      @props.song.seek @getRelativePosition(x: e.clientX, y: e.clientY).start
+    # onSingleClickOnly e.nativeEvent, (e) =>
+    #   @props.song.seek @getRelativePosition(x: e.clientX, y: e.clientY).start
 
   # add a new note
   onDoubleClickGrid: (e) ->

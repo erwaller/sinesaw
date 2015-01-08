@@ -12,7 +12,7 @@ module.exports = (context, fn) ->
   self = context.createScriptProcessor bufferSize, 1, 1
   self.fn = fn
   self.i = self.t = 0
-  window._SAMPLERATE = self.sampleRate = self.rate = context.sampleRate
+  self.sampleRate = context.sampleRate
   self.duration = Infinity
   self.playing = false
 
@@ -20,13 +20,13 @@ module.exports = (context, fn) ->
   bufferStartRelative = null
 
   self.onaudioprocess = (e) ->
-    bufferStartAbsolute = new Date
+    bufferStartAbsolute = Date.now()
     bufferStartRelative = self.t
 
     output = e.outputBuffer.getChannelData 0
 
     for i in [0...bufferSize]
-      self.t = self.i / self.rate
+      self.t = self.i / self.sampleRate
       self.i += 1
 
       output[i] = self.fn self.t, self.i
@@ -35,15 +35,15 @@ module.exports = (context, fn) ->
 
   self.getTime = ->
     if bufferStartRelative?
-      bufferStartRelative + (new Date - bufferStartAbsolute) / 1000
+      bufferStartRelative + (Date.now() - bufferStartAbsolute) / 1000
     else
       self.t
 
   self.seek = (time) ->
     bufferStartAbsolute = null
     bufferStartRelative = null
-    self.i = Math.floor(time * self.rate)
-    self.t = self.i / self.rate
+    self.i = Math.floor(time * self.sampleRate)
+    self.t = time
 
   self.play = (opts) ->
     return if self.playing

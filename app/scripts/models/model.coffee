@@ -9,4 +9,10 @@ module.exports = class Model
 
   @build: (data = {}) ->
     data._id = cuid() unless data._id?
-    deepMerge @defaults, data
+
+    defaults =
+      if typeof @defaults is 'function'
+      then @defaults()
+      else @defaults
+
+    deepMerge defaults, data

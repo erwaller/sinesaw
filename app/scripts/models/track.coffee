@@ -12,7 +12,7 @@ instrumentTypes =
 
 module.exports = class Track extends Model
 
-  @defaults:
+  @defaults: ->
     name: 'Track'
     meterLevel: 0
     sequence: Sequence.build()

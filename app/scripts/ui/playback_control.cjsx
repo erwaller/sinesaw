@@ -25,6 +25,7 @@ module.exports = React.createClass
             else @props.song.play
           }
         />
+        <div className="icon icon-record" onClick={@props.song.record}/>
         <div className="icon icon-stop" onClick={@props.song.stop}/>
       </div>
       <div className="group tempo">

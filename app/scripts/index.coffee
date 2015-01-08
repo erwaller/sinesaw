@@ -1,4 +1,5 @@
 ImmutableData = require './util/immutable_data'
+UndoHistory = require './util/undo_history'
 React = require 'react/addons'
 Song = require './models/song'
 App = require './ui/app'
@@ -26,17 +27,18 @@ if process.env.NODE_ENV is 'development'
   window.PlaybackMarker = require './ui/piano_roll/playback_marker'
   window.Selection = require './ui/piano_roll/selection'
 
-
-
-# # inject request animation frame batching strategy into react
+# inject request animation frame batching strategy into react
 # require('react-raf-batching').inject()
 
-
 # load default song, setup immutable data, and render app
-require('./default_song') (songData) ->
 
-  song = new Song
+document.addEventListener 'DOMContentLoaded', ->
 
-  ImmutableData.create songData, (data, undo, redo) ->
-    song.update data
-    React.renderComponent App({song, data, undo, redo}), document.body
+  require('./default_song') (songData) ->
+
+    song = new Song
+
+    ImmutableData.create songData, (data, history) ->
+      window.data = data if process.env.NODE_ENV is 'development'
+      song.update data
+      React.renderComponent App({data, song, history}), document.body

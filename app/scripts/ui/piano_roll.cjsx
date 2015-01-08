@@ -144,7 +144,7 @@ module.exports = React.createClass
     if maxEnd >= @state.xScroll + @state.xScale and minStart > @state.xScroll
       stateChanges.xScroll = maxEnd - @state.xScale
 
-    @props.sequence.merge notes: changes
+    @props.sequence.merge notes: changes, true
     @setState stateChanges
 
 

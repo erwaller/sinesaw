@@ -1,6 +1,6 @@
 deepFreeze = require './deep_freeze'
 deepMerge = require './deep_merge'
-
+UndoHistory = require './undo_history'
 
 
 # return true if an object has no properites, false otherwise
@@ -71,13 +71,11 @@ class Cache
 
 module.exports =
 
-  create: (inputData, onChange, historySize = 100) ->
+  create: (inputData, onChange) ->
     cache = new Cache
+    history = new UndoHistory
     data = deepFreeze inputData
     batched = false
-    undos = []
-    redos = []
-
 
     # declare cursor class w/ access to mutable reference to data in closure
     class Cursor
@@ -100,7 +98,7 @@ module.exports =
           return undefined unless target?
         target
 
-      modifyAt: (path, modifier, silent) ->
+      modifyAt: (path, modifier, historic) ->
         fullPath = @path.concat path
 
         newData = target = {}
@@ -117,64 +115,54 @@ module.exports =
         Object.freeze target
 
         cache.clearPath fullPath
-        update newData, silent
+        update newData, historic
 
-      set: (path, value, silent = false) ->
+      set: (path, value, historic = false) ->
+        if arguments.length is 1
+          value = path
+          path = []
+
         if @path.length > 0 or path.length > 0
           @modifyAt path, (target, key) ->
             target[key] = deepFreeze value
-          , silent
+          , historic
         else
-          update value, silent
+          update value
 
-      delete: (path, silent = false) ->
+      delete: (path) ->
         if @path.length > 0 or path.length > 0
           @modifyAt path, (target, key) ->
             delete target[key]
-          , silent
+          , historic
         else
-          update undefined, silent
+          update undefined
 
-      merge: (newData, silent = false) ->
+      merge: (newData, historic = false) ->
         cache.clearObject @path, newData
-        @set [], deepMerge(@get(), deepFreeze newData), silent
+        @set [], deepMerge(@get(), deepFreeze newData), historic
 
-      bind: (path, pre) ->
-        (v, silent) => @set path, (if pre then pre(v) else v), silent
+      bind: (path, pre, historic = false) ->
+        (v) => @set path, (if pre then pre v else v), historic
 
       has: (path) ->
         @get(path)?
 
-      batched: (cb, silent = false) ->
+      batched: (cb, historic = false) ->
         batched = true
         cb()
         batched = false
-        update data, silent
+        update data, historic
 
 
-    update = (newData, silent = false) ->
-      unless silent or batched
-        undos.push data
-        undos.shift() if undos.length > historySize
-
+    update = (newData, historic) ->
       data = newData
-      onChange new Cursor(), undo, redo unless batched
 
-    undo = ->
-      return unless undos.length > 0
-      redos.push data
-      redos.shift() if redos.length > historySize
-      data = undos.pop()
-      onChange new Cursor(), undo, redo
-
-    redo = ->
-      return unless redos.length > 0
-      undos.push data
-      undos.shift() if undos.length > historySize
-      data = redos.pop()
-      onChange new Cursor(), undo, redo
-
+      unless batched
+        cursor = new Cursor()
+        history.update cursor if historic
+        onChange cursor, history
 
 
     # perform callback one time to start
-    onChange new Cursor(), undo, redo
+    onChange new Cursor(), history
+

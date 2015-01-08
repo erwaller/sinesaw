@@ -45,8 +45,6 @@ module.exports =
 
   # scale the viewport to fit all notes in the sequence
   autoScaleViewport: (sequence) ->
-    return unless sequence?
-
     minKey = 128
     maxKey = 0
 

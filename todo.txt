@@ -1,19 +1,25 @@
-started and in the middle of:
+BUGS:
+- playback marker sometimes continues to loop after playback is stopped
+- after stopping audio and then restarting, sometimes get a chunk of white noise
+  before audio plays normally
 
-- click grid to move playback marker - need to add a delay to distinguish single
-  clicks from double clicks, floor to current quantization
 
-line 67 in mouse_interaction.coffee is commented out.
+FEATURES:
 
-- undo / redo (switch 'silent' arg on cursor methods to 'historic' - only
-  add events to undo history when this is passed true, start out w/ only changes
-  to notes in piano roll)
+- get playback info out of cursor so that undos work as expected (cant do
+  'historic' thing.. would have to diff or something)
+
+- try doing processing in background thread, passing buffers
+
+- look at using webmidi (need to update instruments to work w/ note on / note
+  off instead of note recieveing length at start)
+
 - better handling of deallocation of objs for notes / filters in instruments
   when tracks are removed (maybe move playback state from Instrument class to
   a requirable global obj and do it in Song)
-- look at using webmidi (need to update instruments to work w/ note on / note
-  off instead of note recieveing length at start)
-- try doing processing in background thread, passing buffers
+
+- better cleanup in cursor cache
+
 - move sample data out of cursor structure into some global library so that
   samples can be shared w/o data being duplicated
 
