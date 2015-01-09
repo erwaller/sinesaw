@@ -15,8 +15,8 @@ with native DAWs, but running in browser makes collaboration and sharing so easy
 that I think there is an exciting place for it.  I hope the limitations in
 processing power will inspire creativity more than hold users back.
 
-Sinesaw is far from complete - there is no concurrent editing or saving of songs
-yet - but it is complete enough to be fun to use.
+Sinesaw is far from complete - so far it includes a piano roll editor, a working
+analog synthesizer, drum synthesizer, sampler.
 
 
 ### architecture
@@ -25,7 +25,9 @@ Sinesaw plays audio through through a single scriptProcessor audio node - the
 audio output is a pure function of the song state and the current time.  This
 single function is called for every sample of audio.
 
-Sinesaw uses React.js for the user interface, and the Cursor library for
+This approach to audio was inspired by the excellent wavepot project.
+
+Sinesaw uses React.js for the user interface, and a custom Cursor library for
 immutable data modeling.. Song state is kept in a single object shared between
 the ui and the audio processing code.
 
@@ -50,4 +52,4 @@ point for the UI code.
 The index file for the code is `app/scripts/index.coffee` - this creates both a
 `Song` model and the root react component `App`.
 
-Planned changes are in `todo.txt`
+Planned work is in `todo.txt`
