@@ -45,14 +45,11 @@ async.parallel
     data =
       _id: cuid()
       bpm: 120
-      playing: false
       recording: false
-      position: 0
       tracks: [
         {
           _id: cuid()
           name: 'Analog Synth'
-          meterLevel: 0
           sequence:
             _id: cuid()
             loopSize: 8
@@ -94,7 +91,6 @@ async.parallel
         {
           _id: cuid()
           name: 'Drum Synthesizer'
-          meterLevel: 0
           sequence:
             _id: cuid()
             loopSize: 4
@@ -164,7 +160,6 @@ async.parallel
         # {
         #   _id: cuid()
         #   name: 'Drum Sampler'
-        #   meterLevel: 0
         #   sequence:
         #     _id: cuid()
         #     loopSize: 4
@@ -221,7 +216,6 @@ async.parallel
         # {
         #   _id: cuid()
         #   name: 'Basic Sampler'
-        #   meterLevel: 0
         #   sequence:
         #     _id: cuid()
         #     loopSize: 8

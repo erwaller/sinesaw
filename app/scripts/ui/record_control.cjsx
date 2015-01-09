@@ -14,8 +14,6 @@ defaultState =
   cropStart: 0
   cropEnd: 1
 
-meterDecay = 0.0005
-
 
 module.exports = React.createClass
 

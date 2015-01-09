@@ -53,7 +53,12 @@ module.exports =
       minKey = note.key if note.key < minKey
       maxKey = note.key if note.key > maxKey
 
-    size = Math.max(@state.minYScale, maxKey - minKey) + 12
+    size = Math.max(@state.minYScale, maxKey - minKey)
+
+    if size < 12
+      size += 12
+    else
+      size += 5
 
     @setState
       xScroll: 0

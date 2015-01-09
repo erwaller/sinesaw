@@ -2,33 +2,36 @@ debounce = require './debounce'
 
 module.exports = class UndoHistory
 
-  constructor: (@size = 100, @interval = 300) ->
+  defaultSize: 100
+  defaultInterval: 200
+
+  constructor: (@data, @onChange, @size, @interval) ->
+    @size ||= @defaultSize
+    @interval ||= @defaultInterval
     @undos = []
     @redos = []
-    @cursor = null
-    @data = null
-    @record = debounce @interval, =>
-      @undos.push @cursor.get()
+    @lastData = null
 
-  update: (newCursor) ->
-    return if @cursor is newCursor
-    @cursor = newCursor
-    @data = @cursor.get()
+    @record = debounce @interval, =>
+      @undos.push @lastData if @lastData?
+      @lastData = null
+
+  update: (newData) ->
+    return if @data is newData
+    @lastData ||= @data
+    @data = newData
     @record()
 
   undo: ->
-    console.log 'here'
     return unless @undos.length > 0
     @redos.push @data
     @redos.shift() if @redos.length > @size
-    console.log @data
     @data = @undos.pop()
-    console.log @data
-    @cursor.set @data
+    @onChange @data
 
   redo: ->
     return unless @redos.length > 0
     @undos.push @data
     @undos.shift() if @undos.length > @size
     @data = @redos.pop()
-    @cursor.set @data
+    @onChange @data

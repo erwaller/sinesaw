@@ -14,34 +14,38 @@ module.exports = class Track extends Model
 
   @defaults: ->
     name: 'Track'
-    meterLevel: 0
     sequence: Sequence.build()
     effects: []
 
-  # keep meter levels here - this will be a map trackId: level
-  # this needs to stay outside the normal cursor structure for performance
-  # reasons because levels are updated on every sample
-  @meterLevels: {}
+  @createState: (state, track) ->
+    state[track._id] =
+      meterLevel: 0
 
-  @sample: (track, time, i) ->
+  @releaseState: (state, track) ->
+    delete state[track._id]
+
+  @sample: (state, track, time, i) ->
     # get instrument output
     Instrument = instrumentTypes[track.instrument._type]
-    sample = Instrument.sample track.instrument, time, i
+    sample = Instrument.sample state, track.instrument, time, i
 
     # apply effects
     sample = track.effects.reduce((sample, effect) ->
-      Effect.sample effect, time, i, sample
+      Effect.sample state, effect, time, i, sample
     , sample)
 
     # update meter levels
-    id = track._id
-    if not @meterLevels[id]? or isNaN(@meterLevels[id]) or sample > @meterLevels[id]
-      @meterLevels[id] = sample
+    if trackState = state[track._id]
+      level = trackState.meterLevel
+      if not level? or isNaN(level) or sample > level
+        trackState.meterLevel = sample
 
     sample
 
-  @tick: (track, time, i, beat, lastBeat, bps) ->
+  @tick: (state, track, time, i, beat, lastBeat, bps) ->
+    @createState state, track unless state[track._id]?
+
     Instrument = instrumentTypes[track.instrument._type]
     notesOn = Sequence.notesOn track.sequence, beat, lastBeat
-    Instrument.tick track.instrument, time, i, beat, bps, notesOn
-    track.effects.forEach (e) -> e.tick time, beat, bps
+    Instrument.tick state, track.instrument, time, i, beat, bps, notesOn
+    track.effects.forEach (e) -> e.tick state, time, beat, bps

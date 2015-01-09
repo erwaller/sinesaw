@@ -1,13 +1,23 @@
 assert = require 'assert'
 ImmutableData = require '../app/scripts/util/immutable_data'
 
+# lower intervals in undo history
+(require '../app/scripts/util/undo_history').prototype.defaultInterval = 1
+
 
 describe 'Cursor', ->
 
   initialData = a: b: c: 1, d: 2
-  root = undo = redo = null
-  beforeEach -> ImmutableData.create initialData, ->
-    [root, undo, redo] = arguments
+  root = null
+  history = null
+
+
+
+  beforeEach ->
+    ImmutableData.create initialData, ->
+      [root, history] = arguments
+
+
 
   describe '#get', ->
 
@@ -123,3 +133,46 @@ describe 'Cursor', ->
       ImmutableData.create null, (cursor) -> root = cursor
       assert root.get() is null
 
+
+  describe '#undo', ->
+
+    it 'should do nothing when there is no history', (done) ->
+      o = root.get()
+      history.undo()
+
+      setTimeout ->
+        assert.equal root.get(), o
+        done()
+      , 2
+
+    it 'should undo changes', (done) ->
+      root.set ['a', 'b', 'c'], 5
+
+      setTimeout ->
+        assert.equal root.get(['a', 'b', 'c']), 5
+        history.undo()
+        assert.equal root.get(['a', 'b', 'c']), 1
+        done()
+      , 2
+
+  describe '#redo', ->
+
+    it 'should do nothing when there is no redo history', (done) ->
+      o = root.get()
+      history.redo()
+
+      setTimeout ->
+        assert.equal root.get(), o
+        done()
+      , 2
+
+    it 'should redo changes', (done) ->
+      root.set ['a', 'b', 'c'], 5
+
+      setTimeout ->
+        history.undo()
+        assert.equal root.get(['a', 'b', 'c']), 1
+        history.redo()
+        assert.equal root.get(['a', 'b', 'c']), 5
+        done()
+      , 2

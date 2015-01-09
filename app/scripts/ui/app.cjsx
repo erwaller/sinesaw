@@ -23,6 +23,7 @@ module.exports = React.createClass
 
   propTypes:
     data: React.PropTypes.object.isRequired
+    song: React.PropTypes.object.isRequired
 
   getInitialState: ->
     selectedTrack: 0
@@ -38,11 +39,20 @@ module.exports = React.createClass
   render: ->
     track = @props.data.cursor ['tracks', @state.selectedTrack]
 
+    meterLevels = @props.data.get('tracks').reduce((memo, track) =>
+      memo[track._id] = @props.song.state[track._id]?.meterLevel
+      memo
+    , {})
+
+    position = @props.song.position()
+
+
+
     if track
       sequence = track.cursor 'sequence'
       instrument = track.cursor 'instrument'
 
-      controlClass = switch instrument.get '_type'
+      ControlClass = switch instrument.get '_type'
         when 'BasicSampler' then BasicSamplerControl
         when 'AnalogSynthesizer' then AnalogSynthesizerControl
         when 'DrumSynthesizer' then DrumSynthesizerControl
@@ -50,9 +60,9 @@ module.exports = React.createClass
         when 'LoopSampler' then LoopSamplerControl
         else null
 
-      if controlClass?
+      if ControlClass?
         instrumentControl =
-          <controlClass
+          <ControlClass
             key={track.get '_id'}
             instrument={instrument}
             app={this}
@@ -71,6 +81,7 @@ module.exports = React.createClass
             tracks={@props.data.cursor 'tracks'}
             selectedTrack={@state.selectedTrack}
             selectTrack={(v) => @setState selectedTrack: parseInt v}
+            meterLevels={meterLevels}
           />
         </div>
         <div className="column main">
@@ -79,6 +90,7 @@ module.exports = React.createClass
               data={@props.data}
               song={@props.song}
               sequence={sequence}
+              position={position}
             />
           </div>
           <div className="row instrument">

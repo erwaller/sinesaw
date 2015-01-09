@@ -181,7 +181,7 @@ module.exports = React.createClass
                 onDoubleClick={@onDoubleClickGrid}
               >
                 <PlaybackMarker
-                  position={@props.data.get 'position'}
+                  position={@props.position}
                   loopSize={@props.sequence.get 'loopSize'}
                   width={gridWidth}
                   height={@state.height}

@@ -16,12 +16,14 @@ Track = require './track'
 #
 # - frame rate
 # The frame rate is the speed at which we trigger GUI updates for things like
-# level meters and playback position.
+# level meters and playback position.  we continue to run frame updates whether
+# on not audio is playing
+
 
 module.exports = class Song
 
   # number of samples to process between ticks
-  clockRatio = 50
+  clockRatio = 500
 
   # rate at which level meters decay
   meterDecay = 0.05
@@ -33,64 +35,58 @@ module.exports = class Song
     @audio = webaudio context, @sample
     @lastBeat = 0
 
-    # start calling @frame for every ui frame
+    # keep mutable state for audio playback here - this will store things
+    # like filter memory and meter levels that need to stay outside the normal
+    # cursor structure for performance reasons
+    @state = {}
+
+    # start running frames
     requestAnimationFrame @frame
 
   update: (cursor) ->
-    @cursor = cursor
     @data = cursor.get()
 
   play: =>
     @audio.play()
-    @cursor.set 'playing', true
 
   pause: =>
     @audio.stop()
-    @cursor.set 'playing', false
 
   stop: =>
     @audio.stop()
     @audio.reset()
-    @cursor.batched =>
-      @cursor.set 'playing', false
-      @cursor.set 'position', 0
 
-  seek: (beat) ->
-    @cursor.set 'position', beat
+  seek: (beat) =>
     @audio.seek beat * 60 / @data.bpm
+
+  position: =>
+    @audio.getTime() * @data.bpm / 60
 
   # called for every sample of audio
   sample: (time, i) =>
-    return 0 unless @data?.playing
-
     @tick time, i if i % clockRatio is 0
 
-    clip @data.tracks.reduce((memo, track) ->
-      memo + Track.sample track, time, i
+    clip @data.tracks.reduce((memo, track) =>
+      memo + Track.sample @state, track, time, i
     , 0)
 
   # called for every clockRatio samples
-  tick: (time, i) ->
+  tick: (time, i) =>
     bps = @data.bpm / 60
     beat = time * bps
 
     @data.tracks.forEach (track) =>
-      Track.tick track, time, i, beat, @lastBeat, bps
+      Track.tick @state, track, time, i, beat, @lastBeat, bps
 
     @lastBeat = beat
 
   # called for every ui animation frame
+  # this should eventually be updated to base the amount of decay on the actual
+  # elpased time because the rate of requestAnimationFrame is not gauranteed
   frame: =>
-    @cursor.batched =>
-      for trackIndex, track of @data.tracks
-        meterLevel = Track.meterLevels[track._id] or 0
-        @cursor.set ['tracks', trackIndex, 'meterLevel'], (meterLevel || 0)
-
-      @cursor.set 'position', @audio.getTime() * @data.bpm / 60
-
-
-    for id, level of Track.meterLevels
-      Track.meterLevels[id] = level - meterDecay
-      delete Track.meterLevels[id] if Track.meterLevels[id] < 0
+    # apply decay to meter levels
+    for track in @data.tracks
+      if @state[track._id]?
+        @state[track._id].meterLevel -= meterDecay
 
     requestAnimationFrame @frame

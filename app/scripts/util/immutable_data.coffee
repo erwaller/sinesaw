@@ -72,10 +72,21 @@ class Cache
 module.exports =
 
   create: (inputData, onChange) ->
-    cache = new Cache
-    history = new UndoHistory
+
     data = deepFreeze inputData
     batched = false
+    cache = new Cache
+
+    history = new UndoHistory data, (newData) ->
+      data = newData
+      onChange new Cursor, history
+
+    update = (newData) ->
+      data = newData
+      unless batched
+        history.update data
+        onChange new Cursor(), history
+
 
     # declare cursor class w/ access to mutable reference to data in closure
     class Cursor
@@ -98,7 +109,7 @@ module.exports =
           return undefined unless target?
         target
 
-      modifyAt: (path, modifier, historic) ->
+      modifyAt: (path, modifier) ->
         fullPath = @path.concat path
 
         newData = target = {}
@@ -115,9 +126,9 @@ module.exports =
         Object.freeze target
 
         cache.clearPath fullPath
-        update newData, historic
+        update newData
 
-      set: (path, value, historic = false) ->
+      set: (path, value) ->
         if arguments.length is 1
           value = path
           path = []
@@ -125,7 +136,6 @@ module.exports =
         if @path.length > 0 or path.length > 0
           @modifyAt path, (target, key) ->
             target[key] = deepFreeze value
-          , historic
         else
           update value
 
@@ -133,34 +143,25 @@ module.exports =
         if @path.length > 0 or path.length > 0
           @modifyAt path, (target, key) ->
             delete target[key]
-          , historic
         else
           update undefined
 
-      merge: (newData, historic = false) ->
+      merge: (newData) ->
         cache.clearObject @path, newData
-        @set [], deepMerge(@get(), deepFreeze newData), historic
+        @set [], deepMerge @get(), deepFreeze newData
 
-      bind: (path, pre, historic = false) ->
-        (v) => @set path, (if pre then pre v else v), historic
+      bind: (path, pre) ->
+        (v) => @set path, if pre then pre v else v
 
       has: (path) ->
         @get(path)?
 
-      batched: (cb, historic = false) ->
+      batched: (cb) ->
         batched = true
         cb()
         batched = false
-        update data, historic
+        update data
 
-
-    update = (newData, historic) ->
-      data = newData
-
-      unless batched
-        cursor = new Cursor()
-        history.update cursor if historic
-        onChange cursor, history
 
 
     # perform callback one time to start

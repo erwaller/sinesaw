@@ -45,18 +45,18 @@ module.exports = class DrumSampler extends Instrument
 
   # keep notes in a map {key: noteData} instead of to a ring buffer
   # this gives us one monphonic voice per drum
-  @createState: (instrument) ->
-    @state[instrument._id] = notes: {}
+  @createState: (state, instrument) ->
+    state[instrument._id] = notes: {}
 
-  @sample: (instrument, time, i) ->
-    return 0 if instrument.level == 0
-    return 0 unless @state[instrument._id]?
+  @sample: (state, instrument, time, i) ->
+    return 0 if instrument.level is 0
+    return 0 unless state[instrument._id]?
 
     # sum all active notes
     instrument.level * instrument.drums.reduce((memo, drum) =>
       return memo unless drum.sampleData?
 
-      note = @state[instrument._id].notes[drum.key]
+      note = state[instrument._id].notes[drum.key]
       return memo unless note?
 
       samplesElapsed = i - note.i
@@ -67,8 +67,8 @@ module.exports = class DrumSampler extends Instrument
       memo + drum.level * envelope(drum.volumeEnv, note, time) * (sample or 0)
     , 0)
 
-  @tick: (instrument, time, i, beat, bps, notesOn) ->
-    @createState instrument unless @state[instrument._id]?
+  @tick: (state, instrument, time, i, beat, bps, notesOn) ->
+    @createState state, instrument unless state[instrument._id]?
 
     notesOn.forEach (note) =>
-      @state[instrument._id].notes[note.key] = {time, i, len: note.length / bps}
+      state[instrument._id].notes[note.key] = {time, i, len: note.length / bps}

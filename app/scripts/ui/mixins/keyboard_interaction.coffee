@@ -22,8 +22,6 @@ module.exports =
       @props.song.play()
 
   undo: (e) ->
-    console.log "HERE"
-    console.log @props.history
     @props.history.undo()
 
   redo: ->

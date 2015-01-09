@@ -37,22 +37,22 @@ module.exports = class BasicSampler extends Instrument
       res: 0.05
       env: 0.45
 
-  @createState: (instrument) ->
+  @createState: (state, instrument) ->
     super instrument
 
-    @state[instrument._id].filters =
+    state[instrument._id].filters =
       LP: (lowpassFilter() for i in [0...instrument.maxPolyphony])
       HP: (highpassFilter() for i in [0...instrument.maxPolyphony])
       none: (((sample) -> sample) for i in [0...instrument.maxPolyphony])
 
-  @sample: (instrument, time, i) ->
-    return 0 if instrument.level == 0
-    return 0 unless @state[instrument._id]?
+  @sample: (state, instrument, time, i) ->
+    return 0 if instrument.level is 0
+    return 0 unless state[instrument._id]?
     return 0 unless instrument.sampleData?
 
     r = Math.max 0.01, instrument.volumeEnv.r
 
-    instrument.level * @state[instrument._id].notes.reduce((memo, note, index) =>
+    instrument.level * state[instrument._id].notes.reduce((memo, note, index) =>
       return memo unless note?
       return memo unless note.len + r > time - note.time
 
@@ -66,7 +66,7 @@ module.exports = class BasicSampler extends Instrument
 
       # apply filter with envelope
       cutoff = Math.min 1, instrument.filter.freq + instrument.filter.env * envelope(instrument.filterEnv, note, time)
-      filter = @state[instrument._id].filters[instrument.filter.type][index]
+      filter = state[instrument._id].filters[instrument.filter.type][index]
       sample = filter sample, cutoff, instrument.filter.res
 
       # return result

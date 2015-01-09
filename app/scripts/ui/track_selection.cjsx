@@ -52,7 +52,7 @@ TrackRow = React.createClass
         value={instrument.get 'level'}
         onChange={instrument.bind 'level'}
       />
-      <Meter level={track.get 'meterLevel'}/>
+      <Meter level={@props.meterLevel}/>
     </div>
 
 
@@ -115,6 +115,7 @@ module.exports = React.createClass
                 key={track._id}
                 index={i}
                 track={@props.tracks.cursor i}
+                meterLevel={@props.meterLevels[track._id] or 0}
                 selected={parseInt(@props.selectedTrack) == parseInt(i)}
                 selectTrack={=> @props.selectTrack i}
                 dragging={@state.dragging}

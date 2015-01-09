@@ -15,4 +15,5 @@ module.exports = (wait, func) ->
     context = this
     args = arguments
     timestamp = Date.now()
+    clearTimeout timeout
     timeout = setTimeout later, wait

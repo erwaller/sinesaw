@@ -1,18 +1,17 @@
 BUGS:
-- playback marker sometimes continues to loop after playback is stopped
-- after stopping audio and then restarting, sometimes get a chunk of white noise
-  before audio plays normally
 
+- after stopping audio and then restarting, sometimes get a chunk of white noise
+  before audio plays normally - seems like its coming from drum synthesizer, but
+  not 100% sure about that.
 
 FEATURES:
-
-- get playback info out of cursor so that undos work as expected (cant do
-  'historic' thing.. would have to diff or something)
 
 - try doing processing in background thread, passing buffers
 
 - look at using webmidi (need to update instruments to work w/ note on / note
   off instead of note recieveing length at start)
+
+- webrtc
 
 - better handling of deallocation of objs for notes / filters in instruments
   when tracks are removed (maybe move playback state from Instrument class to

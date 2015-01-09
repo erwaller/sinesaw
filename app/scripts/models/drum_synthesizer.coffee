@@ -13,6 +13,7 @@ module.exports = class DrumSynthesizer extends Instrument
   freqScale = maxFreq - minFreq
 
   @defaults:
+    _type: 'DrumSynthesizer'
     level: 0.5
     pan: 0.5
     drums: [
@@ -85,20 +86,20 @@ module.exports = class DrumSynthesizer extends Instrument
 
   # keep notes in a map {key: noteData} instead of to a ring buffer
   # this gives us one monphonic voice per drum.
-  @createState: (instrument) ->
-    @state[instrument._id] =
+  @createState: (state, instrument) ->
+    state[instrument._id] =
       notes: {}
       filters: (
         highpassFilter() for i in [0...127]
       )
 
-  @sample: (instrument, time, i) ->
-    return 0 if instrument.level == 0
-    return 0 unless @state[instrument._id]?
+  @sample: (state, instrument, time, i) ->
+    return 0 if instrument.level is 0
+    return 0 unless state[instrument._id]?
 
     # sum all active notes
     instrument.level * instrument.drums.reduce((memo, drum) =>
-      note = @state[instrument._id].notes[drum.key]
+      note = state[instrument._id].notes[drum.key]
       return memo unless note?
 
       elapsed = time - note.time
@@ -124,16 +125,16 @@ module.exports = class DrumSynthesizer extends Instrument
 
       # apply highpass
       if drum.hp > 0
-        sample = @state[instrument._id].filters[drum.key] sample, drum.hp
+        sample = state[instrument._id].filters[drum.key] sample, drum.hp
 
       memo + drum.level * env * sample
 
     , 0)
 
 
-  @tick: (instrument, time, i, beat, bps, notesOn) ->
-    @createState instrument unless @state[instrument._id]?
+  @tick: (state, instrument, time, i, beat, bps, notesOn) ->
+    @createState state, instrument unless state[instrument._id]?
 
     notesOn.forEach (note) =>
-      @state[instrument._id].notes[note.key] = {time, i, len: note.length / bps}
+      state[instrument._id].notes[note.key] = {time, i, len: note.length / bps}
 

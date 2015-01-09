@@ -52,7 +52,7 @@ module.exports = React.createClass
     e.stopPropagation()
 
   render: ->
-    style = '-webkit-transform': "rotate(#{(@props.value - 0.5) * 300}deg)"
+    style = WebkitTransform: "rotate(#{(@props.value - 0.5) * 300}deg)"
 
     className = 'ui knob'
     className += ' active' if @state.active
