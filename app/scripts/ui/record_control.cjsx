@@ -3,8 +3,8 @@
 React = require 'react/addons'
 Waveform = require './waveform'
 Meter = require './meter'
-AudioRecorder = require '../dsp/audio_recorder'
-context = require '../dsp/global_context'
+AudioRecorder = require '../dsp/components/audio_recorder'
+context = require '../dsp/components/global_context'
 
 defaultState =
   sampleData: null

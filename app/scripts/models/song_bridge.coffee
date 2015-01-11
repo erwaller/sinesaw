@@ -1,5 +1,4 @@
-context = require '../dsp/global_context'
-webaudio = require '../dsp/webaudio'
+context = require '../dsp/components/global_context'
 
 
 callbackId = 0
@@ -23,10 +22,8 @@ module.exports = class SongBridge
     @i = @t = 0
     @playing = false
     @bufferStartAbsolute = null
+    @bufferPeding = false
     @buffer = new Float32Array @bufferSize
-
-    # request an initial buffer
-    @requestBuffer()
 
   destroy: ->
     @node.disconnect()

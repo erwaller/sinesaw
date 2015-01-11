@@ -1,7 +1,7 @@
-Instrument = require './instrument'
-RingBuffer = require '../util/ring_buffer'
+Model = require './model'
 
-module.exports = class LoopSampler extends Instrument
+
+module.exports = class LoopSampler extends Model
 
   defaults:
     level: 0.5

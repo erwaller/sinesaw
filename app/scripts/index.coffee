@@ -1,6 +1,7 @@
 ImmutableData = require './util/immutable_data'
 React = require 'react/addons'
 SongBridge = require './models/song_bridge'
+Song = require './models/song'
 App = require './ui/app'
 
 
@@ -13,7 +14,6 @@ if process.env.NODE_ENV is 'development'
   # set these on window for debugging / react dev tools chrome extension
   window.React = React
   window.App = App
-  window.SongBridge = SongBridge
   window.Track = require './models/track'
   window.DrumSampler = require './models/drum_sampler'
   window.BasicSampler = require './models/basic_sampler'
@@ -27,40 +27,49 @@ if process.env.NODE_ENV is 'development'
   window.Selection = require './ui/piano_roll/selection'
 
 
-# load default song, setup immutable data, and render app
+# setup immutable data, dsp thread, and start app
+launch = (songData) ->
+
+  song = new SongBridge
+  window.data = null
+  history = null
+  playbackState = null
+
+  # called when playback state is received from audio processing thread
+  song.onFrame (state) -> playbackState = state
+
+  # called every time song data changes
+  ImmutableData.create songData, (d, h) ->
+    # pass updated data to dsp thread
+    song.update d
+
+    # keep references to data cursor and history objects
+    window.data = d
+    history = h
+
+    # save changes in localstorage
+    localStorage.setItem 'song', JSON.stringify d.get()
+
+
+  # render the app for every animation frame
+  frame = ->
+    React.render(
+      React.createElement(App, {song, data, playbackState, history}),
+      document.body
+    )
+    requestAnimationFrame frame
+
+  frame()
+
+
 document.addEventListener 'DOMContentLoaded', ->
 
-  require('./extra/default_song') (songData) ->
+  data = localStorage.getItem 'song'
 
-    window.song = new SongBridge
-    data = null
-    history = null
-    playbackState = null
+  if data?
+    launch JSON.parse data
+  else
+    launch Song.build()
 
-    render = ->
-      React.render(
-        React.createElement(App, {song, data, playbackState, history}),
-        document.body
-      )
+  # require('./extra/default_song') launch
 
-    # called every time song data changes
-    ImmutableData.create songData, (d, h) ->
-      data = d
-      history = h
-      song.update data
-      render()
-
-    # called when playback state is received from audio processing thread
-    song.onFrame (state) ->
-      playbackState = state
-      render()
-
-    # # called for every ui animation frame
-    # frame = =>
-    #   React.render(
-    #     React.createElement(App, {song, data, history}),
-    #     document.body
-    #   )
-    #   requestAnimationFrame frame
-
-    # frame()

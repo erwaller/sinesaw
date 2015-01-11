@@ -2,11 +2,12 @@
 # PlaybackController accepts one property - a song cursor
 
 React = require 'react'
-ScaleHandle = require './scale_handle'
+Knob = require './knob'
+Oscilloscope = require './oscilloscope'
 
 module.exports = React.createClass
 
-  mixins: [React.addons.PureRenderMixin]
+  # mixins: [React.addons.PureRenderMixin]
 
   propTypes:
     data: React.PropTypes.object.isRequired
@@ -28,6 +29,15 @@ module.exports = React.createClass
         <div className="icon icon-record" onClick={@props.song.record}/>
         <div className="icon icon-stop" onClick={@props.song.stop}/>
       </div>
+      <div className="group fill"/>
+      <div className="group controls">
+        <Oscilloscope buffer={@props.song.buffer}/>
+        <Knob
+          label="Level"
+          value={@props.data.get 'level'}
+          onChange={@props.data.bind 'level'}
+        />
+      </div>
       <div className="group tempo">
         <select
           value={@props.data.get 'bpm'}
@@ -40,7 +50,4 @@ module.exports = React.createClass
         </select>
       </div>
       <div className="logo">sinesaw</div>
-      <div className="group menu">
-        <div className="icon icon-air"/>
-      </div>
     </div>

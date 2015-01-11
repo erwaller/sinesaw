@@ -1,7 +1,7 @@
-Model = require './model'
-RingBuffer = require '../util/ring_buffer'
+RingBuffer = require './components/ring_buffer'
 
-module.exports = class Instrument extends Model
+
+module.exports = class Instrument
 
   @createState: (state, instrument) ->
     state[instrument._id] =

@@ -2,7 +2,7 @@
 # selection, and modal state.  It expects only one prop, 'data', a root cursor
 # to a song object.
 
-React = require 'react/addons'
+React = require 'react'
 PlaybackControl = require './playback_control'
 TrackSelection = require './track_selection'
 PianoRoll = require './piano_roll'
@@ -39,8 +39,9 @@ module.exports = React.createClass
   render: ->
     track = @props.data.cursor ['tracks', @state.selectedTrack]
     position = @props.song.getPosition()
+    empty = not track.get()?
 
-    if track
+    unless empty
       sequence = track.cursor 'sequence'
       instrument = track.cursor 'instrument'
 
@@ -82,12 +83,15 @@ module.exports = React.createClass
         </div>
         <div className="column main">
           <div className="row sequence">
-            <PianoRoll
-              data={@props.data}
-              song={@props.song}
-              sequence={sequence}
-              position={position}
-            />
+            {
+              unless empty
+                <PianoRoll
+                  data={@props.data}
+                  song={@props.song}
+                  sequence={sequence}
+                  position={position}
+                />
+            }
           </div>
           <div className="row instrument">
             {instrumentControl}

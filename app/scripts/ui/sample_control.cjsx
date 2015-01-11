@@ -1,7 +1,7 @@
 React = require 'react/addons'
 Waveform = require './waveform'
 RecordControl = require './record_control'
-decoder = require '../dsp/global_context'
+decoder = require '../dsp/components/global_context'
 
 module.exports = React.createClass
 
