@@ -48,7 +48,7 @@ For a more complete explanation of immutable data, check the readme for cursor.
 ### approaching the code
 
 The best place to start looking at code for audio output is
-`app/scripts/models/song.coffee`, and `app/scripts/ui/app.cjsx` is the entry
+`app/scripts/dsp/song.coffee`, and `app/scripts/ui/app.cjsx` is the entry
 point for the UI code.
 
 The index file for the code is `app/scripts/index.coffee` - this creates both a
