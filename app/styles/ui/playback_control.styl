@@ -11,20 +11,35 @@
 
   .group
     flex-shrink 0
+    display flex
 
     &.playback,
-    &.menu
+    &.menu,
+    &.controls,
+    &.tempo
       flex-grow 0
 
-    &.tempo
+    &.fill
       flex-grow 1
       text-align right
-      padding 0 10px
+      padding 0 margin
 
-      select
-        height 20px
-        margin 5px 0
-        background-color bg-color
+  select
+    height 20px
+    margin margin
+    background-color bg-color
+
+  .ui.knob
+    display flex
+    flex-flow row nowrap
+    align-items center
+    margin (margin - 2px) margin
+
+    label
+      margin 0 0 0 margin
+      padding 0 0 0 margin
+      border-left solid 1px med-line-color
+
 
   .icon
     display inline-block
@@ -32,7 +47,7 @@
     line-height 20px
     width 20px
     height 20px
-    padding 5px margin
+    padding margin
     color dark-line-color
     box-sizing content-box
     -webkit-transition color animation-speed, background-color animation-speed
@@ -45,9 +60,6 @@
     &:active
       color c3
 
-    &.icon-air
-      padding 5px margin
-
   .logo
     position absolute
     top 0
@@ -58,7 +70,7 @@
     font font
     font-size 20px
     line-height 20px
-    padding 5px 0
-    color light-text-color
+    padding margin 0
+    color med-line-color
     text-align center
 

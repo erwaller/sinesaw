@@ -71,20 +71,22 @@ class Cache
 
 module.exports =
 
-  create: (inputData, onChange) ->
+  create: (inputData, onChange, opts = {}) ->
 
     data = deepFreeze inputData
+    withHistory = opts.history is true
     batched = false
     cache = new Cache
 
-    history = new UndoHistory data, (newData) ->
-      data = newData
-      onChange new Cursor, history
+    if withHistory
+      history = new UndoHistory data, (newData) ->
+        data = newData
+        onChange new Cursor, history
 
     update = (newData) ->
       data = newData
       unless batched
-        history.update data
+        history.update data if withHistory
         onChange new Cursor(), history
 
 

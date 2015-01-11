@@ -23,11 +23,11 @@ module.exports = React.createClass
       reader.onload = (e) =>
         decoder.decodeAudioData e.target.result, (buffer) =>
           sampleData = buffer.getChannelData 0
-          @props.sampler.update (sampler) -> sampler.merge {sampleName: file.name, sampleData}
+          @props.sampler.merge {sampleName: file.name, sampleData}
       reader.readAsArrayBuffer file
 
   clear: ->
-    @props.sampler.update (sampler) -> sampler.merge sampleName: null, sampleData: null
+    @props.sampler.merge sampleName: null, sampleData: null
 
   recordSample: ->
     @props.app.launchModal <RecordControl

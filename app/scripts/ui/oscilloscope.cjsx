@@ -2,6 +2,10 @@ React = require 'react'
 
 module.exports = React.createClass
 
+  mixins: [
+    React.addons.PureRenderMixin
+  ]
+
   renderCanvas: ->
     canvas = @getDOMNode()
     buffer = @props.buffer
@@ -33,4 +37,4 @@ module.exports = React.createClass
 
   render: ->
     setTimeout @renderCanvas
-    <canvas className='ui oscilloscope' width='160' height='40'/>
+    <canvas className='ui oscilloscope' width='100' height='40'/>

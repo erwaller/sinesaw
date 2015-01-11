@@ -70,6 +70,7 @@ module.exports = React.createClass
           data={@props.data}
           song={@props.song}
           playing={@props.song.playing}
+          buffer={@props.song.buffer}
         />
       </div>
       <div className="row main">
@@ -88,6 +89,7 @@ module.exports = React.createClass
                 <PianoRoll
                   data={@props.data}
                   song={@props.song}
+                  midiNotes={@props.midi.notes.get()}
                   sequence={sequence}
                   position={position}
                 />

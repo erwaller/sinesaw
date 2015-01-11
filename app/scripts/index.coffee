@@ -1,6 +1,7 @@
 ImmutableData = require './util/immutable_data'
 React = require 'react/addons'
 SongBridge = require './models/song_bridge'
+MidiBridge = require './models/midi_bridge'
 Song = require './models/song'
 App = require './ui/app'
 
@@ -31,6 +32,7 @@ if process.env.NODE_ENV is 'development'
 launch = (songData) ->
 
   song = new SongBridge
+  window.midi = new MidiBridge
   window.data = null
   history = null
   playbackState = null
@@ -40,6 +42,7 @@ launch = (songData) ->
 
   # called every time song data changes
   ImmutableData.create songData, (d, h) ->
+
     # pass updated data to dsp thread
     song.update d
 
@@ -50,11 +53,13 @@ launch = (songData) ->
     # save changes in localstorage
     localStorage.setItem 'song', JSON.stringify d.get()
 
+  , history: true
+
 
   # render the app for every animation frame
   frame = ->
     React.render(
-      React.createElement(App, {song, data, playbackState, history}),
+      React.createElement(App, {song, midi, data, playbackState, history}),
       document.body
     )
     requestAnimationFrame frame

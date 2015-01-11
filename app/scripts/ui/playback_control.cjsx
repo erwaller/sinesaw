@@ -7,41 +7,44 @@ Oscilloscope = require './oscilloscope'
 
 module.exports = React.createClass
 
-  # mixins: [React.addons.PureRenderMixin]
+  mixins: [React.addons.PureRenderMixin]
 
   propTypes:
     data: React.PropTypes.object.isRequired
     song: React.PropTypes.object.isRequired
 
   render: ->
+    song = @props.song
+    data = @props.data
+
     <div className="ui playback-control">
       <div className="group playback">
         <div
           className={
-            "icon icon-play#{if @props.song.playing then ' active' else ''}"
+            "icon icon-play#{if song.playing then ' active' else ''}"
           }
           onClick={
-            if @props.song.playing
-            then @props.song.pause
-            else @props.song.play
+            if song.playing
+            then song.pause
+            else song.play
           }
         />
-        <div className="icon icon-record" onClick={@props.song.record}/>
-        <div className="icon icon-stop" onClick={@props.song.stop}/>
+        <div className="icon icon-record" onClick={song.record}/>
+        <div className="icon icon-stop" onClick={song.stop}/>
       </div>
       <div className="group fill"/>
       <div className="group controls">
-        <Oscilloscope buffer={@props.song.buffer}/>
+        <Oscilloscope buffer={if song.playing then song.buffer else [0]}/>
         <Knob
           label="Level"
-          value={@props.data.get 'level'}
-          onChange={@props.data.bind 'level'}
+          value={data.get 'level'}
+          onChange={data.bind 'level'}
         />
       </div>
       <div className="group tempo">
         <select
-          value={@props.data.get 'bpm'}
-          onChange={@props.data.bind 'bpm', (e) -> parseInt e.target.value}
+          value={data.get 'bpm'}
+          onChange={data.bind 'bpm', (e) -> parseInt e.target.value}
         >
           {
             for i in [200..20]

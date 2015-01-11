@@ -2,18 +2,24 @@ BUGS:
 
 - after stopping audio and then restarting, sometimes get a chunk of white noise
   before audio plays normally - seems like its coming from drum synthesizer, but
-  not 100% sure about that.
+  not 100% sure about that. (dividing by a very small number? something to do w/
+  fm?)
+
+- figure out what is calling a react component directly and giving a warning in
+  the console
 
 
 FEATURES:
 
+- look at using webmidi (need to update instruments to work w/ note on / note
+  off instead of note recieveing length at start)
+
 - move sample data out of cursor structure into some global library so that
   samples can be shared w/o data being duplicated
 
-- sample selection ui
+- add velocity to notes, piano roll
 
-- look at using webmidi (need to update instruments to work w/ note on / note
-  off instead of note recieveing length at start)
+- sample selection ui
 
 - webrtc
 

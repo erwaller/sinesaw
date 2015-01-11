@@ -76,7 +76,7 @@ module.exports = class Song
   # called periodically to pass high frequency data to the ui.. this should
   # eventually be updated to base the amount of decay on the actual elpased time
   processFrame: ->
-    if @data?
+    if @data?.tracks?
       # apply decay to meter levels
       for track in @data.tracks
         if @state[track._id]?
@@ -84,7 +84,7 @@ module.exports = class Song
 
   # get a sendable version of current song playback state
   getState: ->
-    meterLevels: @data.tracks.reduce((memo, track) =>
+    meterLevels: @data?.tracks?.reduce((memo, track) =>
       memo[track._id] = @state[track._id]?.meterLevel
       memo
     , {})

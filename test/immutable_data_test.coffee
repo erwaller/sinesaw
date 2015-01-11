@@ -16,6 +16,7 @@ describe 'Cursor', ->
   beforeEach ->
     ImmutableData.create initialData, ->
       [root, history] = arguments
+    , history: true
 
 
 
@@ -143,7 +144,7 @@ describe 'Cursor', ->
       setTimeout ->
         assert.equal root.get(), o
         done()
-      , 2
+      , 10
 
     it 'should undo changes', (done) ->
       root.set ['a', 'b', 'c'], 5
@@ -153,7 +154,7 @@ describe 'Cursor', ->
         history.undo()
         assert.equal root.get(['a', 'b', 'c']), 1
         done()
-      , 2
+      , 10
 
   describe '#redo', ->
 
@@ -164,7 +165,7 @@ describe 'Cursor', ->
       setTimeout ->
         assert.equal root.get(), o
         done()
-      , 2
+      , 10
 
     it 'should redo changes', (done) ->
       root.set ['a', 'b', 'c'], 5
@@ -175,4 +176,4 @@ describe 'Cursor', ->
         history.redo()
         assert.equal root.get(['a', 'b', 'c']), 5
         done()
-      , 2
+      , 10

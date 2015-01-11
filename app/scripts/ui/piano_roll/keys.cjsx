@@ -15,6 +15,10 @@ module.exports = React.createClass
     yScale: React.PropTypes.number.isRequired
     keyWidth: React.PropTypes.number.isRequired
 
+  noteOn: (number) ->
+    note = @props.midiNotes[number]
+    note? and (!note.off? or note.on > note.off)
+
   render: ->
     height = @props.height
     keyHeight = height / @props.yScale
@@ -28,10 +32,22 @@ module.exports = React.createClass
 
     # keys
     for row, i in rows
-      unless keyPattern[row % 12]
-        y = height - (i + 1) * keyHeight
-        text = null
-        els.push <rect key={'k' + i} x={0} y={y} width={keyWidth} height={keyHeight}/>
+      if @noteOn row
+        className = 'on'
+      else unless keyPattern[row % 12]
+        className = 'black'
+      else
+        className = null
+
+      if className?
+        els.push <rect
+          key={'k' + i}
+          className={className}
+          x={0}
+          y={height - (i + 1) * keyHeight}
+          width={keyWidth}
+          height={keyHeight}
+        />
 
     # # lines
     # for row, i in rows
@@ -43,7 +59,16 @@ module.exports = React.createClass
       if row % 12 == 0
         y = height - (i + 0.5) * keyHeight
         text = "C #{Math.floor(row / 12) - 2}"
-        els.push <text key={'t' + i} x={keyWidth - 4} y={y}>{text}</text>
+        els.push(
+          <text
+            key={'t' + i}
+            className={if @noteOn row then 'on' else ''}
+            x={keyWidth - 4}
+            y={y}
+          >
+            {text}
+          </text>
+        )
 
     <div className='keys'>
       <svg width={keyWidth} height={height} onClick={@props.onClick}>

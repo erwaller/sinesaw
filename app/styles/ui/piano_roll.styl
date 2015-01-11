@@ -31,8 +31,11 @@ key-width = 40px
       background-color bg-color
 
       rect
-        fill med-line-color
         stroke-width 0
+        &.black
+          fill med-line-color
+        &.on
+          fill lighten(c4, 15%)
 
       line
         stroke med-line-color
@@ -42,6 +45,9 @@ key-width = 40px
         text-anchor end
         fill light-text-color
         dominant-baseline central
+
+        &.on
+          fill white
 
     .grid
       left key-width

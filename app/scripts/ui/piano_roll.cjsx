@@ -32,12 +32,12 @@ Selection = require './piano_roll/selection'
 module.exports = React.createClass
 
   mixins: [
+    React.addons.PureRenderMixin
     SizeMeasurable
     Draggable
     OverrideScrolling
     MouseInteraction
     KeyboardInteraction
-    React.addons.PureRenderMixin
   ]
 
   propTypes:
@@ -170,6 +170,7 @@ module.exports = React.createClass
               yScale={@state.yScale}
               keyWidth={@state.keyWidth}
               onClick={@onClickKeys}
+              midiNotes={@props.midiNotes}
             />
             <div className='grid' ref='grid'>
               <svg
