@@ -1,5 +1,3 @@
-webaudio = require '../dsp/webaudio'
-window.context = require '../dsp/global_context'
 Track = require './track'
 
 # there are three time scales that we are concerned with
@@ -32,7 +30,6 @@ module.exports = class Song
     Math.max(0, Math.min(2, sample + 1)) - 1
 
   constructor: ->
-    @audio = webaudio context, @sample
     @lastBeat = 0
 
     # keep mutable state for audio playback here - this will store things
@@ -40,27 +37,23 @@ module.exports = class Song
     # cursor structure for performance reasons
     @state = {}
 
-    # start running frames
-    requestAnimationFrame @frame
+    # keep a reference to the current song document
+    @data = null
 
-  update: (cursor) ->
-    @data = cursor.get()
+  update: (data) ->
+    @data = data
 
-  play: =>
-    @audio.play()
+  # fill a buffer function
+  buffer: (size, index, sampleRate, cb) ->
+    arr = new Float32Array size
 
-  pause: =>
-    @audio.stop()
+    if @data?
+      for i in [0...size]
+        ii = i + index
+        t = ii / sampleRate
+        arr[i] = @sample t, ii
 
-  stop: =>
-    @audio.stop()
-    @audio.reset()
-
-  seek: (beat) =>
-    @audio.seek beat * 60 / @data.bpm
-
-  position: =>
-    @audio.getTime() * @data.bpm / 60
+    cb arr.buffer
 
   # called for every sample of audio
   sample: (time, i) =>
@@ -80,13 +73,19 @@ module.exports = class Song
 
     @lastBeat = beat
 
-  # called for every ui animation frame
+  # called periodically to pass high frequency data to the ui
   # this should eventually be updated to base the amount of decay on the actual
   # elpased time because the rate of requestAnimationFrame is not gauranteed
-  frame: =>
-    # apply decay to meter levels
-    for track in @data.tracks
-      if @state[track._id]?
-        @state[track._id].meterLevel -= meterDecay
+  processFrame: ->
+    if @data?
+      # apply decay to meter levels
+      for track in @data.tracks
+        if @state[track._id]?
+          @state[track._id].meterLevel -= meterDecay
 
-    requestAnimationFrame @frame
+  # get a sendable version of current song playback state
+  getState: ->
+    meterLevels: @data.tracks.reduce((memo, track) =>
+      memo[track._id] = @state[track._id]?.meterLevel
+      memo
+    , {})

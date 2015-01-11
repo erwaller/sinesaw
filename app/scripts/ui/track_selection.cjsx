@@ -115,7 +115,7 @@ module.exports = React.createClass
                 key={track._id}
                 index={i}
                 track={@props.tracks.cursor i}
-                meterLevel={@props.meterLevels[track._id] or 0}
+                meterLevel={@props.meterLevels?[track._id] or 0}
                 selected={parseInt(@props.selectedTrack) == parseInt(i)}
                 selectTrack={=> @props.selectTrack i}
                 dragging={@state.dragging}

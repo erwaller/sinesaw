@@ -1,5 +1,8 @@
 context = require './global_context'
 
+
+# create worker script inline by calling toString on a function
+
 workerScript = URL.createObjectURL(new Blob(['(', ((window) ->
 
   buffers = []
@@ -30,15 +33,16 @@ workerScript = URL.createObjectURL(new Blob(['(', ((window) ->
     for value, i in sampleData
       sampleData[i] = value / max
 
-    window.postMessage sampleData
+    postMessage sampleData
 
-  window.onmessage = (e) ->
+  onmessage = (e) ->
     switch e.data.command
       when 'record' then record e.data.buffer
       when 'clear' then clear()
       when 'getSampleData' then getSampleData()
 
 ).toString(), ')(this)'], type: 'application/javascript'))
+
 
 
 module.exports = class AudioRecorder
@@ -48,7 +52,7 @@ module.exports = class AudioRecorder
     @recorder = context.createScriptProcessor 4096, 1, 1
     @recording = false
     @worker = new Worker workerScript
-    
+
     @recorder.onaudioprocess = (e) =>
       return unless @recording
       @worker.postMessage

@@ -38,15 +38,7 @@ module.exports = React.createClass
 
   render: ->
     track = @props.data.cursor ['tracks', @state.selectedTrack]
-
-    meterLevels = @props.data.get('tracks').reduce((memo, track) =>
-      memo[track._id] = @props.song.state[track._id]?.meterLevel
-      memo
-    , {})
-
-    position = @props.song.position()
-
-
+    position = @props.song.getPosition()
 
     if track
       sequence = track.cursor 'sequence'
@@ -73,7 +65,11 @@ module.exports = React.createClass
 
     <div className="app">
       <div className="row playback">
-        <PlaybackControl data={@props.data} song={@props.song}/>
+        <PlaybackControl
+          data={@props.data}
+          song={@props.song}
+          playing={@props.song.playing}
+        />
       </div>
       <div className="row main">
         <div className="column sidebar">
@@ -81,7 +77,7 @@ module.exports = React.createClass
             tracks={@props.data.cursor 'tracks'}
             selectedTrack={@state.selectedTrack}
             selectTrack={(v) => @setState selectedTrack: parseInt v}
-            meterLevels={meterLevels}
+            meterLevels={@props.playbackState?.meterLevels}
           />
         </div>
         <div className="column main">

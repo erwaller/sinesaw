@@ -16,7 +16,7 @@ module.exports =
 
   onSpaceKey: (e) ->
     e.preventDefault()
-    if @props.data.get 'playing'
+    if @props.song.playing
       @props.song.pause()
     else
       @props.song.play()

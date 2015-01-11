@@ -25,27 +25,32 @@ gulp.task 'server', ->
 
 gulp.task 'js', ->
 
+  pending = 2
   errorEmitted = false
 
   statusServer.send 'building'
-  browserify(
-    entries: ['./app/scripts/index.coffee']
-    extensions: ['.coffee', '.cjsx']
-    debug: true
-  )
-    .transform(coffeeReactify)
-    .transform(envify NODE_ENV: 'development')
-    .transform(brfs)
-    .bundle()
-      .on 'error', (e) ->
-        errorEmitted = true
-        statusServer.send 'error'
-        gutil.log "#{e}"
-        @emit 'end'
-      .pipe source 'index.js'
-      .pipe gulp.dest './public'
-      .on 'end', ->
-        statusServer.send 'done' unless errorEmitted
+
+  ['index', 'dsp'].forEach (bundle) ->
+
+    browserify(
+      debug: true
+      extensions: ['.coffee', '.cjsx']
+      entries: ["./app/scripts/#{bundle}.coffee"]
+    )
+      .transform(coffeeReactify)
+      .transform(envify NODE_ENV: 'development')
+      .transform(brfs)
+      .bundle()
+        .on 'error', (e) ->
+          errorEmitted = true
+          statusServer.send 'error'
+          gutil.log "#{e}"
+          @emit 'end'
+        .pipe source "#{bundle}.js"
+        .pipe gulp.dest './public'
+        .on 'end', ->
+          pending -= 1
+          statusServer.send 'done' unless errorEmitted or pending > 0
 
 
 gulp.task 'watch-js', ['js'], ->

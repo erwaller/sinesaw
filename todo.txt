@@ -4,9 +4,13 @@ BUGS:
   before audio plays normally - seems like its coming from drum synthesizer, but
   not 100% sure about that.
 
+
 FEATURES:
 
-- try doing processing in background thread, passing buffers
+- move sample data out of cursor structure into some global library so that
+  samples can be shared w/o data being duplicated
+
+- sample selection ui
 
 - look at using webmidi (need to update instruments to work w/ note on / note
   off instead of note recieveing length at start)
@@ -18,9 +22,6 @@ FEATURES:
   a requirable global obj and do it in Song)
 
 - better cleanup in cursor cache
-
-- move sample data out of cursor structure into some global library so that
-  samples can be shared w/o data being duplicated
 
 - ability to save
   - ui to sign up, manage tracks, manage account

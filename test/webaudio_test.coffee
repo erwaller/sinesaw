@@ -1,4 +1,4 @@
 assert = require 'assert'
-Song = require '../app/scripts/models/song'
+Song = require '../app/scripts/dsp/webaudio'
 
 describe 'Song', ->

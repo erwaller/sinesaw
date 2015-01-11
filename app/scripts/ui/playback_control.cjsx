@@ -13,14 +13,14 @@ module.exports = React.createClass
     song: React.PropTypes.object.isRequired
 
   render: ->
-    playing = @props.data.get 'playing'
-
     <div className="ui playback-control">
       <div className="group playback">
         <div
-          className={"icon icon-play#{if playing then ' active' else ''}"}
+          className={
+            "icon icon-play#{if @props.song.playing then ' active' else ''}"
+          }
           onClick={
-            if playing
+            if @props.song.playing
             then @props.song.pause
             else @props.song.play
           }

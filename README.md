@@ -16,20 +16,22 @@ that I think there is an exciting place for it.  I hope the limitations in
 processing power will inspire creativity more than hold users back.
 
 Sinesaw is far from complete - so far it includes a piano roll editor, a working
-analog synthesizer, drum synthesizer, sampler.
+analog synthesizer, drum synthesizer, and sampler.
 
 
 ### architecture
 
 Sinesaw plays audio through through a single scriptProcessor audio node - the
 audio output is a pure function of the song state and the current time.  This
-single function is called for every sample of audio.
+single function is called in a worker thread for every sample of audio.
 
-This approach to audio was inspired by the excellent wavepot project.
+This approach to audio was inspired by the excellent
+[wavepot](http://wavepot.com) project.
 
-Sinesaw uses React.js for the user interface, and a custom Cursor library for
-immutable data modeling.. Song state is kept in a single object shared between
-the ui and the audio processing code.
+Sinesaw uses React.js for the user interface, and a custom
+[Cursor](https://github.com/charlieschwabacher/cursor) library for immutable
+data modeling.. Song state is kept in a single object shared between the ui and
+the audio processing code.
 
 The advantage of using immutable data is that React can quickly diff the objects
 to determine what has changed, so that we can always render the ui from the top,

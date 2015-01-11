@@ -13,7 +13,7 @@ async = require 'async'
 fs = require 'fs'
 b2a = require 'base64-arraybuffer'
 cuid = require 'cuid'
-decoder = require './dsp/global_context'
+decoder = require '../dsp/global_context'
 sequences = require './sequences'
 
 loaded = false
@@ -28,10 +28,10 @@ module.exports = (cb) ->
 
 
 # inline audio files as base64 strings using brfs
-bass = b2a.decode fs.readFileSync "#{__dirname}/../audio/bass.wav", 'base64'
-kick = b2a.decode fs.readFileSync "#{__dirname}/../audio/kick.wav", 'base64'
-snare = b2a.decode fs.readFileSync "#{__dirname}/../audio/snare.wav", 'base64'
-hat = b2a.decode fs.readFileSync "#{__dirname}/../audio/hat.wav", 'base64'
+bass = b2a.decode fs.readFileSync "#{__dirname}/../../audio/bass.wav", 'base64'
+kick = b2a.decode fs.readFileSync "#{__dirname}/../../audio/kick.wav", 'base64'
+snare = b2a.decode fs.readFileSync "#{__dirname}/../../audio/snare.wav", 'base64'
+hat = b2a.decode fs.readFileSync "#{__dirname}/../../audio/hat.wav", 'base64'
 
 # load sample data
 async.parallel

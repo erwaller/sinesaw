@@ -1,13 +1,6 @@
 bufferSize = 4096
 
-module.exports = (context, fn) ->
-
-  # accept a single argument
-  if typeof context is 'function'
-    Context = window.AudioContext or window.webkitAudioContext
-    throw new Error 'AudioContext not supported' unless Context
-    fn = context
-    context = new Context()
+module.exports = (context, getBuffer) ->
 
   self = context.createScriptProcessor bufferSize, 1, 1
   self.fn = fn
@@ -16,14 +9,12 @@ module.exports = (context, fn) ->
   self.duration = Infinity
   self.playing = false
 
-  bufferStartAbsolute = null
-  bufferStartRelative = null
+  buffer = getBuffer()
+  nextBuffer = getBuffer()
 
   self.onaudioprocess = (e) ->
     bufferStartAbsolute = Date.now()
     bufferStartRelative = self.t
-
-    output = e.outputBuffer.getChannelData 0
 
     for i in [0...bufferSize]
       self.t = self.i / self.sampleRate
