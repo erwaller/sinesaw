@@ -43,6 +43,8 @@ module.exports = React.createClass
   propTypes:
     data: React.PropTypes.object.isRequired
     sequence: React.PropTypes.object.isRequired
+    position: React.PropTypes.number.isRequired
+    midiNotes: React.PropTypes.object.isRequired
 
   getInitialState: ->
 

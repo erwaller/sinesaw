@@ -38,16 +38,22 @@ module.exports = class Song
     @state = {}
 
     # keep a reference to the current song document
-    @data = null
+    @song = null
 
-  update: (data) ->
-    @data = data
+    # keep a list of unprocessed midi messages
+    @midiMessages = []
+
+  update: (state) ->
+    @song = state
+
+  midi: (message) ->
+    @midiMessages.push message
 
   # fill a buffer function
   buffer: (size, index, sampleRate, cb) ->
     arr = new Float32Array size
 
-    if @data?
+    if @song?
       for i in [0...size]
         ii = i + index
         t = ii / sampleRate
@@ -55,36 +61,44 @@ module.exports = class Song
 
     cb arr.buffer
 
+    # clear midi messages after buffer is filled
+    @midiMessages = []
+
   # called for every sample of audio
   sample: (time, i) =>
     @tick time, i if i % clockRatio is 0
 
-    clip @data.level * @data.tracks.reduce((memo, track) =>
+    clip @song.level * @song.tracks.reduce((memo, track) =>
       memo + Track.sample @state, track, time, i
     , 0)
 
   # called for every clockRatio samples
   tick: (time, i) =>
-    bps = @data.bpm / 60
+    bps = @song.bpm / 60
     beat = time * bps
 
-    @data.tracks.forEach (track) =>
-      Track.tick @state, track, time, i, beat, @lastBeat, bps
+    @song.tracks.forEach (track, i) =>
+
+      # for now send midi only to the first track - in the future we should
+      # allow tracks to be armed for recording
+      midi = if i is 0 then @midi else null
+
+      Track.tick @state, track, midi, time, i, beat, @lastBeat, bps
 
     @lastBeat = beat
 
   # called periodically to pass high frequency data to the ui.. this should
   # eventually be updated to base the amount of decay on the actual elpased time
   processFrame: ->
-    if @data?.tracks?
+    if @song?.tracks?
       # apply decay to meter levels
-      for track in @data.tracks
+      for track in @song.tracks
         if @state[track._id]?
           @state[track._id].meterLevel -= meterDecay
 
   # get a sendable version of current song playback state
   getState: ->
-    meterLevels: @data?.tracks?.reduce((memo, track) =>
+    meterLevels: @song?.tracks?.reduce((memo, track) =>
       memo[track._id] = @state[track._id]?.meterLevel
       memo
     , {})

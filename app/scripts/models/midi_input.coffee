@@ -1,11 +1,10 @@
-ImmutableData = require '../util/immutable_data'
-
-module.exports = class MidiBridge
+module.exports = class MidiInput
 
   constructor: ->
     @error = false
     @enabled = false
-    ImmutableData.create {}, (notes) => @notes = notes
+    @notes = {}
+    @messageHandlers = []
 
     if navigator.requestMIDIAccess?
       @enabled = true
@@ -45,10 +44,30 @@ module.exports = class MidiBridge
     else
       null
 
+  onMessage: (fn) ->
+    @messageHandlers.push fn
+
+  offMessage: (fn) ->
+    i = @messageHandlers.indexOf fn
+    @messageHandlers.splice i, 1 if i > -1
+
   noteOn: (number, velocity) ->
-    @notes.set [number], {on: Date.now(), velocity}
+    nextNotes = {}
+    nextNotes[k] = v for k, v of @notes
+    nextNotes[number] = velocity
+    @notes = nextNotes
+
+    message = {type: 'on', key: number, velocity}
+    fn message for fn in @messageHandlers
 
   noteOff: (number, velocity) ->
-    @notes.set [number, 'off'], Date.now()
+    nextNotes = {}
+    (nextNotes[k] = v unless `(k == number)`) for k, v of @notes
+    @notes = nextNotes
+
+    message = {type: 'off', key: number}
+    fn message for fn in @messageHandlers
 
   controller: ->
+
+

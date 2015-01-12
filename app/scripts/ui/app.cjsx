@@ -24,6 +24,8 @@ module.exports = React.createClass
   propTypes:
     data: React.PropTypes.object.isRequired
     song: React.PropTypes.object.isRequired
+    midiState: React.PropTypes.object
+    playbackState: React.PropTypes.object
 
   getInitialState: ->
     selectedTrack: 0
@@ -88,8 +90,7 @@ module.exports = React.createClass
               unless empty
                 <PianoRoll
                   data={@props.data}
-                  song={@props.song}
-                  midiNotes={@props.midi.notes.get()}
+                  midiNotes={@props.song.midi.notes}
                   sequence={sequence}
                   position={position}
                 />

@@ -1,9 +1,10 @@
 # this script is run inside a worker in order to do audio processing outside of
 # the main ui thread.
 #
-# The worker receives two types of messages - 'update' w/ {data} containing the
-# current state of the song document, and 'buffer' w/ {size, index, sampleRate}
-# requesting a buffer to be filled and sent back.
+# The worker receives three types of messages - 'update' w/ {state} containing
+# the current state of the song, 'midi' w/ {state} containing the and current
+# state of the midi input, and 'buffer' w/ {size, index, sampleRate} requesting
+# a buffer to be filled and sent back.
 #
 # It also sends two types of messages - 'frame' messages at 60hz containing the
 # current playback state as {frame}, and sends 'buffer' messages transferring
@@ -18,6 +19,8 @@ self.onmessage = (e) ->
   switch e.data.type
     when 'update'
       song.update e.data.state
+    when 'midi'
+      song.midi e.data.message
     when 'buffer'
       song.buffer e.data.size, e.data.index, e.data.sampleRate, (buffer) ->
         postMessage

@@ -1,4 +1,5 @@
 context = require '../dsp/components/global_context'
+MidiInput = require './midi_input'
 
 
 callbackId = 0
@@ -11,11 +12,13 @@ module.exports = class SongBridge
     @node = context.createScriptProcessor @bufferSize, 1, 1
     @node.onaudioprocess = @handleAudioProcess
 
+    @midi = new MidiInput
+    @midi.onMessage @handleMidiInput
+
     @worker = new Worker '/dsp.js'
-    @worker.onmessage = @handleMessage
+    @worker.onMessage = @handleMessage
 
     @state = {}
-    @playbackState = {}
     @frameHandlers = []
 
     @sampleRate = context.sampleRate
@@ -40,6 +43,10 @@ module.exports = class SongBridge
     @i += @bufferSize
     @t = @i / @sampleRate
     @bufferStartAbsolute = Date.now()
+
+  handleMidiInput: (message) =>
+    message.time = @getPosition()
+    @worker.postMessage {type: 'midi', message}
 
   handleMessage: (e) =>
     switch e.data.type

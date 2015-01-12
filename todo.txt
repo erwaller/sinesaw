@@ -11,17 +11,26 @@ BUGS:
 
 FEATURES:
 
-- look at using webmidi (need to update instruments to work w/ note on / note
-  off instead of note recieveing length at start)
+- webmidi (need to update instruments to work w/ note on / note off instead of
+  note recieveing length at start)
+
+  - MidiInput recieves values, keep track of current note state for ui
+  - SongBridge binds to MidiInput onMessage, converts times from seconds to
+    beats, and passes messages to the audio thread
+  - Song recieves midi messages, keeps them in a list and passes them to tracks
+    at tick rate.. it clears the list for every buffer.
+  - Tracks combine midi on/off messages with note on/off from sequences and pass
+    to instruments as notesOn / notesOff arrays at tick rate
+  - Instruments keep track of notes on their own
 
 - move sample data out of cursor structure into some global library so that
   samples can be shared w/o data being duplicated
 
-- add velocity to notes, piano roll
-
 - sample selection ui
 
 - webrtc
+
+- add velocity to notes, piano roll
 
 - better handling of deallocation of objs for notes / filters in instruments
   when tracks are removed (maybe move playback state from Instrument class to

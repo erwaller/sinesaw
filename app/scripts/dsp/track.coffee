@@ -1,5 +1,3 @@
-Sequence = require './sequence'
-
 instrumentTypes =
   AnalogSynthesizer: require './analog_synthesizer'
   BasicSampler: require './basic_sampler'
@@ -35,10 +33,43 @@ module.exports = class Track
 
     sample
 
-  @tick: (state, track, time, i, beat, lastBeat, bps) ->
+  @tick: (state, track, midiMessages, time, i, beat, lastBeat, bps) ->
     @createState state, track unless state[track._id]?
 
     Instrument = instrumentTypes[track.instrument._type]
-    notesOn = Sequence.notesOn track.sequence, beat, lastBeat
-    Instrument.tick state, track.instrument, time, i, beat, bps, notesOn
+
+    # get notes on from sequence
+    {notesOn, notesOff} = @notes track.sequence, midiMessages, beat, lastBeat
+
+    Instrument.tick state, track.instrument, midi, time, i, beat, bps, notesOn, notesOff
     track.effects.forEach (e) -> e.tick state, time, beat, bps
+
+  # look at sequence and midi messages, return arrays of notes on and off
+  # occurring in this tick
+  @notes: (sequence, midiMessages, beat, lastBeat) ->
+    bar = Math.floor beat / sequence.loopSize
+    lastBar = Math.floor lastBeat / sequence.loopSize
+    beat = beat % sequence.loopSize
+    lastBeat = lastBeat % sequence.loopSize
+
+    notesOn = []
+    notesOff = []
+
+    for id, note of sequence.notes
+      start = note.start
+      end = note.start + note.length
+      if start < beat and (start >= lastBeat or bar > lastBar)
+        notesOn.push {key: note.key}
+      if end < beat and (end >= lastBeat or bar > lastbar)
+        notesOff.push {key: note.key}
+
+    for message in midiMessages
+      time = message.time
+      if time < beat and (time >= lastBeat or bar > lastBar)
+        switch message.type
+          when 'on'
+            notesOn.push key: message.key
+          when 'off'
+            notesOff.push key: message.key
+
+    {notesOn, notesOff}

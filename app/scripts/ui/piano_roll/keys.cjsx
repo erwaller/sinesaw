@@ -14,10 +14,7 @@ module.exports = React.createClass
     yScroll: React.PropTypes.number.isRequired
     yScale: React.PropTypes.number.isRequired
     keyWidth: React.PropTypes.number.isRequired
-
-  noteOn: (number) ->
-    note = @props.midiNotes[number]
-    note? and (!note.off? or note.on > note.off)
+    midiNotes: React.PropTypes.object.isRequired
 
   render: ->
     height = @props.height
@@ -32,7 +29,7 @@ module.exports = React.createClass
 
     # keys
     for row, i in rows
-      if @noteOn row
+      if @props.midiNotes[row]?
         className = 'on'
       else unless keyPattern[row % 12]
         className = 'black'
@@ -62,7 +59,7 @@ module.exports = React.createClass
         els.push(
           <text
             key={'t' + i}
-            className={if @noteOn row then 'on' else ''}
+            className={if @props.midiNotes[row]? then 'on' else ''}
             x={keyWidth - 4}
             y={y}
           >

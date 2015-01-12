@@ -13,7 +13,7 @@ module.exports = class Instrument
   @sample: (state, instrument, time, i) ->
     0
 
-  @tick: (state, instrument, time, i, beat, bps, notesOn) ->
+  @tick: (state, instrument, time, i, beat, bps, notesOn, notesOff) ->
     @createState state, instrument unless state[instrument._id]?
     instrumentState = state[instrument._id]
 
