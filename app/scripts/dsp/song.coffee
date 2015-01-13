@@ -60,7 +60,7 @@ module.exports = class Song
         arr[i] = @sample t, ii
 
     # clear midi messages after buffer is filled
-    @midiMessages = []
+    # @midiMessages = []
 
     cb arr.buffer
 

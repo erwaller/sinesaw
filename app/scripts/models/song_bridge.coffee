@@ -6,7 +6,7 @@ callbackId = 0
 
 
 module.exports = class SongBridge
-  bufferSize: 2048
+  bufferSize: 4096
 
   constructor: ->
     @node = context.createScriptProcessor @bufferSize, 1, 1
@@ -45,6 +45,7 @@ module.exports = class SongBridge
     @bufferStartAbsolute = Date.now()
 
   handleMidiInput: (message) =>
+    message.time = @getTime()
     @worker.postMessage {type: 'midi', message}
 
   handleMessage: (e) =>

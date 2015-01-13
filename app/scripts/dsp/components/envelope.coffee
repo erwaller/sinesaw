@@ -1,7 +1,6 @@
 minEnvValue = 0.01
 
 module.exports = (env, note, time) ->
-
   elapsed = time - note.time
   a = Math.max minEnvValue, env.a
   d = Math.max minEnvValue, env.d

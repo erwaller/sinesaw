@@ -28,7 +28,7 @@ module.exports = class AnalogSynthesizer extends Instrument
     r = Math.max 0.01, instrument.volumeEnv.r
     instrument.level * state[instrument._id].notes.reduce((memo, note, index) =>
       return memo unless note?
-      return memo unless r > time - note.timeOff
+      return memo if time > r + note.timeOff
 
       # sum oscillators and apply volume envelope
       osc1Freq = frequency note.key + instrument.osc1.tune - 0.5 + Math.round(24 * (instrument.osc1.pitch - 0.5))
