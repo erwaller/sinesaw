@@ -21,11 +21,12 @@ module.exports = class Instrument
     if instrument.polyphony != instrumentState.notes.length
       instrumentState.notes.resize instrument.polyphony
 
+    notesOff.forEach ({key}) ->
+      # console.log 'note off ' + key
+      instrumentState.noteMap[key].timeOff = time
+
     notesOn.forEach ({key}) ->
       # console.log 'note on ' + key
       instrumentState.noteMap[key] = {time, i, key}
       instrumentState.notes.push instrumentState.noteMap[key]
 
-    notesOff.forEach ({key}) ->
-      # console.log 'note off ' + key
-      instrumentState.noteMap[key].timeOff = time

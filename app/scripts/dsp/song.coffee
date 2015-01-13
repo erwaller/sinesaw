@@ -81,7 +81,7 @@ module.exports = class Song
 
       # for now send midi only to the first track - in the future we should
       # allow tracks to be armed for recording
-      midiMessages = if i is 0 then @midiMessages else null
+      midiMessages = if i is @song.selectedTrack then @midiMessages else null
 
       Track.tick @state, track, midiMessages, time, i, beat, @lastBeat, bps
 

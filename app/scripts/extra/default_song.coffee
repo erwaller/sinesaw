@@ -45,6 +45,7 @@ async.parallel
     data =
       _id: cuid()
       bpm: 120
+      selectedTrack: 0
       tracks: [
         # {
         #   _id: cuid()
