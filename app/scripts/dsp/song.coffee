@@ -59,9 +59,6 @@ module.exports = class Song
         t = ii / sampleRate
         arr[i] = @sample t, ii
 
-    # clear midi messages after buffer is filled
-    # @midiMessages = []
-
     cb arr.buffer
 
   # called for every sample of audio

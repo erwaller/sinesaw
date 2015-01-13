@@ -1,0 +1,33 @@
+FLOW OF AUDIO DATA
+
+- SongBridge creates a Worker, webaudio scriptprocessor node, and tracks
+  playback position.  It creates an initial zeroed buffer.
+
+- SongBridge receives updated song state from ui app on change, passes state to
+  worker
+
+- on audioprocess SongBridge passes its existing buffer to the scriptprocessor
+  node and sends a message to the worker requesting a new filled buffer
+
+- The worker receives buffer messages, creates new filled buffers and transfers
+  them back to the main thread
+
+- SongBridge recieves incoming buffers and keeps them until the next
+  audioprocess event
+
+
+FLOW OF MIDI
+
+- MidiInput recieves values, keep track of current note state for ui
+
+- SongBridge binds to MidiInput onMessage and passes messages to the audio
+  thread
+
+- Song recieves midi messages,  keeps them in a list and passes them to tracks
+  at tick rate.. it clears the list for every buffer.
+
+- Tracks combine midi on/off messages with note on/off from sequences and pass
+  to instruments as notesOn / notesOff arrays at tick rate
+
+- Instruments keep track of current notes in their own way, use to generate
+  audio
