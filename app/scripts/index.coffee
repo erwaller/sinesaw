@@ -81,4 +81,4 @@ document.addEventListener 'DOMContentLoaded', ->
   if data?
     launch JSON.parse data
   else
-    launch Song.build()
+    launch require './extra/demo_song'

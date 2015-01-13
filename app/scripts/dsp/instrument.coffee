@@ -6,6 +6,7 @@ module.exports = class Instrument
   @createState: (state, instrument) ->
     state[instrument._id] =
       notes: new RingBuffer instrument.maxPolyphony, Array, instrument.polyphony
+      noteMap: {}
 
   @releaseState: (state, instrument) ->
     delete state[instrument._id]
@@ -20,7 +21,11 @@ module.exports = class Instrument
     if instrument.polyphony != instrumentState.notes.length
       instrumentState.notes.resize instrument.polyphony
 
-    notesOn.forEach (note) =>
-      instrumentState.notes.push(
-        {time, i, key: note.key, len: note.length / bps}
-      )
+    notesOn.forEach ({key}) ->
+      # console.log 'note on ' + key
+      instrumentState.noteMap[key] = {time, i, key}
+      instrumentState.notes.push instrumentState.noteMap[key]
+
+    notesOff.forEach ({key}) ->
+      # console.log 'note off ' + key
+      instrumentState.noteMap[key].timeOff = time

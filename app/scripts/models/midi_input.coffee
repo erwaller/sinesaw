@@ -57,7 +57,7 @@ module.exports = class MidiInput
     nextNotes[number] = velocity
     @notes = nextNotes
 
-    message = {type: 'on', key: number, velocity}
+    message = {type: 'on', key: number, velocity, time: Date.now()}
     fn message for fn in @messageHandlers
 
   noteOff: (number, velocity) ->
@@ -65,7 +65,7 @@ module.exports = class MidiInput
     (nextNotes[k] = v unless `(k == number)`) for k, v of @notes
     @notes = nextNotes
 
-    message = {type: 'off', key: number}
+    message = {type: 'off', key: number, time: Date.now()}
     fn message for fn in @messageHandlers
 
   controller: ->

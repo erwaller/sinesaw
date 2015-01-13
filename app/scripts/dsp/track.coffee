@@ -39,14 +39,14 @@ module.exports = class Track
     Instrument = instrumentTypes[track.instrument._type]
 
     # get notes on from sequence
-    {notesOn, notesOff} = @notes track.sequence, midiMessages, beat, lastBeat
+    {notesOn, notesOff} = @notes track.sequence, midiMessages, time, beat, lastBeat
 
-    Instrument.tick state, track.instrument, midi, time, i, beat, bps, notesOn, notesOff
+    Instrument.tick state, track.instrument, time, i, beat, bps, notesOn, notesOff
     track.effects.forEach (e) -> e.tick state, time, beat, bps
 
   # look at sequence and midi messages, return arrays of notes on and off
   # occurring in this tick
-  @notes: (sequence, midiMessages, beat, lastBeat) ->
+  @notes: (sequence, midiMessages, time, beat, lastBeat) ->
     bar = Math.floor beat / sequence.loopSize
     lastBar = Math.floor lastBeat / sequence.loopSize
     beat = beat % sequence.loopSize
@@ -60,16 +60,17 @@ module.exports = class Track
       end = note.start + note.length
       if start < beat and (start >= lastBeat or bar > lastBar)
         notesOn.push {key: note.key}
-      if end < beat and (end >= lastBeat or bar > lastbar)
+      if end < beat and (end >= lastBeat or bar > lastBar)
         notesOff.push {key: note.key}
 
-    for message in midiMessages
-      time = message.time
-      if time < beat and (time >= lastBeat or bar > lastBar)
-        switch message.type
-          when 'on'
-            notesOn.push key: message.key
-          when 'off'
-            notesOff.push key: message.key
+    if midiMessages?
+      midiMessages.forEach (message, i) ->
+        if message.time < time
+          midiMessages.splice i, 1
+          switch message.type
+            when 'on'
+              notesOn.push key: message.key
+            when 'off'
+              notesOff.push key: message.key
 
     {notesOn, notesOff}

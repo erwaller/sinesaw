@@ -59,10 +59,10 @@ module.exports = class Song
         t = ii / sampleRate
         arr[i] = @sample t, ii
 
-    cb arr.buffer
-
     # clear midi messages after buffer is filled
     @midiMessages = []
+
+    cb arr.buffer
 
   # called for every sample of audio
   sample: (time, i) =>
@@ -81,9 +81,9 @@ module.exports = class Song
 
       # for now send midi only to the first track - in the future we should
       # allow tracks to be armed for recording
-      midi = if i is 0 then @midi else null
+      midiMessages = if i is 0 then @midiMessages else null
 
-      Track.tick @state, track, midi, time, i, beat, @lastBeat, bps
+      Track.tick @state, track, midiMessages, time, i, beat, @lastBeat, bps
 
     @lastBeat = beat
 

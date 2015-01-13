@@ -2,8 +2,8 @@
 # the main ui thread.
 #
 # The worker receives three types of messages - 'update' w/ {state} containing
-# the current state of the song, 'midi' w/ {state} containing the and current
-# state of the midi input, and 'buffer' w/ {size, index, sampleRate} requesting
+# the current state of the song, 'midi' w/ {message} containing incoming noteOn
+# and noteOff messages, and 'buffer' w/ {size, index, sampleRate} requesting
 # a buffer to be filled and sent back.
 #
 # It also sends two types of messages - 'frame' messages at 60hz containing the
@@ -13,6 +13,8 @@
 Song = require './dsp/song.coffee'
 
 song = new Song
+
+self.logSample = require './dsp/components/log_sample'
 
 # respond to messages from parent thread
 self.onmessage = (e) ->

@@ -17,7 +17,7 @@ module.exports = (env, note, time) ->
     elapsed / a
 
   # release
-  if elapsed > note.len
-    l = l * (r + note.len - elapsed) / r
+  if note.timeOff
+    l = l * (note.timeOff + r - time) / r
 
   Math.max 0, l
