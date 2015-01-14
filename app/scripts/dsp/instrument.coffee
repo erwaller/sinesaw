@@ -23,7 +23,7 @@ module.exports = class Instrument
 
     notesOff.forEach ({key}) ->
       # console.log 'note off ' + key
-      instrumentState.noteMap[key].timeOff = time
+      instrumentState.noteMap[key]?.timeOff = time
 
     notesOn.forEach ({key}) ->
       # console.log 'note on ' + key

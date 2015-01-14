@@ -24,8 +24,9 @@ module.exports = class AnalogSynthesizer extends Instrument
     return 0 if instrument.level is 0
     return 0 unless state[instrument._id]?
 
-    # sum all active notes
     r = Math.max 0.01, instrument.volumeEnv.r
+
+    # sum all active notes
     instrument.level * state[instrument._id].notes.reduce((memo, note, index) =>
       return memo unless note?
       return memo if time > r + note.timeOff

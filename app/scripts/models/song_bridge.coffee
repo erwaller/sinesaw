@@ -2,9 +2,6 @@ context = require '../dsp/components/global_context'
 MidiInput = require './midi_input'
 
 
-callbackId = 0
-
-
 module.exports = class SongBridge
   bufferSize: 4096
 

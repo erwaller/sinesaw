@@ -1,23 +1,5 @@
 Track = require './track'
 
-# there are three time scales that we are concerned with
-#
-# - sample rate
-# runs at 44100 hz, once for each sample of audio we output.  Any code running
-# at this rate has a high cost, so performance is important here
-#
-# - tick rate
-# Ticks run every n samples, defined using the clockRatio variable.  This
-# allows us to do processing that needs to run frequently, but is too expensive
-# to run for each smaple.  For example, this is the time resolution at which
-# we trigger new notes.
-#
-# - frame rate
-# The frame rate is the speed at which we trigger GUI updates for things like
-# level meters and playback position.  we continue to run frame updates whether
-# on not audio is playing
-
-
 module.exports = class Song
 
   # number of samples to process between ticks
@@ -55,7 +37,7 @@ module.exports = class Song
 
     if @song?
       for i in [0...size]
-        ii = i + index
+        ii = index + i
         t = ii / sampleRate
         arr[i] = @sample t, ii
 
@@ -74,11 +56,11 @@ module.exports = class Song
     bps = @song.bpm / 60
     beat = time * bps
 
-    @song.tracks.forEach (track, i) =>
+    @song.tracks.forEach (track, index) =>
 
       # for now send midi only to the first track - in the future we should
       # allow tracks to be armed for recording
-      midiMessages = if i is @song.selectedTrack then @midiMessages else null
+      midiMessages = if index is @song.selectedTrack then @midiMessages else null
 
       Track.tick @state, track, midiMessages, time, i, beat, @lastBeat, bps
 

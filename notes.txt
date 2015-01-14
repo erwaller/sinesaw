@@ -16,7 +16,7 @@ FLOW OF AUDIO DATA
   audioprocess event
 
 
-FLOW OF MIDI
+FLOW OF MIDI MESSAGES
 
 - MidiInput recieves values, keep track of current note state for ui
 

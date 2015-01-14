@@ -11,13 +11,12 @@ BUGS:
 
 FEATURES:
 
-- webmidi (done, but still need to update instruments other than analog synth
-  to work w/ note on / note off instead of recieveing note length at start)
-
 - move sample data out of cursor structure into some global library so that
   samples can be shared w/o data being duplicated
 
 - sample selection ui
+
+- WRITE TESTS
 
 - webrtc
 

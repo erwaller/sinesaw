@@ -52,16 +52,18 @@ module.exports = class BasicSampler extends Instrument
 
     r = Math.max 0.01, instrument.volumeEnv.r
 
+    # sum all active notes
     instrument.level * state[instrument._id].notes.reduce((memo, note, index) =>
       return memo unless note?
-      return memo unless note.len + r > time - note.time
+      return memo if time > r + note.timeOff
 
       # get pitch shifted interpolated sample and apply volume envelope
       transpose = note.key - instrument.rootKey + instrument.tune - 0.5
       samplesElapsed = i - note.i
       offset = Math.floor instrument.start * instrument.sampleData.length
+      loopActive = instrument.loopActive is 'loop'
       loopPoint = Math.floor instrument.loop * instrument.sampleData.length
-      sample = linearInterpolator instrument.sampleData, transpose, samplesElapsed, offset, instrument.loopActive == 'loop', loopPoint
+      sample = linearInterpolator instrument.sampleData, transpose, samplesElapsed, offset, loopActive, loopPoint
       sample = envelope(instrument.volumeEnv, note, time) * (sample or 0)
 
       # apply filter with envelope

@@ -29,8 +29,11 @@ module.exports = class DrumSampler extends Instrument
       memo + drum.level * envelope(drum.volumeEnv, note, time) * (sample or 0)
     , 0)
 
-  @tick: (state, instrument, time, i, beat, bps, notesOn) ->
+  @tick: (state, instrument, time, i, beat, bps, notesOn, notesOff) ->
     @createState state, instrument unless state[instrument._id]?
 
+    notesOff.forEach ({key}) ->
+      state[instrument._id].notes[key]?.timeOff = time
+
     notesOn.forEach (note) =>
-      state[instrument._id].notes[note.key] = {time, i, len: note.length / bps}
+      state[instrument._id].notes[note.key] = {time, i}

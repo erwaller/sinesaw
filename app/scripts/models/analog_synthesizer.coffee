@@ -12,12 +12,12 @@ module.exports = class AnalogSynthesizer extends Model
     volumeEnv:
       a: 0
       d: 0.25
-      s: 0
+      s: 0.5
       r: 0.5
     filterEnv:
       a: 0
       d: 0.25
-      s: 0.2
+      s: 0.5
       r: 0.5
     filter:
       type: 'LP'

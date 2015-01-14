@@ -12,9 +12,9 @@ module.exports = class BasicSampler extends Model
     rootKey: 60
     sampleData: null
     sampleName: ''
-    start: 0.3
-    loopActive: 'loop'
-    loop: 0.7
+    start: 0
+    loopActive: 'off'
+    loop: 1
     tune: 0.5
     volumeEnv:
       a: 0
