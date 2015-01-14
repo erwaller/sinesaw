@@ -16,15 +16,16 @@ FEATURES:
 
 - sample selection ui
 
-- WRITE TESTS
-
-- webrtc
-
-- add velocity to notes, piano roll
-
 - better handling of deallocation of objs for notes / filters in instruments
   when tracks are removed (maybe move playback state from Instrument class to
   a requirable global obj and do it in Song)
+
+- WRITE UNIT TESTS for dsp stuff - try to figure out a good way to test
+  interprocess communication
+
+- webrtc collaboration (and ui for it)
+
+- add velocity to notes, piano roll
 
 - better cleanup in cursor cache
 

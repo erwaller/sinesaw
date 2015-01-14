@@ -1,7 +1,8 @@
 FLOW OF AUDIO DATA
 
-- SongBridge creates a Worker, webaudio scriptprocessor node, and tracks
-  playback position.  It creates an initial zeroed buffer.
+- SongBridge plays audio in the main thread and owns the cannonical playback
+  position.  It creates a Worker and webaudio scriptprocessor node, and an
+  initial zeroed buffer.
 
 - SongBridge receives updated song state from ui app on change, passes state to
   worker
@@ -31,3 +32,26 @@ FLOW OF MIDI MESSAGES
 
 - Instruments keep track of current notes in their own way, use to generate
   audio
+
+
+TIME SCALES
+
+there are four time scales that we are concerned with
+
+- sample rate
+runs at 44100 hz, once for each sample of audio we output.  Any code running
+at this rate has a high cost, so performance is important here
+
+- tick rate
+Ticks run every n samples, defined using the clockRatio variable.  This
+allows us to do processing that needs to run frequently, but is too expensive
+to run for each smaple.  For example, this is the time resolution at which
+we trigger new notes.
+
+- buffer rate
+This is the rate that the
+
+- frame rate
+The frame rate is the speed at which we trigger GUI updates for things like
+level meters and playback position.  we continue to run frame updates whether
+on not audio is playing
